@@ -44,7 +44,8 @@ def generate_launch_description():
                        'planner_server',
                        'behavior_server',
                        'bt_navigator',
-                       'waypoint_follower']
+                       'waypoint_follower',
+                       'collision_monitor']
 
     # Map fully qualified names to relative ones so the node's namespace can be prepended.
     # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
@@ -236,15 +237,13 @@ def generate_launch_description():
                 parameters=[{'use_sim_time': use_sim_time,
                              'autostart': autostart,
                              'node_names': lifecycle_nodes}]),
-
+            ComposableNode(
+                package='nav2_collision_monitor',
+                plugin='nav2_collision_monitor::CollisionMonitor',
+                name='collision_monitor',
+                parameters=[configured_params]),
         ],
     )
-    start_collision_monitor_cmd = Node(
-        package='nav2_collision_monitor',
-        executable='collision_monitor',
-        output='screen',
-        emulate_tty=True,  # https://github.com/ros2/launch/issues/188
-        parameters=[configured_params])
 
     # Create the launch description and populate
     ld = LaunchDescription()
@@ -264,6 +263,5 @@ def generate_launch_description():
     # Add the actions to launch all of the navigation nodes
     ld.add_action(load_nodes)
     ld.add_action(load_composable_nodes)
-    ld.add_action(start_collision_monitor_cmd)
 
     return ld
