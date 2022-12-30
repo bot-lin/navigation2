@@ -133,11 +133,11 @@ public:
     pose2d.y = current_pose.pose.position.y;
     pose2d.theta = tf2::getYaw(current_pose.pose.orientation);
 
-    if (!isCollisionFree(distance, cmd_vel.get(), pose2d)) {
-      this->stopRobot();
-      RCLCPP_WARN(this->logger_, "Collision Ahead - Exiting DriveOnHeading");
-      return Status::FAILED;
-    }
+    // if (!isCollisionFree(distance, cmd_vel.get(), pose2d)) {
+    //   this->stopRobot();
+    //   RCLCPP_WARN(this->logger_, "Collision Ahead - Exiting DriveOnHeading");
+    //   return Status::FAILED;
+    // }
 
     this->vel_pub_->publish(std::move(cmd_vel));
 
