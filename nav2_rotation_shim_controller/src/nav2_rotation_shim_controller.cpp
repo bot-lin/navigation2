@@ -288,6 +288,7 @@ void RotationShimController::setPlan(const nav_msgs::msg::Path & path)
 {
   path_updated_ = true;
   current_path_ = path;
+  enable_reset_ = true;
   primary_controller_->setPlan(path);
 }
 
