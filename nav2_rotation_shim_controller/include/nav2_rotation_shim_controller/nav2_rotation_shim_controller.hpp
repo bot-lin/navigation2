@@ -134,6 +134,12 @@ protected:
     const geometry_msgs::msg::PoseStamped & pose,
     const geometry_msgs::msg::Twist & velocity);
 
+  
+  geometry_msgs::msg::TwistStamped resetVelocity(
+    const geometry_msgs::msg::PoseStamped & pose
+  );
+
+  
   /**
    * @brief Checks if rotation is safe
    * @param cmd_vel Velocity to check over
@@ -164,6 +170,7 @@ protected:
   pluginlib::ClassLoader<nav2_core::Controller> lp_loader_;
   nav2_core::Controller::Ptr primary_controller_;
   bool path_updated_;
+  bool enable_reset_;
   nav_msgs::msg::Path current_path_;
   double forward_sampling_distance_, angular_dist_threshold_;
   double rotate_to_heading_angular_vel_, max_angular_accel_;
