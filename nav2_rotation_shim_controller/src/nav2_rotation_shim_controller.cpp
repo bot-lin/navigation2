@@ -168,16 +168,14 @@ geometry_msgs::msg::TwistStamped RotationShimController::computeVelocityCommands
         "Rotation Shim Controller was unable to find a sampling point,"
         " a rotational collision was detected, or TF failed to transform"
         " into base frame! what(): %s", e.what());
-      if (enable_reset_){
-        sleep(2);
-        enable_reset = false;
-      }
+
       path_updated_ = false;
     }
   }
-
-
-
+  if (enable_reset_){
+        sleep(2);
+        enable_reset_ = false;
+      }
   // If at this point, use the primary controller to path track
   return primary_controller_->computeVelocityCommands(pose, velocity, goal_checker);
 }
