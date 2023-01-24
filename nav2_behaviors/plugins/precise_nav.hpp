@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "nav2_behaviors/timed_behavior.hpp"
-#include "nav2_msgs/action/precisenav.hpp"
+#include "nav2_msgs/action/precise_nav.hpp"
 #include "geometry_msgs/msg/quaternion.hpp"
 
 namespace nav2_behaviors
