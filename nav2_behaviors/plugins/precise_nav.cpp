@@ -17,8 +17,9 @@ namespace nav2_behaviors
 PreciseNav::PreciseNav()
 : TimedBehavior<PreciseNavAction>(),
     feedback_(std::make_shared<PreciseNavAction::Feedback>()),
-    xv_vel_(0.0),
-    zw_vel_(0.0)
+    target_x_(0.0),
+    target_y_(0.0),
+    target_yaw_(0.0)
 {
 }
 
