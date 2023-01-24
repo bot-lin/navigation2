@@ -1,7 +1,6 @@
 #goal definition
-float32 target_x
-float32 target_y
-float32 target_yaw
+geometry_msgs/Point target
+
 builtin_interfaces/Duration time_allowance
 ---
 #result definition

@@ -24,8 +24,9 @@ public:
 
 protected:
     PreciseNavAction::Feedback::SharedPtr feedback_;
-    double xv_vel_;
-    double zw_vel_;
+    double target_x_;
+    double target_y_;
+    double target_yaw_;
     
 };
 }
