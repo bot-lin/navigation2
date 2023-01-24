@@ -18,7 +18,7 @@ class PreciseNav : public TimedBehavior<PreciseNavAction>
 public:
     PreciseNav();
     ~PreciseNav();
-    Status onRun(const stf::shared_ptr<constPreciseNavAction::Goal> command) override;
+    Status onRun(const std::shared_ptr<const PreciseNavAction::Goal> command) override;
     void onConfigure() override;
     Status onCycleUpdate() override;
 
