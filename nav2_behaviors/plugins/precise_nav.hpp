@@ -23,7 +23,7 @@ public:
     Status onCycleUpdate() override;
 
 protected:
-    PreciseNavAction::Feedback::SharePtr feedback_;
+    PreciseNavAction::Feedback::SharedPtr feedback_;
     double xv_vel_;
     double zw_vel_;
     
