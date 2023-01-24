@@ -31,6 +31,7 @@ void PreciseNav::onConfigure()
 
 Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> command)
 {
+    float target_x = command -> target_x;
     return Status::SUCCEEDED;
 }
 
