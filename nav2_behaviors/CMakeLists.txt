@@ -51,7 +51,15 @@ add_library(nav2_spin_behavior SHARED
   plugins/spin.cpp
 )
 
+add_library(nav2_precise_nav_behavior SHARED
+  plugins/precise_nav.cpp
+)
+
 ament_target_dependencies(nav2_spin_behavior
+  ${dependencies}
+)
+
+ament_target_dependencies(nav2_precise_nav_behavior
   ${dependencies}
 )
 
@@ -113,6 +121,7 @@ rclcpp_components_register_nodes(${library_name} "behavior_server::BehaviorServe
 
 install(TARGETS ${library_name}
                 nav2_spin_behavior
+                nav2_precise_nav_behavior
                 nav2_wait_behavior
                 nav2_assisted_teleop_behavior
                 nav2_drive_on_heading_behavior
@@ -148,6 +157,7 @@ endif()
 ament_export_include_directories(include)
 ament_export_libraries(${library_name}
   nav2_spin_behavior
+  nav2_precise_nav_behavior
   nav2_wait_behavior
   nav2_assisted_teleop_behavior
   nav2_drive_on_heading_behavior
