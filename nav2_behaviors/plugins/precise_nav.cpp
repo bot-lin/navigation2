@@ -31,12 +31,12 @@ void PreciseNav::onConfigure()
 
 Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> command)
 {
-
+    return Status::SUCCEEDED;
 }
 
 Status PreciseNav::onCycleUpdate()
 {
-
+    return Status::RUNNING;
 }
 
 
