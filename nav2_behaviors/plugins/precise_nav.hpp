@@ -22,12 +22,15 @@ public:
     void onConfigure() override;
     Status onCycleUpdate() override;
     double getDistanceToGoal(geometry_msgs::msg::PoseStamped current_pose);
+    double getHeadingErrorToGoal(geometry_msgs::msg::PoseStamped current_pose);
+    double getRadiansToGoal(geometry_msgs::msg::PoseStamped current_pose);
 
 protected:
     PreciseNavAction::Feedback::SharedPtr feedback_;
     double target_x_;
     double target_y_;
     double target_yaw_;
+    double distance_goal_tolerance_ = 0.03;
     
 };
 }

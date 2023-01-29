@@ -56,6 +56,15 @@ Status PreciseNav::onCycleUpdate()
       return Status::FAILED;
     }
     double distance_to_goal = getDistanceToGoal(current_pose);
+    double heading_error = getHeadingErrorToGoal(current_pose);
+    double yaw_goal_error = getRadiansToGoal(current_pose);
+
+    if (distance_to_goal > distance_goal_tolerance_)
+    {
+        
+    }
+
+
 
     auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
     cmd_vel->linear.x = 0.1;
@@ -73,7 +82,35 @@ double PreciseNav::getDistanceToGoal(geometry_msgs::msg::PoseStamped current_pos
 
 double PreciseNav::getHeadingErrorToGoal(geometry_msgs::msg::PoseStamped current_pose)
 {
-    
+    tf2::Quaternion q(current_pose.pose.orientation.x, 
+                        current_pose.pose.orientation.y, 
+                        current_pose.pose.orientation.z,
+                        current_pose.pose.orientation.w);
+    tf2::Matrix3x3 m(q);
+    double roll, pitch, current_robot_heading;
+    m.getRPY(roll, pitch, current_robot_heading);
+    double delta_x = target_x_ - current_pose.pose.position.x;
+    double delta_y = target_y_ - current_pose.pose.position.y;
+    double desired_heading = std::atan2(delta_y, delta_x);
+    double heading_error = desired_heading - current_robot_heading;
+    if (heading_error > M_PI) heading_error = heading_error - (2 * M_PI);
+    if (heading_error < -M_PI) heading_error = heading_error + (2 * M_PI);
+    return heading_error;
+}
+
+double PreciseNav::getRadiansToGoal(geometry_msgs::msg::PoseStamped current_pose)
+{
+    tf2::Quaternion q(current_pose.pose.orientation.x, 
+                        current_pose.pose.orientation.y, 
+                        current_pose.pose.orientation.z,
+                        current_pose.pose.orientation.w);
+    tf2::Matrix3x3 m(q);
+    double roll, pitch, current_robot_heading;
+    m.getRPY(roll, pitch, current_robot_heading);
+    double yaw_goal_angle_error = target_yaw_ - current_robot_heading;
+    if (yaw_goal_angle_error > M_PI) yaw_goal_angle_error = yaw_goal_angle_error - (2 * M_PI);
+    if (yaw_goal_angle_error < -M_PI) yaw_goal_angle_error = yaw_goal_angle_error + (2 * M_PI);
+    return yaw_goal_angle_error;
 }
 
 
