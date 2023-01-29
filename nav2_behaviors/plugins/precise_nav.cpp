@@ -59,15 +59,31 @@ Status PreciseNav::onCycleUpdate()
     double heading_error = getHeadingErrorToGoal(current_pose);
     double yaw_goal_error = getRadiansToGoal(current_pose);
 
-    if (distance_to_goal > distance_goal_tolerance_)
+    auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
+    if (distance_to_goal > distance_goal_tolerance_ && !reached_distance_goal_)
     {
-        
+        if (std::fabs(heading_error) > heading_tolerance_){
+            cmd_vel->linear.x = 0.005;
+            if (heading_error > 0) cmd_vel->angular.z = angular_velocity_;
+            else cmd_vel->angular.z = -angular_velocity_;
+        }
+        else
+        {
+            cmd_vel->linear.x = linear_velocity_;
+        }
+    }
+    else if (std::fabs(yaw_goal_error) > yaw_goal_tolerance_)
+    {
+        cmd_vel->angular.z = 0.3 * yaw_goal_error;
+        reached_distance_goal_ = true;
+    }
+    else
+    {
+        reached_distance_goal_ = false;
+        this->stopRobot();
+        return Status::SUCCEEDED;
     }
 
-
-
-    auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
-    cmd_vel->linear.x = 0.1;
     this->vel_pub_->publish(std::move(cmd_vel));
     return Status::RUNNING;
 }

@@ -31,6 +31,11 @@ protected:
     double target_y_;
     double target_yaw_;
     double distance_goal_tolerance_ = 0.03;
+    double heading_tolerance_ = 0.1;
+    double yaw_goal_tolerance_ = 0.1;
+    double angular_velocity_ = 0.2;
+    double linear_velocity_ = 0.04;
+    bool reached_distance_goal_ = false;
     
 };
 }
