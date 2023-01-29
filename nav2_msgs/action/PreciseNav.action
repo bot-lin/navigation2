@@ -1,5 +1,5 @@
 #goal definition
-geometry_msgs/Point target
+geometry_msgs/PoseStamped pose
 
 builtin_interfaces/Duration time_allowance
 ---

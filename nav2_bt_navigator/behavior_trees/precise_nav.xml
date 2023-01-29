@@ -1,0 +1,14 @@
+<!--
+  his Behavior Tree drives in a square for odometry calibration experiments
+-->
+
+<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <Repeat num_cycles="3">
+      <Sequence name="Drive in a square">
+        <PreciseNav  goal="{goal}" />
+      
+      </Sequence>
+    </Repeat>
+  </BehaviorTree>
+</root>

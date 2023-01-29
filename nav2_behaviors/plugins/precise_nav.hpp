@@ -21,6 +21,7 @@ public:
     Status onRun(const std::shared_ptr<const PreciseNavAction::Goal> command) override;
     void onConfigure() override;
     Status onCycleUpdate() override;
+    double getDistanceToGoal(geometry_msgs::msg::PoseStamped current_pose);
 
 protected:
     PreciseNavAction::Feedback::SharedPtr feedback_;

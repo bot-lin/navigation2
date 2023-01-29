@@ -38,6 +38,8 @@ amcl:
     z_rand: 0.5
     z_short: 0.05
     scan_topic: scan
+    set_initial_pose: true
+    initial_pose: {x: -1.82, y: -0.62, z: 0.0, yaw: 0.0}
 
 bt_navigator:
   ros__parameters:
@@ -51,6 +53,7 @@ bt_navigator:
     # nav2_bt_navigator/navigate_to_pose_w_replanning_and_recovery.xml
     # nav2_bt_navigator/navigate_through_poses_w_replanning_and_recovery.xml
     # They can be set here or via a RewrittenYaml remap from a parent launch file to Nav2.
+    default_nav_to_pose_bt_xml: /ws/src/navigation2/nav2_bt_navigator/behavior_trees/precise_nav.xml
     plugin_lib_names:
     - nav2_compute_path_to_pose_action_bt_node
     - nav2_compute_path_through_poses_action_bt_node
@@ -98,6 +101,7 @@ bt_navigator:
     - nav2_back_up_cancel_bt_node
     - nav2_assisted_teleop_cancel_bt_node
     - nav2_drive_on_heading_cancel_bt_node
+    - nav2_precise_nav_bt_node
 
 bt_navigator_navigate_through_poses_rclcpp_node:
   ros__parameters:
@@ -297,7 +301,7 @@ behavior_server:
     costmap_topic: local_costmap/costmap_raw
     footprint_topic: local_costmap/published_footprint
     cycle_frequency: 10.0
-    behavior_plugins: ["spin", "backup", "drive_on_heading", "assisted_teleop", "wait"]
+    behavior_plugins: ["spin", "backup", "drive_on_heading", "assisted_teleop", "wait", "precise_nav"]
     spin:
       plugin: "nav2_behaviors/Spin"
     backup:
@@ -308,6 +312,8 @@ behavior_server:
       plugin: "nav2_behaviors/Wait"
     assisted_teleop:
       plugin: "nav2_behaviors/AssistedTeleop"
+    precise_nav:
+      plugin: "nav2_behaviors/PreciseNav"
     global_frame: odom
     robot_base_frame: base_link
     transform_tolerance: 0.1
@@ -346,3 +352,58 @@ velocity_smoother:
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]
     velocity_timeout: 1.0
+
+collision_monitor:
+    ros__parameters:
+        use_sim_time: False
+        base_frame_id: "base_footprint"
+        odom_frame_id: "odom"
+        cmd_vel_in_topic: "cmd_vel"
+        cmd_vel_out_topic: "cmd_vel_collision"
+        transform_tolerance: 0.5
+        source_timeout: 5.0
+        stop_pub_timeout: 2.0
+        polygons: ["PolygonSlow20"]
+        PolygonStop:
+            type: "circle"
+            radius: 0.3
+            action_type: "stop"
+            max_points: 3
+            visualize: True
+            polygon_pub_topic: "polygon_stop"
+        FootprintApproach:
+            type: "polygon"
+            action_type: "approach"
+            footprint_topic: "/local_costmap/published_footprint"
+            time_before_collision: 2.0 #lower values -> better performance
+            simulation_time_step: 0.1 #lower values -> lower prediction but better performance
+            max_points: 5
+            visualize: True
+        PolygonSlow80:
+            type: "polygon"
+            points: [0.5, 0.5, 0.5, -0.5, 0.0, -0.5, 0.0, 0.5]
+            action_type: "slowdown"
+            max_points: 3
+            slowdown_ratio: 0.8
+            visualize: True
+            polygon_pub_topic: "polygon_slowdown80"
+        PolygonSlow60:
+            type: "polygon"
+            points: [0.4, 0.4, 0.4, -0.4, 0.0, -0.4, 0.0, 0.4]
+            action_type: "slowdown"
+            max_points: 3
+            slowdown_ratio: 0.6
+            visualize: True
+            polygon_pub_topic: "polygon_slowdown50"
+        PolygonSlow20:
+            type: "polygon"
+            points: [0.3, 0.3, 0.3, -0.3, 0.0, -0.3, 0.0, 0.3]
+            action_type: "slowdown"
+            max_points: 3
+            slowdown_ratio: 0.2
+            visualize: True
+            polygon_pub_topic: "polygon_slowdown20"
+        observation_sources: ["scan"]
+        scan:
+            type: "scan"
+            topic: "scan"

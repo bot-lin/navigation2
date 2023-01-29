@@ -44,6 +44,7 @@ def generate_launch_description():
     use_respawn = LaunchConfiguration('use_respawn')
     log_level = LaunchConfiguration('log_level')
     run_nav = LaunchConfiguration('run_nav')
+    nav_vel_topic = LaunchConfiguration('nav_vel_topic')
 
     # Map fully qualified names to relative ones so the node's namespace can be prepended.
     # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
@@ -64,6 +65,11 @@ def generate_launch_description():
         root_key=namespace,
         param_rewrites=param_substitutions,
         convert_types=True)
+
+    declare_nav_vel_topic_cmd = DeclareLaunchArgument(
+        'nav_vel_topic',
+        default_value='cmd_vel_nav',
+        description='nav vel topic')
 
     stdout_linebuf_envvar = SetEnvironmentVariable(
         'RCUTILS_LOGGING_BUFFERED_STREAM', '1')
@@ -164,6 +170,7 @@ def generate_launch_description():
                               'params_file': params_file,
                               'use_composition': use_composition,
                               'use_respawn': use_respawn,
+                              'nav_vel_topic': nav_vel_topic,
                               'container_name': 'nav2_container'}.items()),
     ])
 
@@ -172,6 +179,7 @@ def generate_launch_description():
 
     # Set environment variables
     ld.add_action(stdout_linebuf_envvar)
+    ld.add_action(declare_nav_vel_topic_cmd)
 
     # Declare the launch options
     ld.add_action(declare_namespace_cmd)
