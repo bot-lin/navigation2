@@ -69,6 +69,9 @@ list(APPEND plugin_libs nav2_spin_cancel_bt_node)
 add_library(nav2_back_up_cancel_bt_node SHARED plugins/action/back_up_cancel_node.cpp)
 list(APPEND plugin_libs nav2_back_up_cancel_bt_node)
 
+add_library(nav2_precise_nav_cancel_bt_node SHARED plugins/action/precise_nav_cancel_node.cpp)
+list(APPEND plugin_libs nav2_precise_nav_cancel_bt_node)
+
 add_library(nav2_assisted_teleop_cancel_bt_node SHARED plugins/action/assisted_teleop_cancel_node.cpp)
 list(APPEND plugin_libs nav2_assisted_teleop_cancel_bt_node)
 
