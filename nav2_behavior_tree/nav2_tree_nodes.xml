@@ -212,6 +212,10 @@
       <input_port name="is_voltage">Bool if check based on voltage or total %</input_port>
     </Condition>
 
+    <Condition ID="IsCharging">
+      <input_port name="charging_topic">Topic for charging info</input_port>
+    </Condition>
+
     <Condition ID="DistanceTraveled">
       <input_port name="distance">Distance to check if passed</input_port>
       <input_port name="global_frame">reference frame to check in</input_port>

@@ -103,6 +103,8 @@ bt_navigator:
     - nav2_drive_on_heading_cancel_bt_node
     - nav2_precise_nav_bt_node
     - nav2_precise_nav_cancel_bt_node
+    - nav2_is_charging_condition_bt_node
+
 
 bt_navigator_navigate_through_poses_rclcpp_node:
   ros__parameters:
