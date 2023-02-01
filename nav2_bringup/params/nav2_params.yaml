@@ -39,7 +39,7 @@ amcl:
     z_short: 0.05
     scan_topic: scan
     set_initial_pose: true
-    initial_pose: {x: -1.82, y: -0.62, z: 0.0, yaw: 0.0}
+    initial_pose: {x: -2.0, y: -0.5, z: 0.0, yaw: 0.0}
 
 bt_navigator:
   ros__parameters:
@@ -53,7 +53,7 @@ bt_navigator:
     # nav2_bt_navigator/navigate_to_pose_w_replanning_and_recovery.xml
     # nav2_bt_navigator/navigate_through_poses_w_replanning_and_recovery.xml
     # They can be set here or via a RewrittenYaml remap from a parent launch file to Nav2.
-    default_nav_to_pose_bt_xml: /ws/src/navigation2/nav2_bt_navigator/behavior_trees/precise_nav.xml
+    default_nav_to_pose_bt_xml: /ws/src/navigation2/nav2_bt_navigator/behavior_trees/zc_precise_nav.xml
     plugin_lib_names:
     - nav2_compute_path_to_pose_action_bt_node
     - nav2_compute_path_through_poses_action_bt_node
@@ -104,6 +104,7 @@ bt_navigator:
     - nav2_precise_nav_bt_node
     - nav2_precise_nav_cancel_bt_node
     - nav2_is_charging_condition_bt_node
+    - nav2_charging_controller_bt_node
 
 
 bt_navigator_navigate_through_poses_rclcpp_node:
@@ -325,6 +326,7 @@ behavior_server:
     max_rotational_vel: 1.0
     min_rotational_vel: 0.4
     rotational_acc_lim: 3.2
+    yaw_goal_tolerance: 0.05
 
 robot_state_publisher:
   ros__parameters:
@@ -358,7 +360,7 @@ velocity_smoother:
 
 collision_monitor:
     ros__parameters:
-        use_sim_time: False
+        use_sim_time: True
         base_frame_id: "base_footprint"
         odom_frame_id: "odom"
         cmd_vel_in_topic: "cmd_vel"
@@ -366,7 +368,7 @@ collision_monitor:
         transform_tolerance: 0.5
         source_timeout: 5.0
         stop_pub_timeout: 2.0
-        polygons: ["PolygonSlow20"]
+        polygons: ["PolygonStop"]
         PolygonStop:
             type: "circle"
             radius: 0.3

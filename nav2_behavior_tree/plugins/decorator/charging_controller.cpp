@@ -1,5 +1,4 @@
-// Copyright (c) 2020 Sarthak Mittal
-// Copyright (c) 2019 Intel Corporation
+// Copyright (c) 2018 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,22 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
 #include <string>
 
-#include "nav2_behavior_tree/plugins/condition/is_charging_condition.hpp"
+#include "nav2_behavior_tree/plugins/decorator/charging_controller.hpp"
 
 namespace nav2_behavior_tree
 {
 
-IsChargingCondition::IsChargingCondition(
-  const std::string & condition_name,
+ChargingController::ChargingController(
+  const std::string & name,
   const BT::NodeConfiguration & conf)
-: BT::ConditionNode(condition_name, conf),
+: BT::DecoratorNode(name, conf),
   charging_topic_("/charging_status"),
   is_charging_(false)
 {
   getInput("charging_topic", charging_topic_);
+
   node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+    RCLCPP_INFO(node_->get_logger(), "Topic  %s", charging_topic_.c_str());
+
   callback_group_ = node_->create_callback_group(
     rclcpp::CallbackGroupType::MutuallyExclusive,
     false);
@@ -38,21 +41,47 @@ IsChargingCondition::IsChargingCondition(
   sub_option.callback_group = callback_group_;
   charging_sub_ = node_->create_subscription<std_msgs::msg::Int8>(
     charging_topic_,
-    rclcpp::SystemDefaultsQoS(),
-    std::bind(&IsChargingCondition::chargingCallback, this, std::placeholders::_1),
+    10,
+    std::bind(&ChargingController::chargingCallback, this, std::placeholders::_1),
     sub_option);
 }
 
-BT::NodeStatus IsChargingCondition::tick()
+
+
+BT::NodeStatus ChargingController::tick()
 {
+  setStatus(BT::NodeStatus::RUNNING);
   callback_group_executor_.spin_some();
-  if (is_charging_) {
+  // The child gets ticked the first time through and any time the period has
+  // expired. In addition, once the child begins to run, it is ticked each time
+  // 'til completion
+  if ((child_node_->status() == BT::NodeStatus::RUNNING) ||
+    is_charging_)
+  {
+    RCLCPP_INFO(node_->get_logger(), "HERE");
+
+    const BT::NodeStatus child_state = child_node_->executeTick();
+    switch (child_state) {
+      case BT::NodeStatus::RUNNING:
+        return BT::NodeStatus::RUNNING;
+
+      case BT::NodeStatus::SUCCESS:
+        return BT::NodeStatus::SUCCESS;
+
+      case BT::NodeStatus::FAILURE:
+      default:
+        return BT::NodeStatus::FAILURE;
+    }
+  }
+  else
+  {
     return BT::NodeStatus::SUCCESS;
   }
-  return BT::NodeStatus::FAILURE;
+
+  return status();
 }
 
-void IsChargingCondition::chargingCallback(std_msgs::msg::Int8::SharedPtr msg)
+void ChargingController::chargingCallback(std_msgs::msg::Int8::SharedPtr msg)
 {
   RCLCPP_INFO(node_->get_logger(), "Get callback %d", msg->data);
 
@@ -68,5 +97,5 @@ void IsChargingCondition::chargingCallback(std_msgs::msg::Int8::SharedPtr msg)
 #include "behaviortree_cpp_v3/bt_factory.h"
 BT_REGISTER_NODES(factory)
 {
-  factory.registerNodeType<nav2_behavior_tree::IsChargingCondition>("IsCharging");
+  factory.registerNodeType<nav2_behavior_tree::ChargingController>("ChargingController");
 }
