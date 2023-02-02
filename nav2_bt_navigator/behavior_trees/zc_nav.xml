@@ -37,7 +37,6 @@
         </RoundRobin>
       </ReactiveFallback>
     </RecoveryNode>
-    <PreciseNav  goal="{goal}" />
     </Sequence>
   </BehaviorTree>
 </root>
