@@ -79,7 +79,7 @@ Status PreciseNav::onCycleUpdate()
 {
     geometry_msgs::msg::PoseStamped current_pose;
     if (!nav2_util::getCurrentPose(
-        current_pose, *this->tf_, this->global_frame_, this->robot_base_frame_,
+        current_pose, *this->tf_, "map", this->robot_base_frame_,
         this->transform_tolerance_))
     {
       RCLCPP_ERROR(this->logger_, "Current robot pose is not available.");
