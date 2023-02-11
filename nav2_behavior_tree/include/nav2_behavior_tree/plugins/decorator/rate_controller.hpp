@@ -62,6 +62,8 @@ private:
   bool first_time_;
   rclcpp::Time end_time_;
   double time_allowance_;
+  rclcpp::Clock steady_clock_{RCL_STEADY_TIME};
+
 };
 
 }  // namespace nav2_behavior_tree

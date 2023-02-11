@@ -78,6 +78,8 @@ private:
   bool is_charging_;
   double charing_duration_;
   rclcpp::Time start_time_;
+  rclcpp::Clock steady_clock_{RCL_STEADY_TIME};
+
 };
 
 }  // namespace nav2_behavior_tree

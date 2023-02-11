@@ -43,11 +43,11 @@ BT::NodeStatus RateController::tick()
     start_ = std::chrono::high_resolution_clock::now();
     first_time_ = true;
     rclcpp::Duration command_time_allowance_ = rclcpp::Duration::from_seconds(time_allowance_);
-    end_time_ = this->steady_clock_.now() + command_time_allowance_;
+    end_time_ = steady_clock_.now() + command_time_allowance_;
 
   }
 
-  rclcpp::Duration time_remaining = end_time_ - this->steady_clock_.now();
+  rclcpp::Duration time_remaining = end_time_ - steady_clock_.now();
   if (time_remaining.seconds() < 0.0 && time_allowance_ > 0.0) {
       rclcpp::Node::SharedPtr node = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
       RCLCPP_WARN(
