@@ -53,7 +53,7 @@ BT::NodeStatus RateController::tick()
       RCLCPP_WARN(
         node->get_logger(),
         "Exceeded time allowance before reaching the Rate control allowed - Exiting RateController");
-      return Status::FAILED;
+      return BT::NodeStatus::FAILURE;
   }
   setStatus(BT::NodeStatus::RUNNING);
 

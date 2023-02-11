@@ -63,7 +63,7 @@ BT::NodeStatus ChargingController::tick()
   if (first_time_)
   {
     sleep(1);
-    first_time = false;
+    first_time_ = false;
   } 
   if ((child_node_->status() == BT::NodeStatus::RUNNING) ||
     is_charging_)
