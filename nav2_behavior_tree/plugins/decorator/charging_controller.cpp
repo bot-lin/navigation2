@@ -65,6 +65,16 @@ BT::NodeStatus ChargingController::tick()
     sleep(1);
     first_time_ = false;
   } 
+  node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+    RCLCPP_INFO(node_->get_logger(), "**************************************");
+  if (is_charging_)
+  {
+      node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+    RCLCPP_INFO(node_->get_logger(), "Robot is charging");
+  }else{
+      node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+    RCLCPP_INFO(node_->get_logger(), "Robit is Not charging");
+  }
   if ((child_node_->status() == BT::NodeStatus::RUNNING) ||
     is_charging_)
   {
@@ -74,9 +84,12 @@ BT::NodeStatus ChargingController::tick()
         return BT::NodeStatus::RUNNING;
 
       case BT::NodeStatus::SUCCESS:
+        first_time_ = true;
         return BT::NodeStatus::SUCCESS;
 
       case BT::NodeStatus::FAILURE:
+        first_time_ = false;
+        return BT::NodeStatus::FAILURE;
       default:
         return BT::NodeStatus::FAILURE;
     }
