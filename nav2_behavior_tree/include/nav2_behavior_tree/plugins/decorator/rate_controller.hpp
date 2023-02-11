@@ -47,7 +47,7 @@ public:
   {
     return {
       BT::InputPort<double>("hz", 10.0, "Rate"),
-      BT::InputPort<double>("time_allowance", 5.0, "time_allowance")
+      BT::InputPort<double>("time_allowance", -1.0, "time_allowance")
     };
   }
 
