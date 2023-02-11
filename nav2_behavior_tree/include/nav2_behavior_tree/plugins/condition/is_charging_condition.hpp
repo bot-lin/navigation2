@@ -60,6 +60,8 @@ public:
     return {
       BT::InputPort<std::string>(
         "charging_topic", std::string("/charging_status"), "Charging topic"),
+      BT::InputPort<double>("charging_duration", 0.5, "charging_duration")
+
     };
   }
 
