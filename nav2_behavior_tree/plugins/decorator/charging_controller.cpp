@@ -25,7 +25,8 @@ ChargingController::ChargingController(
   const BT::NodeConfiguration & conf)
 : BT::DecoratorNode(name, conf),
   charging_topic_("/charging_status"),
-  is_charging_(false)
+  is_charging_(false),
+  first_time_(true)
 {
   getInput("charging_topic", charging_topic_);
 
@@ -50,16 +51,23 @@ ChargingController::ChargingController(
 
 BT::NodeStatus ChargingController::tick()
 {
+  if (status() == BT::NodeStatus::IDLE) {
+    first_time_ = true;
+  }
   setStatus(BT::NodeStatus::RUNNING);
   callback_group_executor_.spin_some();
   // The child gets ticked the first time through and any time the period has
   // expired. In addition, once the child begins to run, it is ticked each time
   // 'til completion
+
+  if (first_time_)
+  {
+    std::sleep(1);
+    first_time = false;
+  } 
   if ((child_node_->status() == BT::NodeStatus::RUNNING) ||
     is_charging_)
   {
-    RCLCPP_INFO(node_->get_logger(), "HERE");
-
     const BT::NodeStatus child_state = child_node_->executeTick();
     switch (child_state) {
       case BT::NodeStatus::RUNNING:
@@ -83,7 +91,6 @@ BT::NodeStatus ChargingController::tick()
 
 void ChargingController::chargingCallback(std_msgs::msg::Int8::SharedPtr msg)
 {
-  RCLCPP_INFO(node_->get_logger(), "Get callback %d", msg->data);
 
   if (msg->data == 1) {
     is_charging_ = true;

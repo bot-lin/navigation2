@@ -64,6 +64,7 @@ private:
   rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr charging_sub_;
   std::string charging_topic_;
   bool is_charging_;
+  bool first_time_;
 };
 
 }  // namespace nav2_behavior_tree

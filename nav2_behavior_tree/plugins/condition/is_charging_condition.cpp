@@ -28,6 +28,7 @@ IsChargingCondition::IsChargingCondition(
   is_charging_(false)
 {
   getInput("charging_topic", charging_topic_);
+  getInput("charging_duration", charing_duration_);
   node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   callback_group_ = node_->create_callback_group(
     rclcpp::CallbackGroupType::MutuallyExclusive,
@@ -47,16 +48,20 @@ BT::NodeStatus IsChargingCondition::tick()
 {
   callback_group_executor_.spin_some();
   if (is_charging_) {
-    return BT::NodeStatus::SUCCESS;
+    rclcpp::Duration charging_time = steady_clock_.now() - start_time_;
+    if(time_remaining.seconds() > charing_duration_)
+      return BT::NodeStatus::SUCCESS;
+    else
+      return BT::NodeStatus::FAILURE;
   }
   return BT::NodeStatus::FAILURE;
 }
 
 void IsChargingCondition::chargingCallback(std_msgs::msg::Int8::SharedPtr msg)
 {
-  RCLCPP_INFO(node_->get_logger(), "Get callback %d", msg->data);
 
   if (msg->data == 1) {
+    if(!is_charging_) start_time_ = steady_clock_.now();
     is_charging_ = true;
   } else {
     is_charging_ = false;

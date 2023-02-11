@@ -59,6 +59,8 @@ private:
   std::chrono::time_point<std::chrono::high_resolution_clock> start_;
   double period_;
   bool first_time_;
+  rclcpp::Time end_time_;
+  double time_allowance_;
 };
 
 }  // namespace nav2_behavior_tree

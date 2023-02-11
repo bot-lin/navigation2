@@ -10,7 +10,10 @@
       <PipelineSequence name="NavigateWithReplanning">
         <RateController hz="1.0">
           <RecoveryNode number_of_retries="1" name="ComputePathToPose">
-            <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
+            <Sequence name="ComputeAndSmoothPath">
+              <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased" error_code_id="{compute_path_error_code}"/>
+              <SmoothPath unsmoothed_path="{path}" smoothed_path="{path}" error_code_id="{smoother_error_code}"/>
+            </Sequence>
             <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
           </RecoveryNode>
         </RateController>
@@ -33,7 +36,13 @@
       </ReactiveFallback>
     </RecoveryNode>
     <PreciseNav  goal="{goal}" />
-    <BackUp backup_dist="0.1" backup_speed="0.025"/>
+
+    <PipelineSequence name="NavigateWithReplanning">
+      <RateController hz="100.0" time_allowance="5.0">
+        <BackUp backup_dist="0.01" backup_speed="0.025"/>
+      </RateController>
+      <IsCharging charging_duration=0.5/>
+    </PipelineSequence>
     </Sequence>
   </BehaviorTree>
 </root>

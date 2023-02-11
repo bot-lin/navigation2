@@ -24,11 +24,15 @@ RateController::RateController(
   const std::string & name,
   const BT::NodeConfiguration & conf)
 : BT::DecoratorNode(name, conf),
-  first_time_(false)
+  first_time_(false),
+  time_allowance_(-1.0)
 {
+  getInput("time_allowance", time_allowance_);
+  rclcpp::Duration command_time_allowance_ = rclcpp::Duration::from_seconds(time_allowance);
   double hz = 1.0;
   getInput("hz", hz);
   period_ = 1.0 / hz;
+  
 }
 
 BT::NodeStatus RateController::tick()
@@ -38,8 +42,16 @@ BT::NodeStatus RateController::tick()
     // the rate controller (moving from IDLE to RUNNING)
     start_ = std::chrono::high_resolution_clock::now();
     first_time_ = true;
-  }
+    end_time_ = this->steady_clock_.now() + command_time_allowance_;
 
+  }
+  rclcpp::Duration time_remaining = end_time_ - this->steady_clock_.now();
+  if (time_remaining.seconds() < 0.0 && command_time_allowance_.seconds() > 0.0) {
+      RCLCPP_WARN(
+        this->logger_,
+        "Exceeded time allowance before reaching the Rate control allowed - Exiting RateController");
+      return Status::FAILED;
+  }
   setStatus(BT::NodeStatus::RUNNING);
 
   // Determine how long its been since we've started this iteration
