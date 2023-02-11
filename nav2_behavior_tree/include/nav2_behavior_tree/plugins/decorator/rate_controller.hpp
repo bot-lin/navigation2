@@ -17,6 +17,7 @@
 
 #include <chrono>
 #include <string>
+#include "rclcpp/rclcpp.hpp"
 
 #include "behaviortree_cpp_v3/decorator_node.h"
 
