@@ -62,9 +62,16 @@ BT::NodeStatus ChargingController::tick()
 
   if (first_time_)
   {
-    sleep(1);
+    for (int i=0; i<10; i++)
+    {
+      callback_group_executor_.spin_some();
+      sleep(0.1);
+    }
     first_time_ = false;
   } 
+  else{
+      callback_group_executor_.spin_some();
+  }
   node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
     RCLCPP_INFO(node_->get_logger(), "**************************************");
   if (is_charging_)
@@ -88,7 +95,7 @@ BT::NodeStatus ChargingController::tick()
         return BT::NodeStatus::SUCCESS;
 
       case BT::NodeStatus::FAILURE:
-        first_time_ = false;
+        first_time_ = true;
         return BT::NodeStatus::FAILURE;
       default:
         return BT::NodeStatus::FAILURE;
