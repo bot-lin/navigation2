@@ -46,10 +46,12 @@ BT::NodeStatus RateController::tick()
     end_time_ = this->steady_clock_.now() + command_time_allowance_;
 
   }
+
   rclcpp::Duration time_remaining = end_time_ - this->steady_clock_.now();
   if (time_remaining.seconds() < 0.0 && time_allowance_ > 0.0) {
+      rclcpp::Node::SharedPtr node = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
       RCLCPP_WARN(
-        this->logger_,
+        node->get_logger(),
         "Exceeded time allowance before reaching the Rate control allowed - Exiting RateController");
       return Status::FAILED;
   }
