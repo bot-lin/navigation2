@@ -95,9 +95,8 @@ BT::NodeStatus ChargingController::tick()
         return BT::NodeStatus::SUCCESS;
 
       case BT::NodeStatus::FAILURE:
-        first_time_ = true;
-        return BT::NodeStatus::FAILURE;
       default:
+        first_time_ = true;
         return BT::NodeStatus::FAILURE;
     }
   }
