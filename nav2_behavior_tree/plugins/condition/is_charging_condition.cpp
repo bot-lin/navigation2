@@ -53,7 +53,7 @@ BT::NodeStatus IsChargingCondition::tick()
     rclcpp::Duration charging_time = steady_clock_.now() - start_time_;
     RCLCPP_INFO(node_->get_logger(), "################################");
     RCLCPP_INFO(node_->get_logger(), "charging_time: %f", charging_time.seconds());
-    RCLCPP_INFO(node_->get_logger(), "start_time_: %f", start_time_);
+    RCLCPP_INFO(node_->get_logger(), "start_time_: %f", start_time_.seconds());
     RCLCPP_INFO(node_->get_logger(), "is_charging_: %d", is_charging_);
 
 
