@@ -80,7 +80,7 @@ BT::NodeStatus ChargingController::tick()
     RCLCPP_INFO(node_->get_logger(), "Robot is charging");
   }else{
       node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
-    RCLCPP_INFO(node_->get_logger(), "Robit is Not charging");
+    RCLCPP_INFO(node_->get_logger(), "Robot is Not charging");
   }
   if ((child_node_->status() == BT::NodeStatus::RUNNING) ||
     is_charging_)

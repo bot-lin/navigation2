@@ -153,6 +153,9 @@ list(APPEND plugin_libs nav2_charging_controller_bt_node)
 add_library(nav2_distance_controller_bt_node SHARED plugins/decorator/distance_controller.cpp)
 list(APPEND plugin_libs nav2_distance_controller_bt_node)
 
+add_library(nav2_pose_controller_bt_node SHARED plugins/decorator/pose_controller.cpp)
+list(APPEND plugin_libs nav2_pose_controller_bt_node)
+
 add_library(nav2_speed_controller_bt_node SHARED plugins/decorator/speed_controller.cpp)
 list(APPEND plugin_libs nav2_speed_controller_bt_node)
 
