@@ -33,7 +33,7 @@ IsChargingCondition::IsChargingCondition(
   RCLCPP_INFO(node_->get_logger(), "################################");
   RCLCPP_INFO(node_->get_logger(), "Starting is charging condition");
   callback_group_ = node_->create_callback_group(
-    rclcpp::CallbackGroupType::MutuallyExclusive,
+    rclcpp::CallbackGroupType::Reentrant,
     false);
   callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
 
