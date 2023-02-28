@@ -80,7 +80,7 @@ Status FindDockingPoint::onRun(const std::shared_ptr<const FindDockingPointActio
 
 Status FindDockingPoint::onCycleUpdate()
 {
-    geometry_msgs::msg::PoseStamped current_pose;
+    // geometry_msgs::msg::PoseStamped current_pose;
     // if (!nav2_util::getCurrentPose(
     //     current_pose, *this->tf_, "map", this->robot_base_frame_,
     //     this->transform_tolerance_))
