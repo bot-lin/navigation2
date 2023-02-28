@@ -55,17 +55,17 @@ add_library(nav2_precise_nav_behavior SHARED
   plugins/precise_nav.cpp
 )
 
-add_library(nav2_find_docking_point_behavior SHARED
-  plugins/find_docking_point.cpp
-)
+# add_library(nav2_find_docking_point_behavior SHARED
+#   plugins/find_docking_point.cpp
+# )
 
 ament_target_dependencies(nav2_spin_behavior
   ${dependencies}
 )
 
-ament_target_dependencies(nav2_find_docking_point_behavior
-  ${dependencies}
-)
+# ament_target_dependencies(nav2_find_docking_point_behavior
+#   ${dependencies}
+# )
 
 add_library(nav2_wait_behavior SHARED
 plugins/wait.cpp
@@ -126,7 +126,6 @@ rclcpp_components_register_nodes(${library_name} "behavior_server::BehaviorServe
 install(TARGETS ${library_name}
                 nav2_spin_behavior
                 nav2_precise_nav_behavior
-                nav2_find_docking_point_behavior
                 nav2_wait_behavior
                 nav2_assisted_teleop_behavior
                 nav2_drive_on_heading_behavior
@@ -163,7 +162,6 @@ ament_export_include_directories(include)
 ament_export_libraries(${library_name}
   nav2_spin_behavior
   nav2_precise_nav_behavior
-  nav2_find_docking_point_behavior
   nav2_wait_behavior
   nav2_assisted_teleop_behavior
   nav2_drive_on_heading_behavior

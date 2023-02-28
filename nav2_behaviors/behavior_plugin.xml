@@ -34,9 +34,9 @@
 	    <description></description>
 	  </class>
 	</library>
-	<library path="nav2_find_docking_point_behavior">
+	<!-- <library path="nav2_find_docking_point_behavior">
 	  <class name="nav2_behaviors/FindDockingPoint" type="nav2_behaviors::FindDockingPoint" base_class_type="nav2_core::Behavior">
 	    <description></description>
 	  </class>
-	</library>
+	</library> -->
 </class_libraries>
