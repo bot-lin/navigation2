@@ -1,0 +1,11 @@
+#goal definition
+float32 distance_to_point
+
+builtin_interfaces/Duration time_allowance
+---
+#result definition
+builtin_interfaces/Duration total_elapsed_time
+---
+#feedback definition
+float32 current_x
+float32 current_y
