@@ -110,6 +110,8 @@ void FindDockingPoint::find_docking_spot()
         }
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
     }
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Found lines");
+
     auto result = client_->async_send_request(request);
     auto node = node_.lock();
     if (rclcpp::spin_until_future_complete(node, result) ==
