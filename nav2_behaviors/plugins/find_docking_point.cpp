@@ -159,19 +159,19 @@ void FindDockingPoint::find_docking_spot()
         markers_msg.header.frame_id = "laser";
         markers_msg.type = 0;
         markers_msg.id = 0;
-        markers_msg.scale.x = 0.03
-        markers_msg.scale.y = 0.03
-        markers_msg.scale.z = 0.03
-        markers_msg.color.r = 0.0
-        markers_msg.color.g = 1.0
-        markers_msg.color.b = 0.0
-        markers_msg.color.a = 1.0
-        geometry_msgs::msg::Point poit_msg;
-        poit_msg.x = x3;
-        poit_msg.y = y3;
-        poit_msg.z = 0.0;
+        markers_msg.scale.x = 0.03;
+        markers_msg.scale.y = 0.03;
+        markers_msg.scale.z = 0.03;
+        markers_msg.color.r = 0.0;
+        markers_msg.color.g = 1.0;
+        markers_msg.color.b = 0.0;
+        markers_msg.color.a = 1.0;
+        geometry_msgs::msg::Point point_msg;
+        point_msg.x = x3;
+        point_msg.y = y3;
+        point_msg.z = 0.0;
         markers_msg.points.push_back(point_msg);
-        pub_->publish(markers_msg);
+        publisher_->publish(markers_msg);
 
     } else {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to call service get line from laser");
