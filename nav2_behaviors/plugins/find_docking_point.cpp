@@ -9,8 +9,6 @@
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "nav2_util/node_utils.hpp"
 #include <tf2/LinearMath/Quaternion.h>
-#include "zbot_interfaces/srv/line_segment_list_srv.hpp"
-#include "zbot_interfaces/msg/line_segment.hpp"
 #include "geometry_msgs/msg/point.hpp"
 #include "nav2_util/robot_utils.hpp"
 
@@ -26,7 +24,7 @@ FindDockingPoint::FindDockingPoint()
     distance_to_point_(0.35)
 {
 
-    publisher_ = node.create_publisher<visualization_msgs::msg::Marker>("docking_point", 10);
+    
 
 }
 
@@ -66,6 +64,7 @@ void FindDockingPoint::onConfigure()
 
     rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedPtr client_ =
     node->create_client<zbot_interfaces::srv::LineSegmentListSrv>("get_line_from_laser");
+    publisher_ = node.create_publisher<visualization_msgs::msg::Marker>("docking_point", 10);
 
 }
 

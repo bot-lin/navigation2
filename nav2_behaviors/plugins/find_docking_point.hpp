@@ -9,8 +9,8 @@
 #include "nav2_msgs/action/find_docking_point.hpp"
 #include "geometry_msgs/msg/quaternion.hpp"
 #include "visualization_msgs/msg/marker.hpp"
-
-
+#include "zbot_interfaces/srv/line_segment_list_srv.hpp"
+#include "zbot_interfaces/msg/line_segment.hpp"
 namespace nav2_behaviors
 {
 using FindDockingPointAction = nav2_msgs::action::FindDockingPoint;
