@@ -23,9 +23,7 @@ namespace nav2_behaviors
 FindDockingPoint::FindDockingPoint()
 : TimedBehavior<FindDockingPointAction>(),
     feedback_(std::make_shared<FindDockingPointAction::Feedback>()),
-    target_x_(0.0),
-    target_y_(0.0),
-    target_yaw_(0.0)
+    distance_to_point_(0.35)
 {
 
     publisher_ = node.create_publisher<visualization_msgs::msg::Marker>("docking_point", 10);
@@ -144,7 +142,7 @@ void FindDockingPoint::find_docking_spot()
         double y2 = start[1];
         double x1 = end[0];
         double y1 = end[1];
-        double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2) + std::pow(x1-x2));
+        double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));
         double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
         double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
         geometry_msgs::msg::PoseStamped pose_laser, pose_map;
