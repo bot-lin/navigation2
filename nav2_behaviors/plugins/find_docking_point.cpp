@@ -38,33 +38,12 @@ void FindDockingPoint::onConfigure()
     }
     nav2_util::declare_parameter_if_not_declared(
         node,
-        "distance_goal_tolerance", rclcpp::ParameterValue(0.03));
-    node->get_parameter("distance_goal_tolerance", distance_goal_tolerance_);
-
-    nav2_util::declare_parameter_if_not_declared(
-        node,
-        "heading_tolerance", rclcpp::ParameterValue(0.1));
-    node->get_parameter("heading_tolerance", heading_tolerance_);
-
-    nav2_util::declare_parameter_if_not_declared(
-        node,
-        "yaw_goal_tolerance", rclcpp::ParameterValue(0.05));
-    node->get_parameter("yaw_goal_tolerance", yaw_goal_tolerance_);
-
-    nav2_util::declare_parameter_if_not_declared(
-        node,
-        "angular_velocity", rclcpp::ParameterValue(0.2));
-    node->get_parameter("angular_velocity", angular_velocity_);
-
-    nav2_util::declare_parameter_if_not_declared(
-        node,
-        "linear_velocity", rclcpp::ParameterValue(0.04));
-    node->get_parameter("linear_velocity", linear_velocity_);
-    RCLCPP_INFO(this->logger_, "******************* %f", yaw_goal_tolerance_);
+        "distance_to_point", rclcpp::ParameterValue(0.3));
+    node->get_parameter("distance_to_point", distance_to_point_);
 
     rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedPtr client_ =
     node->create_client<zbot_interfaces::srv::LineSegmentListSrv>("get_line_from_laser");
-    publisher_ = node.create_publisher<visualization_msgs::msg::Marker>("docking_point", 10);
+    publisher_ = node->create_publisher<visualization_msgs::msg::Marker>("docking_point", 10);
 
 }
 
