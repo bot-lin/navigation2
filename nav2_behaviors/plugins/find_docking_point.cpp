@@ -103,6 +103,7 @@ void FindDockingPoint::find_docking_spot()
 {
     auto request = std::make_shared<zbot_interfaces::srv::LineSegmentListSrv::Request>();
     request->request = true;
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Found lines before");
     while (!client_->wait_for_service(1s)) {
         if (!rclcpp::ok()) {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
