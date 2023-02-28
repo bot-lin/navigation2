@@ -41,8 +41,7 @@ void FindDockingPoint::onConfigure()
         "distance_to_point", rclcpp::ParameterValue(0.3));
     node->get_parameter("distance_to_point", distance_to_point_);
 
-    rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedPtr client_ =
-    node->create_client<zbot_interfaces::srv::LineSegmentListSrv>("get_line_from_laser");
+    client_ = node->create_client<zbot_interfaces::srv::LineSegmentListSrv>("get_line_from_laser");
     publisher_ = node->create_publisher<visualization_msgs::msg::Marker>("docking_point", 10);
 
 }
