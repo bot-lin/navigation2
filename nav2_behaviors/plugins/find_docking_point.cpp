@@ -73,16 +73,8 @@ void FindDockingPoint::onConfigure()
 
 Status FindDockingPoint::onRun(const std::shared_ptr<const FindDockingPointAction::Goal> command)
 {
-    target_x_ = command->pose.pose.position.x;
-    target_y_ = command->pose.pose.position.y;
-    tf2::Quaternion q(command->pose.pose.orientation.x, 
-                    command->pose.pose.orientation.y, 
-                    command->pose.pose.orientation.z,
-                    command->pose.pose.orientation.w);
-    tf2::Matrix3x3 m(q);
-    double roll, pitch, yaw;
-    m.getRPY(roll, pitch, yaw);
-    target_yaw_ = yaw;
+    distance_to_point_ = command->distance_to_point;
+
     return Status::SUCCEEDED;
 }
 
@@ -152,7 +144,7 @@ void FindDockingPoint::find_docking_spot()
         double y2 = start[1];
         double x1 = end[0];
         double y1 = end[1];
-        double tmp = distance_ /std::sqrt(std::pow(y1-y2) + std::pow(x1-x2));
+        double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2) + std::pow(x1-x2));
         double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
         double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
         geometry_msgs::msg::PoseStamped pose_laser, pose_map;
