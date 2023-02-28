@@ -105,7 +105,7 @@ void FindDockingPoint::find_docking_spot()
     while (!client_->wait_for_service(1s)) {
         if (!rclcpp::ok()) {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
-        return 0;
+        return;
         }
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
     }
@@ -113,7 +113,7 @@ void FindDockingPoint::find_docking_spot()
     if (rclcpp::spin_until_future_complete(node, result) ==
         rclcpp::FutureReturnCode::SUCCESS)
     {
-        std::vector<LineSegment> lines = result.get()->line_segments;
+        std::vector<zbot_interfaces::msg::LineSegment> lines = result.get()->line_segments;
         std::vector<double> start = lines[0].start;
         std::vector<double> end = lines[1].end;
         double x2 = start[0];
