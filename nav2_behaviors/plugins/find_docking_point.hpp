@@ -1,12 +1,12 @@
-#ifndef NAV2_BEHAVIORS__PLUGINS__PRECISENAV_HPP_
-#define NAV2_BEHAVIORS__PLUGINS__PRECISENAV_HPP_
+#ifndef NAV2_BEHAVIORS__PLUGINS__FINDDOCKINGPOINT_HPP_
+#define NAV2_BEHAVIORS__PLUGINS__FINDDOCKINGPOINT_HPP_
 
 #include <chrono>
 #include <string>
 #include <memory>
 
 #include "nav2_behaviors/timed_behavior.hpp"
-#include "nav2_msgs/action/precise_nav.hpp"
+#include "nav2_msgs/action/find_docking_point.hpp"
 #include "geometry_msgs/msg/quaternion.hpp"
 #include "geometry_msgs/msg/PoseStamped.hpp"
 #include "visualization_msgs/msg/marker.hpp"
@@ -14,20 +14,20 @@
 
 namespace nav2_behaviors
 {
-using PreciseNavAction = nav2_msgs::action::PreciseNav;
+using FindDockingPointAction = nav2_msgs::action::FindDockingPoint;
 
-class PreciseNav : public TimedBehavior<PreciseNavAction>
+class FindDockingPoint : public TimedBehavior<FindDockingPointAction>
 {
 public:
-    PreciseNav();
-    ~PreciseNav();
-    Status onRun(const std::shared_ptr<const PreciseNavAction::Goal> command) override;
+    FindDockingPoint();
+    ~FindDockingPoint();
+    Status onRun(const std::shared_ptr<const FindDockingPointAction::Goal> command) override;
     void onConfigure() override;
     Status onCycleUpdate() override;
     void find_docking_spot();
 
 protected:
-    PreciseNavAction::Feedback::SharedPtr feedback_;
+    FindDockingPointAction::Feedback::SharedPtr feedback_;
     double target_x_;
     double target_y_;
     double target_yaw_;

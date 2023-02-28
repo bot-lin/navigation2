@@ -20,9 +20,9 @@ using namespace std::chrono_literals;
 namespace nav2_behaviors
 {
 
-PreciseNav::PreciseNav()
-: TimedBehavior<PreciseNavAction>(),
-    feedback_(std::make_shared<PreciseNavAction::Feedback>()),
+FindDockingPoint::FindDockingPoint()
+: TimedBehavior<FindDockingPointAction>(),
+    feedback_(std::make_shared<FindDockingPointAction::Feedback>()),
     target_x_(0.0),
     target_y_(0.0),
     target_yaw_(0.0)
@@ -32,9 +32,9 @@ PreciseNav::PreciseNav()
 
 }
 
-PreciseNav::~PreciseNav() = default;
+FindDockingPoint::~FindDockingPoint() = default;
 
-void PreciseNav::onConfigure()
+void FindDockingPoint::onConfigure()
 {
     auto node = node_.lock();
     if (!node) {
@@ -71,7 +71,7 @@ void PreciseNav::onConfigure()
 
 }
 
-Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> command)
+Status FindDockingPoint::onRun(const std::shared_ptr<const FindDockingPointAction::Goal> command)
 {
     target_x_ = command->pose.pose.position.x;
     target_y_ = command->pose.pose.position.y;
@@ -86,7 +86,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     return Status::SUCCEEDED;
 }
 
-Status PreciseNav::onCycleUpdate()
+Status FindDockingPoint::onCycleUpdate()
 {
     geometry_msgs::msg::PoseStamped current_pose;
     // if (!nav2_util::getCurrentPose(
@@ -130,7 +130,7 @@ Status PreciseNav::onCycleUpdate()
     return Status::RUNNING;
 }
 
-void PreciseNav::find_docking_spot()
+void FindDockingPoint::find_docking_spot()
 {
     auto request = std::make_shared<zbot_interfaces::srv::LineSegmentListSrv::Request>();
     request->request = true;
@@ -192,5 +192,5 @@ void PreciseNav::find_docking_spot()
 
 } // namespace name
 #include "pluginlib/class_list_macros.hpp"
-PLUGINLIB_EXPORT_CLASS(nav2_behaviors::PreciseNav, nav2_core::Behavior)
+PLUGINLIB_EXPORT_CLASS(nav2_behaviors::FindDockingPoint, nav2_core::Behavior)
 
