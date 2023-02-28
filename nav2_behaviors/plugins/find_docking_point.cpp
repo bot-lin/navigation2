@@ -115,8 +115,8 @@ void FindDockingPoint::find_docking_spot()
         rclcpp::FutureReturnCode::SUCCESS)
     {
         std::vector<zbot_interfaces::msg::LineSegment> lines = result.get()->line_segments;
-        std::vector<double> start = lines[0].start;
-        std::vector<double> end = lines[1].end;
+        auto start = lines[0].start;
+        auto end = lines[1].end;
         double x2 = start[0];
         double y2 = start[1];
         double x1 = end[0];
