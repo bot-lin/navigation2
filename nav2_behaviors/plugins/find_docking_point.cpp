@@ -146,7 +146,7 @@ void FindDockingPoint::find_docking_spot()
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to map x: %f, y:%f, z: %f", pose_map.pose.position.x, pose_map.pose.position.y, pose_map.pose.position.z);
         visualization_msgs::msg::Marker markers_msg;
         markers_msg.header.frame_id = "laser";
-        markers_msg.type = 0;
+        markers_msg.type = 8;
         markers_msg.id = 0;
         markers_msg.scale.x = 0.03;
         markers_msg.scale.y = 0.03;
