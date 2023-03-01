@@ -39,8 +39,13 @@ void PreciseNavAction::on_tick()
 void PreciseNavAction::on_wait_for_result(
   std::shared_ptr<const nav2_msgs::action::PreciseNav::Feedback>/*feedback*/)
 {
-  getInput("goal", goal_.pose);
-  goal_updated_ = true;
+  geometry_msgs::msg::PoseStamped new_goal;
+  getInput("goal", new_goal);
+  if (new_goal != goal_.pose)
+  {
+    goal_.pose = new_goal;
+    goal_updated_ = true;
+  }
   
 }
 
