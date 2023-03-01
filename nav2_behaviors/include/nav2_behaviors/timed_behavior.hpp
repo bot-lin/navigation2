@@ -241,7 +241,7 @@ protected:
             logger_,
             "%s completed successfully", behavior_name_.c_str());
           result->total_elapsed_time = steady_clock_.now() - start_time;
-          if (is_more_results_required_) result->docking_point = pose_map;
+          if (is_more_results_required_) result->docking_point = pose_map_;
           action_server_->succeeded_current(result);
           onActionCompletion();
           return;
