@@ -113,9 +113,8 @@ bool FindDockingPoint::find_docking_spot()
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
     }
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Start calling find line request");
-
+    processing_ = true;
     // auto result = client_->async_send_request(request);
-    bool processing = false;
     using ServiceResponseFuture =
 	    rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedFuture;
     auto response_received_callback = [this](ServiceResponseFuture result) {
@@ -123,7 +122,7 @@ bool FindDockingPoint::find_docking_spot()
         if (lines.size() == 0)
         {
             RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "No lines found");
-            processing = false;
+            processing_ = false;
 
             return false;
         }
@@ -166,11 +165,11 @@ bool FindDockingPoint::find_docking_spot()
         point_msg.z = 0.0;
         markers_msg.points.push_back(point_msg);
         publisher_->publish(markers_msg);
-        processing = false;
+        processing_ = false;
         return true;
 	    };
     auto future_result = client_->async_send_request(request, response_received_callback);
-    while (processing) sleep(0.1);
+    while (processing_) sleep(0.1);
     return true;
 
 

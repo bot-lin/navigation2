@@ -33,6 +33,7 @@ protected:
     std::shared_ptr<rclcpp_lifecycle::LifecycleNode> my_node_;
     rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedPtr client_;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr publisher_;
+    bool processing_;
     
 };
 }
