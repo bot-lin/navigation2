@@ -121,14 +121,15 @@ void FindDockingPoint::find_docking_spot()
         std::vector<zbot_interfaces::msg::LineSegment> lines = result.get()->line_segments;
 	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "4");
 
-        float start[2] = lines[0].start;
-	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "41");
+        // float start = lines[0].start;
 
-        auto end = lines[1].end;
-        double x2 = start[0];
-        double y2 = start[1];
-        double x1 = end[0];
-        double y1 = end[1];
+        // auto end = lines[1].end;
+        double x2 = lines[0].start[0];
+        	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "41");
+
+        double y2 = lines[0].start[1];
+        double x1 = lines[1].end[0];
+        double y1 = lines[1].end[1];
 	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "42");
 
         double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));
