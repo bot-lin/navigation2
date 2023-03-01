@@ -209,9 +209,8 @@ protected:
     auto start_time = steady_clock_.now();
 
     // Initialize the ActionT result
-    auto result;
-    if (!is_more_results_required_) esult = std::make_shared<typename ActionT::Result>();
-    else result = std::make_shared<nav2_msgs::action::FindDockingPoint::Result>();
+    auto result = std::make_shared<typename ActionT::Result>();
+    auto result1 = std::make_shared<nav2_msgs::action::FindDockingPoint::Result>();
 
     rclcpp::WallRate loop_rate(cycle_frequency_);
 
@@ -245,8 +244,13 @@ protected:
             logger_,
             "%s completed successfully", behavior_name_.c_str());
           result->total_elapsed_time = steady_clock_.now() - start_time;
-          if (is_more_results_required_) result->docking_point = pose_map_;
-          action_server_->succeeded_current(result);
+          if (is_more_results_required_)
+          {
+            result1->total_elapsed_time = steady_clock_.now() - start_time;
+            result1->docking_point = pose_map_;
+            action_server_->succeeded_current(result1);
+          }
+          else action_server_->succeeded_current(result);
           onActionCompletion();
           return;
 
