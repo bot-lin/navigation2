@@ -24,10 +24,11 @@ public:
     Status onRun(const std::shared_ptr<const FindDockingPointAction::Goal> command) override;
     void onConfigure() override;
     Status onCycleUpdate() override;
-    void find_docking_spot();
+    bool find_docking_spot();
 
 protected:
     FindDockingPointAction::Feedback::SharedPtr feedback_;
+    FindDockingPointAction::Result::SharedPtr result_;
     double distance_to_point_;
     std::shared_ptr<rclcpp_lifecycle::LifecycleNode> my_node_;
     rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedPtr client_;

@@ -94,11 +94,14 @@ Status FindDockingPoint::onCycleUpdate()
     // }
 
     // this->vel_pub_->publish(std::move(cmd_vel));
-    find_docking_spot();
-    return Status::RUNNING;
+    if (find_docking_spot())
+    {
+        return Status::SUCCEEDED;
+    }
+    return Status::FAILED;
 }
 
-void FindDockingPoint::find_docking_spot()
+bool FindDockingPoint::find_docking_spot()
 {
     auto request = std::make_shared<zbot_interfaces::srv::LineSegmentListSrv::Request>();
     request->request = true;
@@ -120,7 +123,7 @@ void FindDockingPoint::find_docking_spot()
         if (lines.size() == 0)
         {
             RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "No lines found");
-            return;
+            return false;
         }
         // float start = lines[0].start;
 
@@ -161,9 +164,12 @@ void FindDockingPoint::find_docking_spot()
         point_msg.z = 0.0;
         markers_msg.points.push_back(point_msg);
         publisher_->publish(markers_msg);
+        result_ -> docking_point = pose_map;
+        this->action_server_->succeed(result_);
 	    };
     auto future_result = client_->async_send_request(request, response_received_callback);
-    sleep(5);
+    sleep(0.5);
+    return true;
 
     // if (rclcpp::spin_until_future_complete(my_node_, result) ==
     //     rclcpp::FutureReturnCode::SUCCESS)
