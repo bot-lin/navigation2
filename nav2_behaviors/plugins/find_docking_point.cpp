@@ -32,6 +32,7 @@ FindDockingPoint::~FindDockingPoint() = default;
 
 void FindDockingPoint::onConfigure()
 {
+    is_more_results_required_ = true;
     my_node_ = node_.lock();
     if (!my_node_) {
         throw std::runtime_error{"Failed to lock node"};
@@ -108,7 +109,7 @@ bool FindDockingPoint::find_docking_spot()
     while (!client_->wait_for_service(1s)) {
         if (!rclcpp::ok()) {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
-        return;
+        return false;
         }
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
     }
@@ -139,13 +140,13 @@ bool FindDockingPoint::find_docking_spot()
         double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
         double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
 
-        geometry_msgs::msg::PoseStamped pose_laser, pose_map;
+        geometry_msgs::msg::PoseStamped pose_laser;
 
         pose_laser.header.frame_id = "laser";
         pose_laser.pose.position.x = x3;
         pose_laser.pose.position.y = y3;
         pose_laser.pose.orientation.z = 1.0;
-        nav2_util::transformPoseInTargetFrame(pose_laser, pose_map,  *this->tf_, "map");
+        nav2_util::transformPoseInTargetFrame(pose_laser, pose_map_,  *this->tf_, "map");
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to map x: %f, y:%f, z: %f", pose_map.pose.position.x, pose_map.pose.position.y, pose_map.pose.position.z);
         visualization_msgs::msg::Marker markers_msg;
         markers_msg.header.frame_id = "laser";
@@ -164,8 +165,6 @@ bool FindDockingPoint::find_docking_spot()
         point_msg.z = 0.0;
         markers_msg.points.push_back(point_msg);
         publisher_->publish(markers_msg);
-        result_ -> docking_point = pose_map;
-        this->action_server_->succeed(result_);
 	    };
     auto future_result = client_->async_send_request(request, response_received_callback);
     sleep(0.5);

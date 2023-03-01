@@ -64,7 +64,8 @@ public:
   : action_server_(nullptr),
     cycle_frequency_(10.0),
     enabled_(false),
-    transform_tolerance_(0.0)
+    transform_tolerance_(0.0),
+    is_more_results_required_(false)
   {
   }
 
@@ -172,6 +173,8 @@ protected:
   std::string global_frame_;
   std::string robot_base_frame_;
   double transform_tolerance_;
+  bool is_more_results_required_;
+  geometry_msgs::msg::PoseStamped pose_map_;
   rclcpp::Duration elasped_time_{0, 0};
 
   // Clock
@@ -238,6 +241,7 @@ protected:
             logger_,
             "%s completed successfully", behavior_name_.c_str());
           result->total_elapsed_time = steady_clock_.now() - start_time;
+          if (is_more_results_required_) result->docking_point = pose_map;
           action_server_->succeeded_current(result);
           onActionCompletion();
           return;
