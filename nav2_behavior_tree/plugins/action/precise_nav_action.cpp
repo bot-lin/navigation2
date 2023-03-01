@@ -36,7 +36,7 @@ void PreciseNavAction::on_tick()
   }
   getInput("goal", goal_.pose);
 }
-void FollowPathAction::on_wait_for_result(
+void PreciseNavAction::on_wait_for_result(
   std::shared_ptr<const nav2_msgs::action::PreciseNav::Feedback>/*feedback*/)
 {
   getInput("goal", goal_.pose);
