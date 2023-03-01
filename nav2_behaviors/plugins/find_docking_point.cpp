@@ -111,15 +111,12 @@ void FindDockingPoint::find_docking_spot()
     }
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Start calling find line request");
 
-    auto result = client_->async_send_request(request);
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "1");
+    // auto result = client_->async_send_request(request);
 
     using ServiceResponseFuture =
 	    rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedFuture;
     auto response_received_callback = [this](ServiceResponseFuture result) {
-	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "2");
         std::vector<zbot_interfaces::msg::LineSegment> lines = result.get()->line_segments;
-	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "4");
         if (lines.size() == 0)
         {
             RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "No lines found");
@@ -129,30 +126,24 @@ void FindDockingPoint::find_docking_spot()
 
         // auto end = lines[1].end;
         double x2 = lines[0].start[0];
-        	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "41");
 
         double y2 = lines[0].start[1];
         double x1 = lines[1].end[0];
         double y1 = lines[1].end[1];
-	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "42");
 
         double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));
-	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "43");
 
         double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
         double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
-	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "5");
 
         geometry_msgs::msg::PoseStamped pose_laser, pose_map;
-	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "6");
 
         pose_laser.header.frame_id = "laser";
         pose_laser.pose.position.x = x3;
         pose_laser.pose.position.y = y3;
         pose_laser.pose.orientation.z = 1.0;
         nav2_util::transformPoseInTargetFrame(pose_laser, pose_map,  *this->tf_, "map");
-	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "3");
-
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to map x: %f, y:%f, z: %f", pose_map.pose.position.x, pose_map.pose.position.y, pose_map.pose.position.z);
         visualization_msgs::msg::Marker markers_msg;
         markers_msg.header.frame_id = "laser";
         markers_msg.type = 0;
@@ -170,8 +161,6 @@ void FindDockingPoint::find_docking_spot()
         point_msg.z = 0.0;
         markers_msg.points.push_back(point_msg);
         publisher_->publish(markers_msg);
-	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "4");
-
 	    };
     auto future_result = client_->async_send_request(request, response_received_callback);
     sleep(5);
