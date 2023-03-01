@@ -120,7 +120,11 @@ void FindDockingPoint::find_docking_spot()
 	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "2");
         std::vector<zbot_interfaces::msg::LineSegment> lines = result.get()->line_segments;
 	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "4");
-
+        if (lines.size() == 0)
+        {
+            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "No lines found");
+            return;
+        }
         // float start = lines[0].start;
 
         // auto end = lines[1].end;
