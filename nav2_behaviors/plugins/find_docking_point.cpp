@@ -114,10 +114,10 @@ void FindDockingPoint::find_docking_spot()
     auto result = client_->async_send_request(request);
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "1");
 
-    if (rclcpp::spin_until_future_complete(my_node_, result) ==
-        rclcpp::FutureReturnCode::SUCCESS)
-    {
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "2");
+    using ServiceResponseFuture =
+	    rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedFuture;
+    auto response_received_callback = [this](ServiceResponseFuture result) {
+	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "2");
         std::vector<zbot_interfaces::msg::LineSegment> lines = result.get()->line_segments;
         auto start = lines[0].start;
         auto end = lines[1].end;
@@ -134,7 +134,6 @@ void FindDockingPoint::find_docking_spot()
         pose_laser.pose.position.y = y3;
         pose_laser.pose.orientation.z = 1.0;
         nav2_util::transformPoseInTargetFrame(pose_laser, pose_map,  *this->tf_, "map");
-
 
         visualization_msgs::msg::Marker markers_msg;
         markers_msg.header.frame_id = "laser";
@@ -153,10 +152,52 @@ void FindDockingPoint::find_docking_spot()
         point_msg.z = 0.0;
         markers_msg.points.push_back(point_msg);
         publisher_->publish(markers_msg);
+	    };
+    auto future_result = client_->async_send_request(request, response_received_callback);
 
-    } else {
-        RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to call service get line from laser");
-    }
+    // if (rclcpp::spin_until_future_complete(my_node_, result) ==
+    //     rclcpp::FutureReturnCode::SUCCESS)
+    // {
+    //     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "2");
+    //     std::vector<zbot_interfaces::msg::LineSegment> lines = result.get()->line_segments;
+    //     auto start = lines[0].start;
+    //     auto end = lines[1].end;
+    //     double x2 = start[0];
+    //     double y2 = start[1];
+    //     double x1 = end[0];
+    //     double y1 = end[1];
+    //     double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));
+    //     double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
+    //     double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
+    //     geometry_msgs::msg::PoseStamped pose_laser, pose_map;
+    //     pose_laser.header.frame_id = "laser";
+    //     pose_laser.pose.position.x = x3;
+    //     pose_laser.pose.position.y = y3;
+    //     pose_laser.pose.orientation.z = 1.0;
+    //     nav2_util::transformPoseInTargetFrame(pose_laser, pose_map,  *this->tf_, "map");
+
+
+    //     visualization_msgs::msg::Marker markers_msg;
+    //     markers_msg.header.frame_id = "laser";
+    //     markers_msg.type = 0;
+    //     markers_msg.id = 0;
+    //     markers_msg.scale.x = 0.03;
+    //     markers_msg.scale.y = 0.03;
+    //     markers_msg.scale.z = 0.03;
+    //     markers_msg.color.r = 0.0;
+    //     markers_msg.color.g = 1.0;
+    //     markers_msg.color.b = 0.0;
+    //     markers_msg.color.a = 1.0;
+    //     geometry_msgs::msg::Point point_msg;
+    //     point_msg.x = x3;
+    //     point_msg.y = y3;
+    //     point_msg.z = 0.0;
+    //     markers_msg.points.push_back(point_msg);
+    //     publisher_->publish(markers_msg);
+
+    // } else {
+    //     RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to call service get line from laser");
+    // }
 }
 
 
