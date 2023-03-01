@@ -115,7 +115,6 @@ bool FindDockingPoint::find_docking_spot()
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Start calling find line request");
 
     // auto result = client_->async_send_request(request);
-    bool processing = false;
     using ServiceResponseFuture =
 	    rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedFuture;
     auto response_received_callback = [this](ServiceResponseFuture result) {
