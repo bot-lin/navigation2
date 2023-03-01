@@ -119,6 +119,8 @@ void FindDockingPoint::find_docking_spot()
     auto response_received_callback = [this](ServiceResponseFuture result) {
 	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "2");
         std::vector<zbot_interfaces::msg::LineSegment> lines = result.get()->line_segments;
+	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "4");
+
         auto start = lines[0].start;
         auto end = lines[1].end;
         double x2 = start[0];
@@ -128,7 +130,11 @@ void FindDockingPoint::find_docking_spot()
         double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));
         double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
         double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
+	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "5");
+
         geometry_msgs::msg::PoseStamped pose_laser, pose_map;
+	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "6");
+
         pose_laser.header.frame_id = "laser";
         pose_laser.pose.position.x = x3;
         pose_laser.pose.position.y = y3;
