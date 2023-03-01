@@ -24,7 +24,11 @@ FindDockingPointAction::FindDockingPointAction(
   const std::string & action_name,
   const BT::NodeConfiguration & conf)
 : BtActionNode<nav2_msgs::action::FindDockingPoint>(xml_tag_name, action_name, conf)
-{}
+{
+  double distance_to_point;
+  getInput("distance_to_point", distance_to_point);
+  goal_.distance_to_point = distance_to_point;
+}
 
 void FindDockingPointAction::on_tick()
 {
