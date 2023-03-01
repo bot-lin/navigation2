@@ -29,7 +29,7 @@ public:
 protected:
     FindDockingPointAction::Feedback::SharedPtr feedback_;
     double distance_to_point_;
-    std::shared_ptr<rclcpp::Node> my_node_;
+    std::shared_ptr<rclcpp_lifecycle::LifecycleNode> my_node_;
     rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedPtr client_;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr publisher_;
     
