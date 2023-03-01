@@ -207,7 +207,8 @@ protected:
     auto start_time = steady_clock_.now();
 
     // Initialize the ActionT result
-    auto result = std::make_shared<typename ActionT::Result>();
+    if (is_more_results_required_) auto result = std::make_shared<typename ActionT::Result>();
+    else auto result = std::make_shared<FindDockingPointAction::Result>();
 
     rclcpp::WallRate loop_rate(cycle_frequency_);
 
