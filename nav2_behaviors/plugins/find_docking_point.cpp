@@ -32,17 +32,17 @@ FindDockingPoint::~FindDockingPoint() = default;
 
 void FindDockingPoint::onConfigure()
 {
-    auto node = node_.lock();
-    if (!node) {
+    my_node_ = node_.lock();
+    if (!my_node_) {
         throw std::runtime_error{"Failed to lock node"};
     }
     nav2_util::declare_parameter_if_not_declared(
-        node,
+        my_node_,
         "distance_to_point", rclcpp::ParameterValue(0.3));
-    node->get_parameter("distance_to_point", distance_to_point_);
+    my_node_->get_parameter("distance_to_point", distance_to_point_);
 
-    client_ = node->create_client<zbot_interfaces::srv::LineSegmentListSrv>("get_line_from_laser");
-    publisher_ = node->create_publisher<visualization_msgs::msg::Marker>("docking_point", 10);
+    client_ = my_node_->create_client<zbot_interfaces::srv::LineSegmentListSrv>("get_line_from_laser");
+    publisher_ = my_node_->create_publisher<visualization_msgs::msg::Marker>("docking_point", 10);
 
 }
 
@@ -114,7 +114,7 @@ void FindDockingPoint::find_docking_spot()
     auto result = client_->async_send_request(request);
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "1");
 
-    if (rclcpp::spin_until_future_complete(node_.lock(), result) ==
+    if (rclcpp::spin_until_future_complete(my_node_, result) ==
         rclcpp::FutureReturnCode::SUCCESS)
     {
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "2");
