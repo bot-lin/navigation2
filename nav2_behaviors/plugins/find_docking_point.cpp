@@ -163,7 +163,7 @@ void FindDockingPoint::find_docking_spot()
 
 	    };
     auto future_result = client_->async_send_request(request, response_received_callback);
-    sleep(0.5);
+    sleep(5);
 
     // if (rclcpp::spin_until_future_complete(my_node_, result) ==
     //     rclcpp::FutureReturnCode::SUCCESS)
