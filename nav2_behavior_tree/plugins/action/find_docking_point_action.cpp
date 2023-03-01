@@ -34,7 +34,7 @@ void FindDockingPointAction::on_tick()
 BT::NodeStatus FindDockingPointAction::on_success()
 {
   setOutput("docking_point", result_.result->docking_point);
-      RCLCPP_ERROR(
+      RCLCPP_INFO(
       node_->get_logger(),
       "FindDockingPointAction: found point y: %f y: %f", result_.result->docking_point.pose.position.x, result_.result->docking_point.pose.position.y);
   return BT::NodeStatus::SUCCESS;
