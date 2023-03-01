@@ -134,6 +134,7 @@ void FindDockingPoint::find_docking_spot()
         pose_laser.pose.position.y = y3;
         pose_laser.pose.orientation.z = 1.0;
         nav2_util::transformPoseInTargetFrame(pose_laser, pose_map,  *this->tf_, "map");
+	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "3");
 
         visualization_msgs::msg::Marker markers_msg;
         markers_msg.header.frame_id = "laser";
@@ -152,6 +153,8 @@ void FindDockingPoint::find_docking_spot()
         point_msg.z = 0.0;
         markers_msg.points.push_back(point_msg);
         publisher_->publish(markers_msg);
+	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "4");
+
 	    };
     auto future_result = client_->async_send_request(request, response_received_callback);
     sleep(0.5);
