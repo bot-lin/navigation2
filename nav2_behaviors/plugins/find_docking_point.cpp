@@ -32,7 +32,6 @@ FindDockingPoint::~FindDockingPoint() = default;
 
 void FindDockingPoint::onConfigure()
 {
-    is_more_results_required_ = true;
     my_node_ = node_.lock();
     if (!my_node_) {
         throw std::runtime_error{"Failed to lock node"};

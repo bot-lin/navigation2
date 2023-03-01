@@ -2,6 +2,7 @@
 std_msgs/String command
 ---
 #result definition
+geometry_msgs/PoseStamped docking_point
 builtin_interfaces/Duration total_elapsed_time
 ---
 #feedback definition

@@ -3,6 +3,8 @@ builtin_interfaces/Duration time_allowance
 ---
 #result definition
 builtin_interfaces/Duration total_elapsed_time
+geometry_msgs/PoseStamped docking_point
+
 ---
 #feedback
 builtin_interfaces/Duration current_teleop_duration
