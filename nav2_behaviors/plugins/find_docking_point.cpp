@@ -164,6 +164,7 @@ bool FindDockingPoint::find_docking_spot()
         point_msg.z = 0.0;
         markers_msg.points.push_back(point_msg);
         publisher_->publish(markers_msg);
+        return true
 	    };
     auto future_result = client_->async_send_request(request, response_received_callback);
     sleep(0.5);
