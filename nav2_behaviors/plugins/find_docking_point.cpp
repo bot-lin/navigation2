@@ -102,7 +102,6 @@ void FindDockingPoint::find_docking_spot()
 {
     auto request = std::make_shared<zbot_interfaces::srv::LineSegmentListSrv::Request>();
     request->request = true;
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Found lines before");
     while (!client_->wait_for_service(1s)) {
         if (!rclcpp::ok()) {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
@@ -110,11 +109,10 @@ void FindDockingPoint::find_docking_spot()
         }
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
     }
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Found lines");
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Start calling find line request");
 
     auto result = client_->async_send_request(request);
-    auto node = node_.lock();
-    if (rclcpp::spin_until_future_complete(node, result) ==
+    if (rclcpp::spin_until_future_complete(node_, result) ==
         rclcpp::FutureReturnCode::SUCCESS)
     {
         std::vector<zbot_interfaces::msg::LineSegment> lines = result.get()->line_segments;
