@@ -112,9 +112,12 @@ void FindDockingPoint::find_docking_spot()
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Start calling find line request");
 
     auto result = client_->async_send_request(request);
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "1");
+
     if (rclcpp::spin_until_future_complete(node_.lock(), result) ==
         rclcpp::FutureReturnCode::SUCCESS)
     {
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "2");
         std::vector<zbot_interfaces::msg::LineSegment> lines = result.get()->line_segments;
         auto start = lines[0].start;
         auto end = lines[1].end;
