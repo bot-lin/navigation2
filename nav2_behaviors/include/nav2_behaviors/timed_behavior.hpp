@@ -210,7 +210,7 @@ protected:
 
     // Initialize the ActionT result
     if (!is_more_results_required_) auto result = std::make_shared<typename ActionT::Result>();
-    else auto result = std::make_shared<FindDockingPointAction::Result>();
+    else auto result = std::make_shared<nav2_msgs::action::FindDockingPoint::Result>();
 
     rclcpp::WallRate loop_rate(cycle_frequency_);
 
