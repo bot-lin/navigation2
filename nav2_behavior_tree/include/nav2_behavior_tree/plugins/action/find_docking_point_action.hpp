@@ -52,6 +52,7 @@ public:
   {
     return providedBasicPorts(
       {
+        BT::InputPort<double>("distance_to_point", 0.35, "Distance to point"),
         BT::OutputPort<geometry_msgs::msg::PoseStamped>("docking_point", "docking point coordinate to map"),
       });
   }
