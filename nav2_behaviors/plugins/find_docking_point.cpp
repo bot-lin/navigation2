@@ -122,12 +122,18 @@ void FindDockingPoint::find_docking_spot()
 	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "4");
 
         auto start = lines[0].start;
+	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "41");
+
         auto end = lines[1].end;
         double x2 = start[0];
         double y2 = start[1];
         double x1 = end[0];
         double y1 = end[1];
+	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "42");
+
         double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));
+	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "43");
+
         double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
         double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
 	    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "5");
