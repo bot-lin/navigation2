@@ -38,15 +38,15 @@
     
     <PipelineSequence name="GoToDockingPoint">
         <RateController hz="1.0">
-          <RecoveryNode number_of_retries="1" name="ComputeDockingPoint">
-            <FindDockingPoint distance_to_point="0.5" docking_point="{docking_goal}"/>
+          <RecoveryNode number_of_retries="10" name="ComputeDockingPoint">
+            <FindDockingPoint distance_to_point="0.4" docking_point="{docking_goal}"/>
             <Spin spin_dist="0.1"/>
           </RecoveryNode>
         </RateController>
         <PreciseNav  goal="{docking_goal}" />
     </PipelineSequence>
 
-    <Spin spin_dist="3.1415"/>
+    <Spin spin_dist="3.12"/>
     
     <BackUp backup_dist="0.15" backup_speed="0.025"/>
     </Sequence>
