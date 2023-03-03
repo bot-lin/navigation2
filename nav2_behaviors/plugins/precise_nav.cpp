@@ -79,6 +79,14 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
 {
     target_x_ = command->pose.pose.position.x;
     target_y_ = command->pose.pose.position.y;
+    tf2::Quaternion q(command->pose.pose.orientation.x, 
+                command->pose.pose.orientation.y, 
+                command->pose.pose.orientation.z,
+                command->pose.pose.orientation.w);
+    tf2::Matrix3x3 m(q);
+    double roll, pitch, yaw;
+    m.getRPY(roll, pitch, yaw);
+    target_yaw_ = yaw;
     return Status::SUCCEEDED;
 }
 Status PreciseNav::onCycleUpdate()
