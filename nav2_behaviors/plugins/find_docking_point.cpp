@@ -53,6 +53,14 @@ Status FindDockingPoint::onRun(const std::shared_ptr<const FindDockingPointActio
     return Status::SUCCEEDED;
 }
 
+Status FindDockingPoint::change_goal(const std::shared_ptr<const FindDockingPointAction::Goal> command)
+{
+    distance_to_point_ = command->distance_to_point;
+
+    return Status::SUCCEEDED;
+}
+
+
 Status FindDockingPoint::onCycleUpdate()
 {
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Start finding docking point");

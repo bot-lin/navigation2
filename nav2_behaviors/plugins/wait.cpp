@@ -35,6 +35,13 @@ Status Wait::onRun(const std::shared_ptr<const WaitAction::Goal> command)
   return Status::SUCCEEDED;
 }
 
+Status Wait::change_goal(const std::shared_ptr<const WaitAction::Goal> command)
+{
+  wait_end_ = std::chrono::steady_clock::now() +
+    rclcpp::Duration(command->time).to_chrono<std::chrono::nanoseconds>();
+  return Status::SUCCEEDED;
+}
+
 Status Wait::onCycleUpdate()
 {
   auto current_point = std::chrono::steady_clock::now();
