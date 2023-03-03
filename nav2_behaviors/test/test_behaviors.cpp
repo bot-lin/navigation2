@@ -60,6 +60,24 @@ public:
     return Status::FAILED;
   }
 
+    Status change_goal(const std::shared_ptr<const BehaviorAction::Goal> goal) override
+  {
+    // A normal behavior would catch the command and initialize
+    initialized_ = false;
+    command_ = goal->command.data;
+    start_time_ = std::chrono::system_clock::now();
+
+    // onRun method can have various possible outcomes (success, failure, cancelled)
+    // The output is defined by the tester class on the command string.
+    if (command_ == "Testing success" || command_ == "Testing failure on run") {
+      initialized_ = true;
+      return Status::SUCCEEDED;
+    }
+
+    return Status::FAILED;
+  }
+
+
   Status onCycleUpdate() override
   {
     // A normal behavior would set the robot in motion in the first call
