@@ -46,6 +46,7 @@ public:
    * @return Status of behavior
    */
   Status onRun(const std::shared_ptr<const SpinAction::Goal> command) override;
+  Status change_goal(const std::shared_ptr<const SpinAction::Goal> command) override;
 
   /**
    * @brief Configuration of behavior action

@@ -55,6 +55,11 @@ public:
    * @param command Goal to execute
    * @return Status of behavior
    */
+  Status change_goal(const std::shared_ptr<const typename ActionT::Goal> command) override
+  {
+
+  }
+
   Status onRun(const std::shared_ptr<const typename ActionT::Goal> command) override
   {
     if (command->target.y != 0.0 || command->target.z != 0.0) {

@@ -22,6 +22,7 @@ public:
     FindDockingPoint();
     ~FindDockingPoint();
     Status onRun(const std::shared_ptr<const FindDockingPointAction::Goal> command) override;
+    Status change_goal(const std::shared_ptr<const FindDockingPointAction::Goal> command) override;
     void onConfigure() override;
     Status onCycleUpdate() override;
     bool find_docking_spot();

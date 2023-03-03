@@ -43,6 +43,7 @@ public:
    * @return Status of behavior
    */
   Status onRun(const std::shared_ptr<const AssistedTeleopAction::Goal> command) override;
+  Status change_goal(const std::shared_ptr<const AssistedTeleopAction::Goal> command) override;
 
   /**
    * @brief func to run at the completion of the action
