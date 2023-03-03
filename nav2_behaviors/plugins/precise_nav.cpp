@@ -75,6 +75,12 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     return Status::SUCCEEDED;
 }
 
+Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goal> command)
+{
+    target_x_ = command->pose.pose.position.x;
+    target_y_ = command->pose.pose.position.y;
+    return Status::SUCCEEDED;
+}
 Status PreciseNav::onCycleUpdate()
 {
     geometry_msgs::msg::PoseStamped current_pose;

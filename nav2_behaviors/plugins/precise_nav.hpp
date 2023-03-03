@@ -21,6 +21,7 @@ public:
     Status onRun(const std::shared_ptr<const PreciseNavAction::Goal> command) override;
     void onConfigure() override;
     Status onCycleUpdate() override;
+    Status change_goal(const std::shared_ptr<const PreciseNavAction::Goal> command) override;
     double getDistanceToGoal(geometry_msgs::msg::PoseStamped current_pose);
     double getHeadingErrorToGoal(geometry_msgs::msg::PoseStamped current_pose);
     double getRadiansToGoal(geometry_msgs::msg::PoseStamped current_pose);

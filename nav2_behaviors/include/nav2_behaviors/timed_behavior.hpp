@@ -76,6 +76,7 @@ public:
   // before getting into the main loop. The method will only be called
   // once and should return SUCCEEDED otherwise behavior will return FAILED.
   virtual Status onRun(const std::shared_ptr<const typename ActionT::Goal> command) = 0;
+  virtual Status change_goal(const std::shared_ptr<const typename ActionT::Goal> command) = 0;
 
 
   // This is the method derived classes should mainly implement
@@ -224,16 +225,23 @@ protected:
       }
 
       // TODO(orduno) #868 Enable preempting a Behavior on-the-fly without stopping
-      if (action_server_->is_preempt_requested()) {
-        RCLCPP_ERROR(
-          logger_, "Received a preemption request for %s,"
-          " however feature is currently not implemented. Aborting and stopping.",
-          behavior_name_.c_str());
-        stopRobot();
-        result->total_elapsed_time = steady_clock_.now() - start_time;
-        action_server_->terminate_current(result);
-        onActionCompletion();
-        return;
+      if (action_server_->is_preempt_requested()) { 
+        if (change_goal(action_server_->accept_pending_goal()) != Status::SUCCEEDED) {
+            RCLCPP_INFO(
+              logger_,
+              "Change goal failed for %s", behavior_name_.c_str());
+            action_server_->terminate_current();
+            return;
+          }
+        // RCLCPP_ERROR(
+        //   logger_, "Received a preemption request for %s,"
+        //   " however feature is currently not implemented. Aborting and stopping.",
+        //   behavior_name_.c_str());
+        // stopRobot();
+        // result->total_elapsed_time = steady_clock_.now() - start_time;
+        // action_server_->terminate_current(result);
+        // onActionCompletion();
+        // return;
       }
 
       switch (onCycleUpdate()) {
