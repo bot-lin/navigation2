@@ -127,7 +127,9 @@ Status PreciseNav::onCycleUpdate()
         this->stopRobot();
         return Status::SUCCEEDED;
     }
-
+    RCLCPP_INFO(this->logger_, "current pose x: %f, y: %f", current_pose.pose.position.x, current_pose.pose.position.y);
+    RCLCPP_INFO(this->logger_, "current pose z: %f, w: %f", current_pose.pose.orientation.z, current_pose.pose.orientation.w);
+    RCLCPP_INFO(this->logger_, "pub vel x: %f, w: %f", cmd_vel->linear.x, cmd_vel->angular.z);
     this->vel_pub_->publish(std::move(cmd_vel));
     return Status::RUNNING;
 }
