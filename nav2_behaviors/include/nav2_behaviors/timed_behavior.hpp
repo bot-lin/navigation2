@@ -233,6 +233,9 @@ protected:
             action_server_->terminate_current();
             return;
           }
+          RCLCPP_INFO(
+              logger_,
+              "Change goal succeeded for %s", behavior_name_.c_str());
         // RCLCPP_ERROR(
         //   logger_, "Received a preemption request for %s,"
         //   " however feature is currently not implemented. Aborting and stopping.",
