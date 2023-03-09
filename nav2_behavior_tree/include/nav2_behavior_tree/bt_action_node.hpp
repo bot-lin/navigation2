@@ -228,7 +228,7 @@ public:
         {
             RCLCPP_INFO(
               node_->get_logger(),
-              "***************************server timeout is  %d", server_timeout_.count());
+              "***************************server timeout is  %s", std::to_string(server_timeout_.count()).c_str());
           goal_updated_ = false;
           send_new_goal();
           auto elapsed = (node_->now() - time_goal_sent_).to_chrono<std::chrono::milliseconds>();
