@@ -43,7 +43,7 @@ public:
    * @param action_name Action name this node creates a client for
    * @param conf BT node configuration
    */
-  BtActionNode(
+  BtActionNode( 
     const std::string & xml_tag_name,
     const std::string & action_name,
     const BT::NodeConfiguration & conf)
@@ -226,6 +226,9 @@ public:
         if (goal_updated_ && (goal_status == action_msgs::msg::GoalStatus::STATUS_EXECUTING ||
           goal_status == action_msgs::msg::GoalStatus::STATUS_ACCEPTED))
         {
+            RCLCPP_INFO(
+              node_->get_logger(),
+              "***************************server timeout is  %f", server_timeout_);
           goal_updated_ = false;
           send_new_goal();
           auto elapsed = (node_->now() - time_goal_sent_).to_chrono<std::chrono::milliseconds>();
