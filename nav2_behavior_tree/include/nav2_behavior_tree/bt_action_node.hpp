@@ -232,6 +232,9 @@ public:
           goal_updated_ = false;
           send_new_goal();
           auto elapsed = (node_->now() - time_goal_sent_).to_chrono<std::chrono::milliseconds>();
+          RCLCPP_INFO(
+              node_->get_logger(),
+              "***************************time elapsed is  %s", std::to_string(elapsed.count()).c_str());
           if (!is_future_goal_handle_complete(elapsed)) {
             if (elapsed < server_timeout_) {
               return BT::NodeStatus::RUNNING;
