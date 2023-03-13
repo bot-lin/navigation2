@@ -24,7 +24,7 @@
 #include "nav2_msgs/action/drive_on_heading.hpp"
 #include "nav2_msgs/action/back_up.hpp"
 #include "nav2_util/node_utils.hpp"
-#include "std_msgs/msg/bool.hpp"
+#include "std_msgs/msg/int8.hpp.hpp"
 
 
 namespace nav2_behaviors
@@ -231,14 +231,14 @@ protected:
       node,
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
-  charging_sub_ = node->create_subscription<std_msgs::msg::Bool>(
+  charging_sub_ = node->create_subscription<std_msgs::msg::Int8>(
     "charging_status", rclcpp::SystemDefaultsQoS(),
     std::bind(
       &chargingCallback,
       this, std::placeholders::_1));
   }
 
-  void chargingCallback(const std_msgs::msg::Bool::SharedPtr msg)
+  void chargingCallback(const std_msgs::msg::Int8::SharedPtr msg)
   {
     is_charging_ = msg.data;
   }
@@ -251,7 +251,7 @@ protected:
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
   double simulate_ahead_time_;
-  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr charging_sub_;
+  rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr charging_sub_;
   bool is_charging_;
 };
 
