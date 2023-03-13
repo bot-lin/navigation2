@@ -24,8 +24,6 @@
 #include "nav2_msgs/action/drive_on_heading.hpp"
 #include "nav2_msgs/action/back_up.hpp"
 #include "nav2_util/node_utils.hpp"
-#include "std_msgs/msg/int8.hpp"
-
 
 namespace nav2_behaviors
 {
@@ -152,7 +150,7 @@ public:
     feedback_->distance_traveled = distance;
     this->action_server_->publish_feedback(feedback_);
 
-    if (distance >= std::fabs(command_x_) || is_charging_) {
+    if (distance >= std::fabs(command_x_)) {
       this->stopRobot();
       return Status::SUCCEEDED;
     }
@@ -231,16 +229,6 @@ protected:
       node,
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
-  charging_sub_ = node->create_subscription<std_msgs::msg::Int8>(
-    "charging_status", rclcpp::SystemDefaultsQoS(),
-    std::bind(
-      &chargingCallback,
-      this, std::placeholders::_1));
-  }
-
-  void chargingCallback(const std_msgs::msg::Int8::SharedPtr msg)
-  {
-    is_charging_ = msg.data;
   }
 
   typename ActionT::Feedback::SharedPtr feedback_;
@@ -251,8 +239,6 @@ protected:
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
   double simulate_ahead_time_;
-  rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr charging_sub_;
-  bool is_charging_;
 };
 
 }  // namespace nav2_behaviors

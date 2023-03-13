@@ -32,9 +32,6 @@ BackUpAction::BackUpAction(
   getInput("backup_speed", speed);
   double time_allowance;
   getInput("time_allowance", time_allowance);
-  getInput("check_charging", check_charging_);
-  
-
 
   // Populate the input message
   goal_.target.x = dist;
@@ -42,7 +39,6 @@ BackUpAction::BackUpAction(
   goal_.target.z = 0.0;
   goal_.speed = speed;
   goal_.time_allowance = rclcpp::Duration::from_seconds(time_allowance);
-  goal_.check_charging = check_charging_;
 }
 
 void BackUpAction::on_tick()

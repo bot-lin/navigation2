@@ -55,13 +55,9 @@ public:
       {
         BT::InputPort<double>("backup_dist", 0.15, "Distance to backup"),
         BT::InputPort<double>("backup_speed", 0.025, "Speed at which to backup"),
-        BT::InputPort<double>("time_allowance", 10.0, "Allowed time for reversing"),
-        BT::InputPort<bool>("check_charging", false, "If check charging")
-
+        BT::InputPort<double>("time_allowance", 10.0, "Allowed time for reversing")
       });
   }
-private:
-  bool check_charging_;
 };
 
 }  // namespace nav2_behavior_tree
