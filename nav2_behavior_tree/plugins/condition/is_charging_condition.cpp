@@ -62,9 +62,9 @@ BT::NodeStatus IsChargingCondition::tick()
     if(charging_time.seconds() > charing_duration_)
       return BT::NodeStatus::SUCCESS;
     else
-      return BT::NodeStatus::FAILURE;
+      return BT::NodeStatus::RUNNING;
   }
-  return BT::NodeStatus::FAILURE;
+  return BT::NodeStatus::RUNNING;
 }
 
 void IsChargingCondition::chargingCallback(std_msgs::msg::Int8::SharedPtr msg)
