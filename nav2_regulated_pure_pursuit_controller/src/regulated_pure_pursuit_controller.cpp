@@ -637,8 +637,13 @@ void RegulatedPurePursuitController::applyConstraints(
   // limit the linear velocity by curvature
   const double radius = fabs(1.0 / curvature);
   const double & min_rad = regulated_linear_scaling_min_radius_;
+  RCLCPP_INFO(logger_, "Radius: %f", radius);
   if (use_regulated_linear_velocity_scaling_ && radius < min_rad) {
     curvature_vel *= 1.0 - (fabs(radius/regulated_linear_scaling_radius_factor_ - min_rad) / min_rad);
+  RCLCPP_INFO(logger_, "regulated_linear_scaling_radius_factor: %f", regulated_linear_scaling_radius_factor_);
+
+  RCLCPP_INFO(logger_, "factor: %f", 1.0 -fabs(radius/regulated_linear_scaling_radius_factor_ - min_rad) / min_rad);
+
   }
 
   // limit the linear velocity by proximity to obstacles
