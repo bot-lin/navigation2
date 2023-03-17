@@ -299,6 +299,7 @@ protected:
   double cost_scaling_gain_;
   double inflation_cost_scaling_factor_;
   double regulated_linear_scaling_min_radius_;
+  double regulated_linear_scaling_radius_factor_;
   double regulated_linear_scaling_min_speed_;
   bool use_rotate_to_heading_;
   double max_angular_accel_;

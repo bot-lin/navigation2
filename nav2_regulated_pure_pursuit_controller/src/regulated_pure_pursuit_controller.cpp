@@ -163,6 +163,9 @@ void RegulatedPurePursuitController::configure(
     plugin_name_ + ".regulated_linear_scaling_min_radius",
     regulated_linear_scaling_min_radius_);
   node->get_parameter(
+    plugin_name_ + ".regulated_linear_scaling_radius_factor",
+    regulated_linear_scaling_radius_factor_);
+  node->get_parameter(
     plugin_name_ + ".regulated_linear_scaling_min_speed",
     regulated_linear_scaling_min_speed_);
   node->get_parameter(plugin_name_ + ".use_rotate_to_heading", use_rotate_to_heading_);
@@ -635,7 +638,7 @@ void RegulatedPurePursuitController::applyConstraints(
   const double radius = fabs(1.0 / curvature);
   const double & min_rad = regulated_linear_scaling_min_radius_;
   if (use_regulated_linear_velocity_scaling_ && radius < min_rad) {
-    curvature_vel *= 1.0 - (fabs(radius - min_rad) / min_rad);
+    curvature_vel *= 1.0 - (fabs(radius/regulated_linear_scaling_radius_factor_ - min_rad) / min_rad);
   }
 
   // limit the linear velocity by proximity to obstacles
@@ -856,6 +859,8 @@ RegulatedPurePursuitController::dynamicParametersCallback(
         cost_scaling_gain_ = parameter.as_double();
       } else if (name == plugin_name_ + ".regulated_linear_scaling_min_radius") {
         regulated_linear_scaling_min_radius_ = parameter.as_double();
+      }else if (name == plugin_name_ + ".regulated_linear_scaling_radius_factor") {
+        regulated_linear_scaling_radius_factor_ = parameter.as_double();
       } else if (name == plugin_name_ + ".transform_tolerance") {
         double transform_tolerance = parameter.as_double();
         transform_tolerance_ = tf2::durationFromSec(transform_tolerance);
