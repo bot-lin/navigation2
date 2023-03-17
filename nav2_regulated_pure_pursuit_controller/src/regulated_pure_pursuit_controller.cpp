@@ -102,6 +102,8 @@ void RegulatedPurePursuitController::configure(
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".regulated_linear_scaling_min_radius", rclcpp::ParameterValue(0.90));
   declare_parameter_if_not_declared(
+    node, plugin_name_ + ".regulated_linear_scaling_radius_factor", rclcpp::ParameterValue(1.0));
+  declare_parameter_if_not_declared(
     node, plugin_name_ + ".regulated_linear_scaling_min_speed", rclcpp::ParameterValue(0.25));
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".use_rotate_to_heading", rclcpp::ParameterValue(true));
