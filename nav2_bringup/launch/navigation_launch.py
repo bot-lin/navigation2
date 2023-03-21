@@ -46,7 +46,8 @@ def generate_launch_description():
                        'behavior_server',
                        'bt_navigator',
                        'waypoint_follower',
-                       'collision_monitor']
+                       'collision_monitor',
+                       'velocity_smoother']
 
     # Map fully qualified names to relative ones so the node's namespace can be prepended.
     # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
@@ -211,7 +212,7 @@ def generate_launch_description():
                 plugin='nav2_smoother::SmootherServer',
                 name='smoother_server',
                 parameters=[configured_params],
-                remappings=remappings),
+                remappings=remappings), 
             ComposableNode(
                 package='nav2_planner',
                 plugin='nav2_planner::PlannerServer',
@@ -243,6 +244,13 @@ def generate_launch_description():
                 parameters=[{'use_sim_time': use_sim_time,
                              'autostart': autostart,
                              'node_names': lifecycle_nodes}]),
+            ComposableNode(
+                package='nav2_velocity_smoother',
+                plugin='nav2_velocity_smoother::VelocitySmoother',
+                name='velocity_smoother',
+                parameters=[configured_params],
+                remappings=remappings +
+                           [('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')]),
             ComposableNode(
                 package='nav2_collision_monitor',
                 plugin='nav2_collision_monitor::CollisionMonitor',
