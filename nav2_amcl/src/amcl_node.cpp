@@ -854,6 +854,7 @@ AmclNode::publishParticleCloud(const pf_sample_set_t * set)
   double variance = 0.0;
   double mean = 0.0;
   mean = 1.0 / set->sample_count;
+    RCLCPP_INFO(get_logger(), "--------------------");
 
   for (int i = 0; i < set->sample_count; i++) {
     cloud_with_weights_msg->particles[i].pose.position.x = set->samples[i].pose.v[0];
@@ -863,6 +864,7 @@ AmclNode::publishParticleCloud(const pf_sample_set_t * set)
       set->samples[i].pose.v[2]);
     cloud_with_weights_msg->particles[i].weight = set->samples[i].weight;
     variance += std::pow(set->samples[i].weight - mean, 2);
+    RCLCPP_INFO(get_logger(), "variance %f", variance);
   }
   variance /= (set->sample_count - 1);
   cloud_with_weights_msg->variance = (float)variance;
