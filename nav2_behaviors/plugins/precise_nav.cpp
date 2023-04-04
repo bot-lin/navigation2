@@ -67,6 +67,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     {
         nav2_util::transformPoseInTargetFrame(command->pose, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
         RCLCPP_INFO(this->logger_, "Converting goal pose in odom frame from %s", command->pose.header.frame_id.c_str());
+        RCLCPP_INFO(this->logger_, "Converted pose x: %f, y: %f", pose_tmp.pose.position.x, pose_tmp.pose.position.y);
     }
     else{
         pose_tmp = command->pose;
