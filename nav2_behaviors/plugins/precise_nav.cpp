@@ -76,7 +76,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     target_y_ = pose_tmp.pose.position.y;
     tf2::Quaternion q(pose_tmp.pose.orientation.x, 
                     pose_tmp.pose.orientation.y, 
-                    cpose_tmp.pose.orientation.z,
+                    pose_tmp.pose.orientation.z,
                     pose_tmp.pose.orientation.w);
     tf2::Matrix3x3 m(q);
     double roll, pitch, yaw;
@@ -102,7 +102,7 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     target_y_ = pose_tmp.pose.position.y;
     tf2::Quaternion q(pose_tmp.pose.orientation.x, 
                     pose_tmp.pose.orientation.y, 
-                    cpose_tmp.pose.orientation.z,
+                    pose_tmp.pose.orientation.z,
                     pose_tmp.pose.orientation.w);
     tf2::Matrix3x3 m(q);
     double roll, pitch, yaw;
