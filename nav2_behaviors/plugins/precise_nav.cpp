@@ -67,7 +67,6 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     {
         nav2_util::transformPoseInTargetFrame(command->pose, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
         RCLCPP_INFO(this->logger_, "Converting goal pose in odom frame from %s", command->pose.header.frame_id.c_str());
-        return Status::FAILED;
     }
     else{
         pose_tmp = command->pose;
@@ -93,7 +92,6 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     {
         nav2_util::transformPoseInTargetFrame(command->pose, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
         RCLCPP_INFO(this->logger_, "Converting goal pose in odom frame from %s", command->pose.header.frame_id.c_str());
-        return Status::FAILED;
     }
     else{
         pose_tmp = command->pose;
