@@ -37,7 +37,7 @@ void FindDockingPointAction::on_tick()
 
 BT::NodeStatus FindDockingPointAction::on_success()
 {
-  if (result_.result->docking_poin.header.frame_id == "none"){
+  if (result_.result->docking_point.header.frame_id == "none"){
     RCLCPP_INFO(
       node_->get_logger(),
       "FindDockingPointAction: NOT found point ");
