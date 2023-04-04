@@ -72,7 +72,6 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     pose_tmp.header.frame_id = command->pose.header.frame_id;
     if (command->pose.header.frame_id != "odom")
     {
-        auto node = node_.lock();
         bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
         if (!tf_response)
         {
@@ -102,11 +101,16 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
 {
     
     geometry_msgs::msg::PoseStamped pose_tmp;
+    pose_tmp.pose.position.x = command->pose.pose.position.x;
+    pose_tmp.pose.position.y = command->pose.pose.position.y;
+    pose_tmp.pose.orientation.x = command->pose.pose.orientation.x;
+    pose_tmp.pose.orientation.y = command->pose.pose.orientation.y;
+    pose_tmp.pose.orientation.z = command->pose.pose.orientation.z;
+    pose_tmp.pose.orientation.w = command->pose.pose.orientation.w;
+    pose_tmp.header.frame_id = command->pose.header.frame_id;
     if (command->pose.header.frame_id != "odom")
     {
-        auto node = node_.lock();
-        command->pose.header.stamp = node->now();
-        bool tf_response = nav2_util::transformPoseInTargetFrame(command->pose, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
+        bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
         if (!tf_response)
         {
             RCLCPP_ERROR(this->logger_, "Failed to transform goal pose in odom frame from %s", command->pose.header.frame_id.c_str());
