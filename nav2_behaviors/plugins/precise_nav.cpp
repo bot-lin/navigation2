@@ -65,7 +65,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     geometry_msgs::msg::PoseStamped pose_tmp;
     if (command->pose.header.frame_id != "odom")
     {
-        command->pose.header.stamp = node_->now();
+        command->pose.header.stamp = node_.lock()->now();
         bool tf_response = nav2_util::transformPoseInTargetFrame(command->pose, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
         if (!tf_response)
         {
@@ -97,7 +97,7 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     geometry_msgs::msg::PoseStamped pose_tmp;
     if (command->pose.header.frame_id != "odom")
     {
-        command->pose.header.stamp = node_->now();
+        command->pose.header.stamp = node_.lock()->now();
         bool tf_response = nav2_util::transformPoseInTargetFrame(command->pose, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
         if (!tf_response)
         {
