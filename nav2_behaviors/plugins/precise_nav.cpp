@@ -77,6 +77,11 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
 
 Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goal> command)
 {
+    if (commmand->pose.header.frame_id != "odom")
+    {
+        RCLCPP_ERROR(this->logger_, "Goal pose must be in odom frame");
+        return Status::FAILED;
+    }
     target_x_ = command->pose.pose.position.x;
     target_y_ = command->pose.pose.position.y;
     tf2::Quaternion q(command->pose.pose.orientation.x, 
@@ -93,7 +98,7 @@ Status PreciseNav::onCycleUpdate()
 {
     geometry_msgs::msg::PoseStamped current_pose;
     if (!nav2_util::getCurrentPose(
-        current_pose, *this->tf_, "map", this->robot_base_frame_,
+        current_pose, *this->tf_, "odom", this->robot_base_frame_,
         this->transform_tolerance_))
     {
       RCLCPP_ERROR(this->logger_, "Current robot pose is not available.");
