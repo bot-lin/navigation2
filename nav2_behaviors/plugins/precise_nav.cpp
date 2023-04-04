@@ -117,11 +117,12 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
             return Status::FAILED;
         }
         RCLCPP_INFO(this->logger_, "Converting goal pose in odom frame from %s", command->pose.header.frame_id.c_str());
-        RCLCPP_INFO(this->logger_, "Converted pose x: %f, y: %f", pose_tmp.pose.position.x, pose_tmp.pose.position.y);
+        
     }
     else{
         pose_tmp = command->pose;
     }
+    RCLCPP_INFO(this->logger_, "target pose in Odom x: %f, y: %f", pose_tmp.pose.position.x, pose_tmp.pose.position.y);
     target_x_ = pose_tmp.pose.position.x;
     target_y_ = pose_tmp.pose.position.y;
     tf2::Quaternion q(pose_tmp.pose.orientation.x, 
