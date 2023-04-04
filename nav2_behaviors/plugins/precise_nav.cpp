@@ -62,12 +62,19 @@ void PreciseNav::onConfigure()
 
 Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> command)
 {
-    target_x_ = command->pose.pose.position.x;
-    target_y_ = command->pose.pose.position.y;
-    tf2::Quaternion q(command->pose.pose.orientation.x, 
-                    command->pose.pose.orientation.y, 
-                    command->pose.pose.orientation.z,
-                    command->pose.pose.orientation.w);
+    if (command->pose.header.frame_id != "odom")
+    {
+        geometry_msgs::msg::PoseStamped pose_tmp;
+        nav2_util::transformPoseInTargetFrame(command->pose, pose_tmp,  *this->tf_, "odom");
+        RCLCPP_INFO(this->logger_, "Converting goal pose to odom frame...");
+        return Status::FAILED;
+    }
+    target_x_ = pose_tmp.pose.position.x;
+    target_y_ = pose_tmp.pose.position.y;
+    tf2::Quaternion q(pose_tmp.pose.orientation.x, 
+                pose_tmp.pose.orientation.y, 
+                pose_tmp.pose.orientation.z,
+                pose_tmp.pose.orientation.w);
     tf2::Matrix3x3 m(q);
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
@@ -77,17 +84,19 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
 
 Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goal> command)
 {
-    if (commmand->pose.header.frame_id != "odom")
+    if (command->pose.header.frame_id != "odom")
     {
-        RCLCPP_ERROR(this->logger_, "Goal pose must be in odom frame");
+        geometry_msgs::msg::PoseStamped pose_tmp;
+        nav2_util::transformPoseInTargetFrame(command->pose, pose_tmp,  *this->tf_, "odom");
+        RCLCPP_INFO(this->logger_, "Converting goal pose to odom frame...");
         return Status::FAILED;
     }
-    target_x_ = command->pose.pose.position.x;
-    target_y_ = command->pose.pose.position.y;
-    tf2::Quaternion q(command->pose.pose.orientation.x, 
-                command->pose.pose.orientation.y, 
-                command->pose.pose.orientation.z,
-                command->pose.pose.orientation.w);
+    target_x_ = pose_tmp.pose.position.x;
+    target_y_ = pose_tmp.pose.position.y;
+    tf2::Quaternion q(pose_tmp.pose.orientation.x, 
+                pose_tmp.pose.orientation.y, 
+                pose_tmp.pose.orientation.z,
+                pose_tmp.pose.orientation.w);
     tf2::Matrix3x3 m(q);
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
