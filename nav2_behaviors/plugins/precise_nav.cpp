@@ -70,7 +70,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
         return Status::FAILED;
     }
     else{
-        pose_tmp = command->pose
+        pose_tmp = command->pose;
     }
     target_x_ = pose_tmp.pose.position.x;
     target_y_ = pose_tmp.pose.position.y;
@@ -96,7 +96,7 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
         return Status::FAILED;
     }
     else{
-        pose_tmp = command->pose
+        pose_tmp = command->pose;
     }
     target_x_ = pose_tmp.pose.position.x;
     target_y_ = pose_tmp.pose.position.y;
