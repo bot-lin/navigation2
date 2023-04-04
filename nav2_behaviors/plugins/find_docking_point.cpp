@@ -156,11 +156,13 @@ bool FindDockingPoint::find_docking_spot()
         pose_laser.pose.position.x = x3;
         pose_laser.pose.position.y = y3;
         pose_laser.pose.orientation.z = 1.0; 
-        nav2_util::transformPoseInTargetFrame(pose_laser, pose_map_,  *this->tf_, "odom");
+        nav2_util::transformPoseInTargetFrame(pose_laser, pose_map_,  *this->tf_, "map");
         pose_map_.pose.orientation.x = 0.0;
         pose_map_.pose.orientation.y = 0.0;
         pose_map_.pose.orientation.z = 0.0;
         pose_map_.pose.orientation.w = 1.0;
+        nav2_util::transformPoseInTargetFrame(pose_map_, pose_map_,  *this->tf_, "odom");
+
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to map x: %f, y:%f, z: %f", pose_map_.pose.position.x, pose_map_.pose.position.y, pose_map_.pose.position.z);
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to map frame id is %s", pose_map_.header.frame_id.c_str());
         visualization_msgs::msg::Marker markers_msg;
