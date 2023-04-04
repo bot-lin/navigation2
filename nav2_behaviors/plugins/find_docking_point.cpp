@@ -117,6 +117,7 @@ bool FindDockingPoint::find_docking_spot()
     while (!client_->wait_for_service(1s)) {
         if (!rclcpp::ok()) {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
+        pose_map_.header.frame_id = "none";
         return false;
         }
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
@@ -132,7 +133,7 @@ bool FindDockingPoint::find_docking_spot()
         {
             RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "No lines found");
             processing_ = false;
-
+            pose_map_.header.frame_id = "none";
             return false;
         }
         // float start = lines[0].start;

@@ -259,7 +259,7 @@ protected:
           return;
 
         case Status::FAILED:
-          RCLCPP_WARN(logger_, "%s failed", behavior_name_.c_str());
+          RCLCPP_INFO(logger_, "%s failed", behavior_name_.c_str());
           result->total_elapsed_time = steady_clock_.now() - start_time;
           action_server_->terminate_current(result);
           onActionCompletion();
