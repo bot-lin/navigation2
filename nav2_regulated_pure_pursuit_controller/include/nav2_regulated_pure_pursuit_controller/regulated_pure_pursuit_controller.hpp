@@ -173,7 +173,7 @@ protected:
    */
   void rotateToHeading(
     double & linear_vel, double & angular_vel,
-    const double & angle_to_path, const geometry_msgs::msg::Twist & curr_speed);
+    const double & angle_to_path);
 
   /**
    * @brief Whether collision is imminent
