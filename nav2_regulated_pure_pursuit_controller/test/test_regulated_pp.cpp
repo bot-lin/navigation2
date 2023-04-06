@@ -89,7 +89,7 @@ public:
     double & linear_vel, double & angular_vel,
     const double & angle_to_path, const geometry_msgs::msg::Twist & curr_speed)
   {
-    return rotateToHeading(linear_vel, angular_vel, angle_to_path);
+    return rotateToHeading(linear_vel, angular_vel, angle_to_path, curr_speed);
   }
 
   void applyConstraintsWrapper(
