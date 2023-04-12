@@ -246,7 +246,7 @@ WaypointFollower::followWaypoints()
         get_logger(), "Succeeded processing waypoint %i, processing waypoint task execution",
         goal_index);
       bool is_task_executed = waypoint_task_executor_->processAtWaypoint(
-        goal->poses[goal_index], goal_index);
+        goal->waypoints[goal_index], goal_index);
       RCLCPP_INFO(
         get_logger(), "Task execution at waypoint %i %s", goal_index,
         is_task_executed ? "succeeded" : "failed!");
@@ -274,10 +274,10 @@ WaypointFollower::followWaypoints()
       // Update server state
       goal_index++;
       new_goal = true;
-      if (goal_index >= goal->poses.size()) {
+      if (goal_index >= goal->waypoints.size()) {
         RCLCPP_INFO(
           get_logger(), "Completed all %zu waypoints requested.",
-          goal->poses.size());
+          goal->waypoints.size());
         result->missed_waypoints = failed_ids_;
         action_server_->succeeded_current(result);
         failed_ids_.clear();
