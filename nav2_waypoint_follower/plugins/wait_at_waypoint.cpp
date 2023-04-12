@@ -46,7 +46,7 @@ void WaitAtWaypoint::initialize(
   }
   RCLCPP_INFO(
       logger_,
-      "Task params %s", params.c_str());
+      "%s Task params %s", plugin_name.c_str(), params.c_str());
   json j = json::parse(params);
   logger_ = node->get_logger();
 
