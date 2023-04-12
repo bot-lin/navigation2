@@ -151,6 +151,7 @@ void
 WaypointFollower::createTaskExecutor(const std::string & e_id)
 {
   try {
+    auto node = shared_from_this();
     waypoint_task_executor_id_ = e_id;
     waypoint_task_executor_type_ = nav2_util::get_plugin_type_param(
       this,
