@@ -201,7 +201,7 @@ WaypointFollower::followWaypoints()
       std::string controller_id = goal->waypoints[goal_index].controller_id;
       std::string goal_checker_id = goal->waypoints[goal_index].goal_checker_id;
       std::string behavior_tree = goal->waypoints[goal_index].behavior_tree;
-      std::string task_name = goal->waypoints[goal_index].behavior_tree.task_name;
+      std::string task_name = goal->waypoints[goal_index].task_name;
       if (nav_type)
       {
         //follow path
@@ -246,7 +246,7 @@ WaypointFollower::followWaypoints()
         get_logger(), "Succeeded processing waypoint %i, processing waypoint task execution",
         goal_index);
       bool is_task_executed = waypoint_task_executor_->processAtWaypoint(
-        goal->waypoints[goal_index], goal_index);
+        goal->waypoints[goal_index].pose, goal_index);
       RCLCPP_INFO(
         get_logger(), "Task execution at waypoint %i %s", goal_index,
         is_task_executed ? "succeeded" : "failed!");
