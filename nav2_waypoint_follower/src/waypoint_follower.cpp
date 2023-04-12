@@ -148,6 +148,28 @@ WaypointFollower::on_shutdown(const rclcpp_lifecycle::State & /*state*/)
 }
 
 void
+WaypointFollower::createTaskExecutor(const std::string & e_id)
+{
+  try {
+    waypoint_task_executor_id_ = e_id;
+    waypoint_task_executor_type_ = nav2_util::get_plugin_type_param(
+      this,
+      waypoint_task_executor_id_);
+    waypoint_task_executor_ = waypoint_task_executor_loader_.createUniqueInstance(
+      waypoint_task_executor_type_);
+    RCLCPP_INFO(
+      get_logger(), "Created waypoint_task_executor : %s of type %s",
+      waypoint_task_executor_id_.c_str(), waypoint_task_executor_type_.c_str());
+    waypoint_task_executor_->initialize(node, waypoint_task_executor_id_);
+  } catch (const pluginlib::PluginlibException & ex) {
+    RCLCPP_FATAL(
+      get_logger(),
+      "Failed to create waypoint_task_executor. Exception: %s", ex.what());
+  }
+  waypoint_task_executor_->initialize(shared_from_this(), waypoint_task_executor_id_);
+}
+
+void
 WaypointFollower::followWaypoints()
 {
   auto goal = action_server_->get_current_goal();
@@ -246,6 +268,7 @@ WaypointFollower::followWaypoints()
       RCLCPP_INFO(
         get_logger(), "Succeeded processing waypoint %i, processing waypoint task execution",
         goal_index);
+      createTaskExecutor(task_name);
       bool is_task_executed = waypoint_task_executor_->processAtWaypoint(
         goal->waypoints[goal_index].pose, goal_index);
       RCLCPP_INFO(
