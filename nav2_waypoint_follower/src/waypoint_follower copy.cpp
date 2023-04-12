@@ -162,9 +162,9 @@ WaypointFollower::followWaypoints()
 
   RCLCPP_INFO(
     get_logger(), "Received follow waypoint request with %i waypoints.",
-    static_cast<int>(goal->waypoints.size()));
+    static_cast<int>(goal->poses.size()));
 
-  if (goal->waypoints.size() == 0) {
+  if (goal->poses.size() == 0) {
     action_server_->succeeded_current(result);
     return;
   }
@@ -196,20 +196,9 @@ WaypointFollower::followWaypoints()
     if (new_goal) {
       new_goal = false;
       ClientT::Goal client_goal;
-      client_goal.pose = goal->waypoints[goal_index].pose;
-      bool nav_type = goal->waypoints[goal_index].nav_type;
-      std::string controller_id = goal->waypoints[goal_index].controller_id;
-      std::string goal_checker_id = goal->waypoints[goal_index].goal_checker_id;
-      std::string behavior_tree = goal->waypoints[goal_index].behavior_tree;
-      std::string task_name = goal->waypoints[goal_index].behavior_tree.task_name;
-      if (nav_type)
-      {
-        //follow path
-      }
-      else
-      {
-        //navigate to pose
-        auto send_goal_options = rclcpp_action::Client<ClientT>::SendGoalOptions();
+      client_goal.pose = goal->poses[goal_index];
+
+      auto send_goal_options = rclcpp_action::Client<ClientT>::SendGoalOptions();
       send_goal_options.result_callback =
         std::bind(&WaypointFollower::resultCallback, this, std::placeholders::_1);
       send_goal_options.goal_response_callback =
@@ -217,8 +206,6 @@ WaypointFollower::followWaypoints()
       future_goal_handle_ =
         nav_to_pose_client_->async_send_goal(client_goal, send_goal_options);
       current_goal_status_ = ActionStatus::PROCESSING;
-      }
-
     }
 
     feedback->current_waypoint = goal_index;
