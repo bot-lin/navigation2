@@ -134,7 +134,7 @@ WaypointFollower::on_shutdown(const rclcpp_lifecycle::State & /*state*/)
 }
 
 void
-WaypointFollower::createTaskExecutor(const std::string & e_id)
+WaypointFollower::createTaskExecutor(const std::string & e_id, const std::string & params)
 {
   try {
     auto node = shared_from_this();
@@ -147,7 +147,7 @@ WaypointFollower::createTaskExecutor(const std::string & e_id)
     RCLCPP_INFO(
       get_logger(), "Created waypoint_task_executor : %s of type %s",
       waypoint_task_executor_id_.c_str(), waypoint_task_executor_type_.c_str());
-    waypoint_task_executor_->initialize(node, waypoint_task_executor_id_);
+    waypoint_task_executor_->initialize(node, waypoint_task_executor_id_, params);
   } catch (const pluginlib::PluginlibException & ex) {
     RCLCPP_FATAL(
       get_logger(),

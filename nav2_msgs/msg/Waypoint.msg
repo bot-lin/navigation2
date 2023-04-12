@@ -5,3 +5,4 @@ string controller_id
 string goal_checker_id
 string behavior_tree
 string task_name
+string task_params

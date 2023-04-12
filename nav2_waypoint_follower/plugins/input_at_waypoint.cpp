@@ -38,7 +38,7 @@ InputAtWaypoint::~InputAtWaypoint()
 
 void InputAtWaypoint::initialize(
   const rclcpp_lifecycle::LifecycleNode::WeakPtr & parent,
-  const std::string & plugin_name)
+  const std::string & plugin_name, const std::string & params)
 {
   auto node = parent.lock();
 

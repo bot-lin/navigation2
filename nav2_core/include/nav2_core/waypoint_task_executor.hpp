@@ -52,7 +52,7 @@ public:
    */
   virtual void initialize(
     const rclcpp_lifecycle::LifecycleNode::WeakPtr & parent,
-    const std::string & plugin_name) = 0;
+    const std::string & plugin_name, const std::string & params) = 0;
 
   /**
    * @brief Override this to define the body of your task that you would like to execute once the robot arrived to waypoint

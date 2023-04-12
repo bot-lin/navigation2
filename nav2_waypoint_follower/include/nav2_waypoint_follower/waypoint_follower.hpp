@@ -104,7 +104,7 @@ protected:
    * @brief Action server callbacks
    */
   void followWaypoints();
-  void createTaskExecutor(const std::string & e_id);
+  void createTaskExecutor(const std::string & e_id, const std::string & params);
   /**
    * @brief Action client result callback
    * @param result Result of action server updated asynchronously

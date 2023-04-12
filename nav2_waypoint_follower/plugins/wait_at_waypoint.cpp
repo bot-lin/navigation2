@@ -35,12 +35,15 @@ WaitAtWaypoint::~WaitAtWaypoint()
 
 void WaitAtWaypoint::initialize(
   const rclcpp_lifecycle::LifecycleNode::WeakPtr & parent,
-  const std::string & plugin_name)
+  const std::string & plugin_name, const std::string & params)
 {
   auto node = parent.lock();
   if (!node) {
     throw std::runtime_error{"Failed to lock node in wait at waypoint plugin!"};
   }
+  RCLCPP_INFO(
+      logger_,
+      "Task params %s", params.c_str());
   logger_ = node->get_logger();
   nav2_util::declare_parameter_if_not_declared(
     node,
