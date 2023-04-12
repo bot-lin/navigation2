@@ -41,7 +41,9 @@ void InputAtWaypoint::initialize(
   const std::string & plugin_name, const std::string & params)
 {
   auto node = parent.lock();
-
+  RCLCPP_INFO(
+      logger_,
+      "Task params %s", params.c_str());
   if (!node) {
     throw std::runtime_error{"Failed to lock node in input at waypoint plugin!"};
   }
