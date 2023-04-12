@@ -254,7 +254,7 @@ WaypointFollower::followWaypoints()
       RCLCPP_INFO(
         get_logger(), "Succeeded processing waypoint %i, processing waypoint task execution",
         goal_index);
-      createTaskExecutor(goal->waypoints[goal_index].task_name);
+      createTaskExecutor(goal->waypoints[goal_index].task_name, goal->waypoints[goal_index].task_params);
       bool is_task_executed = waypoint_task_executor_->processAtWaypoint(
         goal->waypoints[goal_index].pose, goal_index);
       RCLCPP_INFO(
