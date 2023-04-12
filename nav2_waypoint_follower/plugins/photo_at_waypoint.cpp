@@ -36,7 +36,9 @@ void PhotoAtWaypoint::initialize(
   const std::string & plugin_name, const std::string & params)
 {
   auto node = parent.lock();
-
+  RCLCPP_INFO(
+      logger_,
+      "Task params %s", params.c_str());
   curr_frame_msg_ = std::make_shared<sensor_msgs::msg::Image>();
 
   nav2_util::declare_parameter_if_not_declared(
