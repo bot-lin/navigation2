@@ -153,7 +153,6 @@ WaypointFollower::createTaskExecutor(const std::string & e_id, const std::string
       get_logger(),
       "Failed to create waypoint_task_executor. Exception: %s", ex.what());
   }
-  waypoint_task_executor_->initialize(shared_from_this(), waypoint_task_executor_id_, params);
 }
 
 void

@@ -48,17 +48,9 @@ void WaitAtWaypoint::initialize(
       logger_,
       "Task params %s", params.c_str());
   json j = json::parse(params);
-  std::cout << j["waypoint_pause_duration"] << std::endl;
   logger_ = node->get_logger();
-  nav2_util::declare_parameter_if_not_declared(
-    node,
-    plugin_name + ".enabled",
-    rclcpp::ParameterValue(true));
 
   waypoint_pause_duration_ = j["waypoint_pause_duration"];
-  node->get_parameter(
-    plugin_name + ".enabled",
-    is_enabled_);
   if (waypoint_pause_duration_ == 0) {
     is_enabled_ = false;
     RCLCPP_INFO(
