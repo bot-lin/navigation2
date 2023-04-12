@@ -20,6 +20,9 @@
 #include "pluginlib/class_list_macros.hpp"
 
 #include "nav2_util/node_utils.hpp"
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 namespace nav2_waypoint_follower
 {
@@ -44,6 +47,8 @@ void WaitAtWaypoint::initialize(
   RCLCPP_INFO(
       logger_,
       "Task params %s", params.c_str());
+  json j = json::parse(params);
+  std::cout << j['waypoint_pause_duration'] << std::endl;
   logger_ = node->get_logger();
   nav2_util::declare_parameter_if_not_declared(
     node,
