@@ -48,7 +48,7 @@ void WaitAtWaypoint::initialize(
       logger_,
       "Task params %s", params.c_str());
   json j = json::parse(params);
-  std::cout << j['waypoint_pause_duration'] << std::endl;
+  std::cout << j["waypoint_pause_duration"] << std::endl;
   logger_ = node->get_logger();
   nav2_util::declare_parameter_if_not_declared(
     node,
