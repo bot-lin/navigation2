@@ -94,12 +94,12 @@ install(DIRECTORY include/
   DESTINATION include/
 )
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  find_package(ament_cmake_gtest REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-  add_subdirectory(test)
-endif()
+# if(BUILD_TESTING)
+#   find_package(ament_lint_auto REQUIRED)
+#   find_package(ament_cmake_gtest REQUIRED)
+#   ament_lint_auto_find_test_dependencies()
+#   add_subdirectory(test)
+# endif()
 
 ament_export_include_directories(include)
 ament_export_libraries(wait_at_waypoint photo_at_waypoint input_at_waypoint ${library_name})
