@@ -72,12 +72,12 @@ WaypointFollower::on_configure(const rclcpp_lifecycle::State & /*state*/)
     get_node_waitables_interface(),
     "navigate_to_pose", callback_group_);
 
-  follow_path_client_ = rclcpp_action::create_client<ClientT>(
-    get_node_base_interface(),
-    get_node_graph_interface(),
-    get_node_logging_interface(),
-    get_node_waitables_interface(),
-    "follow_path", callback_group_);
+  // follow_path_client_ = rclcpp_action::create_client<ClientT>(
+  //   get_node_base_interface(),
+  //   get_node_graph_interface(),
+  //   get_node_logging_interface(),
+  //   get_node_waitables_interface(),
+  //   "follow_path", callback_group_);
 
   action_server_ = std::make_unique<ActionServer>(
     get_node_base_interface(),
