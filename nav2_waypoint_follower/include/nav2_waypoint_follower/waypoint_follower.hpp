@@ -130,10 +130,12 @@ protected:
   // Our action server
   std::unique_ptr<ActionServer> action_server_;
   ActionClient::SharedPtr nav_to_pose_client_;
+  ActionClient::SharedPtr follow_path_client_;
   rclcpp::CallbackGroup::SharedPtr callback_group_;
   rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
   std::shared_future<rclcpp_action::ClientGoalHandle<ClientT>::SharedPtr> future_goal_handle_;
   bool stop_on_failure_;
+  bool current_nav_type_;
   ActionStatus current_goal_status_;
   int loop_rate_;
   std::vector<int> failed_ids_;
