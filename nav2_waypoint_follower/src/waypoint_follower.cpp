@@ -197,6 +197,7 @@ WaypointFollower::followWaypoints()
       new_goal = false;
       ClientT::Goal client_goal;
       client_goal.pose = goal->waypoints[goal_index].pose;
+      client_goal.behavior_tree = goal->waypoints[goal_index].behavior_tree;
       bool nav_type = goal->waypoints[goal_index].nav_type;
       std::string controller_id = goal->waypoints[goal_index].controller_id;
       std::string goal_checker_id = goal->waypoints[goal_index].goal_checker_id;
