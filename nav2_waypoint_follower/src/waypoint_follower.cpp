@@ -72,12 +72,12 @@ WaypointFollower::on_configure(const rclcpp_lifecycle::State & /*state*/)
     get_node_waitables_interface(),
     "navigate_to_pose", callback_group_);
 
-  // follow_path_client_ = rclcpp_action::create_client<ClientT>(
-  //   get_node_base_interface(),
-  //   get_node_graph_interface(),
-  //   get_node_logging_interface(),
-  //   get_node_waitables_interface(),
-  //   "follow_path", callback_group_);
+  nav_through_poses_client_ = rclcpp_action::create_client<ClientFP>(
+    get_node_base_interface(),
+    get_node_graph_interface(),
+    get_node_logging_interface(),
+    get_node_waitables_interface(),
+    "nav_through_poses", callback_group_);
 
   action_server_ = std::make_unique<ActionServer>(
     get_node_base_interface(),
@@ -130,7 +130,7 @@ WaypointFollower::on_cleanup(const rclcpp_lifecycle::State & /*state*/)
 
   action_server_.reset();
   nav_to_pose_client_.reset();
-  follow_path_client_.reset();
+  nav_through_poses_client_.reset();
 
   return nav2_util::CallbackReturn::SUCCESS;
 }
@@ -194,7 +194,7 @@ WaypointFollower::followWaypoints()
     // Check if asked to stop processing action
     if (action_server_->is_cancel_requested()) {
       if (current_nav_type_){
-        auto cancel_future = follow_path_client_->async_cancel_all_goals();
+        auto cancel_future = nav_through_poses_client_->async_cancel_all_goals();
         callback_group_executor_.spin_until_future_complete(cancel_future);
       }
       else{

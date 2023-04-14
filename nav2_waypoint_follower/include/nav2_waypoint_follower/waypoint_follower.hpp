@@ -22,6 +22,7 @@
 
 #include "nav2_util/lifecycle_node.hpp"
 #include "nav2_msgs/action/navigate_to_pose.hpp"
+#include "nav2_msgs/action/navigate_through_poses.hpp"
 #include "nav2_msgs/action/follow_waypoints.hpp"
 #include "nav_msgs/msg/path.hpp"
 #include "nav2_util/simple_action_server.hpp"
@@ -53,8 +54,10 @@ class WaypointFollower : public nav2_util::LifecycleNode
 public:
   using ActionT = nav2_msgs::action::FollowWaypoints;
   using ClientT = nav2_msgs::action::NavigateToPose;
+  using ClientT1 = nav2_msgs::action::NavigateThroughPoses;
   using ActionServer = nav2_util::SimpleActionServer<ActionT>;
   using ActionClient = rclcpp_action::Client<ClientT>;
+  using ActionClient1 = rclcpp_action::Client<ClientT1>;
 
   /**
    * @brief A constructor for nav2_waypoint_follower::WaypointFollower class
@@ -130,7 +133,7 @@ protected:
   // Our action server
   std::unique_ptr<ActionServer> action_server_;
   ActionClient::SharedPtr nav_to_pose_client_;
-  ActionClient::SharedPtr follow_path_client_;
+  ActionClient1::SharedPtr nav_through_poses_client_;
   rclcpp::CallbackGroup::SharedPtr callback_group_;
   rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
   std::shared_future<rclcpp_action::ClientGoalHandle<ClientT>::SharedPtr> future_goal_handle_;
