@@ -205,6 +205,7 @@ void RegulatedPurePursuitController::configure(
   global_path_pub_ = node->create_publisher<nav_msgs::msg::Path>("received_global_plan", 1);
   carrot_pub_ = node->create_publisher<geometry_msgs::msg::PointStamped>("lookahead_point", 1);
   carrot_arc_pub_ = node->create_publisher<nav_msgs::msg::Path>("lookahead_collision_arc", 1);
+  turning_radius_pub_ = node->create_publisher<std_msgs::msg::Float32>("rpp_turning_radius", 1);
 
   // initialize collision checker and set costmap
   collision_checker_ = std::make_unique<nav2_costmap_2d::
@@ -222,6 +223,7 @@ void RegulatedPurePursuitController::cleanup()
   global_path_pub_.reset();
   carrot_pub_.reset();
   carrot_arc_pub_.reset();
+  turning_radius_pub_.reset();
 }
 
 void RegulatedPurePursuitController::activate()
@@ -234,6 +236,7 @@ void RegulatedPurePursuitController::activate()
   global_path_pub_->on_activate();
   carrot_pub_->on_activate();
   carrot_arc_pub_->on_activate();
+  turning_radius_pub_->on_activate();
   // Add callback for dynamic parameters
   auto node = node_.lock();
   dyn_params_handler_ = node->add_on_set_parameters_callback(
@@ -252,6 +255,7 @@ void RegulatedPurePursuitController::deactivate()
   global_path_pub_->on_deactivate();
   carrot_pub_->on_deactivate();
   carrot_arc_pub_->on_deactivate();
+  turning_radius_pub_->on_deactivate();
   dyn_params_handler_.reset();
 }
 
@@ -641,6 +645,9 @@ void RegulatedPurePursuitController::applyConstraints(
 
   // limit the linear velocity by curvature
   const double radius = fabs(1.0 / curvature);
+  std_msgs::msg::Float32 radius_msg;
+  radius_msg.data = radius;
+  turning_radius_pub_->publish(radius_msg);
   const double & min_rad = regulated_linear_scaling_min_radius_;
   // RCLCPP_INFO(logger_, "Radius: %f", radius);
   if (use_regulated_linear_velocity_scaling_ && radius < min_rad) {
