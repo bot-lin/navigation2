@@ -144,4 +144,4 @@ nav_msgs::msg::Path DefiendWaypoints::createPlan(
 }  // namespace nav2_straightline_planner
 
 #include "pluginlib/class_list_macros.hpp"
-PLUGINLIB_EXPORT_CLASS(nav2_definedwaypoints_planner::DefiendWaypoints, nav2_core::GlobalPlanner)
+PLUGINLIB_EXPORT_CLASS(nav2_definedwaypoints_planner::DefinedWaypoints, nav2_core::GlobalPlanner)
