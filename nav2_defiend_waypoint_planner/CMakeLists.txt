@@ -24,6 +24,10 @@ find_package(tf2_ros REQUIRED)
 find_package(nav2_costmap_2d REQUIRED)
 find_package(nav2_core REQUIRED)
 find_package(pluginlib REQUIRED)
+find_package(OpenCV 4 QUIET)
+if(NOT OpenCV_FOUND)
+  find_package(OpenCV REQUIRED)
+endif()
 
 include_directories(
   include
@@ -46,6 +50,7 @@ set(dependencies
   nav2_costmap_2d
   nav2_core
   pluginlib
+  OpenCV
 )
 
 add_library(${library_name} SHARED
