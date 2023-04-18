@@ -80,8 +80,8 @@ void DefinedWaypoints::configure(
     node_->get_logger(), "configure plugin %s of type NavfnPlanner",
     name_.c_str());
   std::string filename = "/data/path.txt";
-    std::vector<Pose> poses = readPathsFromFile(filename);
-    auto data = convertPosesToGridMap(poses, size_y_, size_x_);
+  std::vector<Pose> poses = readPathsFromFile(filename);
+  std::vector<std::vector<int>> graph = convertPosesToGridMap(poses, size_y_, size_x_);
 }
 
 std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std::vector<Pose>& poses, int grid_width, int grid_height) {
@@ -168,10 +168,10 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   double x_increment = (goal.pose.position.x - start.pose.position.x) / total_number_of_loop;
   double y_increment = (goal.pose.position.y - start.pose.position.y) / total_number_of_loop;
 
-  for (int i = 0; i < total_number_of_loop; ++i) {
+  for (const auto& pose : poses){
     geometry_msgs::msg::PoseStamped pose;
-    pose.pose.position.x = start.pose.position.x + x_increment * i;
-    pose.pose.position.y = start.pose.position.y + y_increment * i;
+    pose.pose.position.x = pose.x;
+    pose.pose.position.y = pose.y;
     pose.pose.position.z = 0.0;
     pose.pose.orientation.x = 0.0;
     pose.pose.orientation.y = 0.0;
