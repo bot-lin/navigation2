@@ -168,10 +168,10 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   double x_increment = (goal.pose.position.x - start.pose.position.x) / total_number_of_loop;
   double y_increment = (goal.pose.position.y - start.pose.position.y) / total_number_of_loop;
 
-  for (const auto& pose : poses){
+  for (const auto& pose_struct : poses){
     geometry_msgs::msg::PoseStamped pose;
-    pose.pose.position.x = pose.x;
-    pose.pose.position.y = pose.y;
+    pose.pose.position.x = pose_struct.x;
+    pose.pose.position.y = pose_struct.y;
     pose.pose.position.z = 0.0;
     pose.pose.orientation.x = 0.0;
     pose.pose.orientation.y = 0.0;
