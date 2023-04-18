@@ -113,7 +113,7 @@ public:
 
   double getOriginX()
   {
-    return combined_costmap_->getOriginX();
+    return combined_costmap_.getOriginX();
   }
 
   /**
