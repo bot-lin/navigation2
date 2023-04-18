@@ -82,8 +82,9 @@ std::vector<Pose> DefinedWaypoints::readPathsFromFile(const std::string& filenam
     std::ifstream file(filename);
 
     if (file.is_open()) {
-        int x, y;
+        double x, y;
         while (file >> x >> y) {
+          std::cout << x << " " << y << " " <<std::endl;
             poses.push_back({x, y});
         }
     }

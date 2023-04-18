@@ -56,8 +56,8 @@
 #include <vector>
 
 struct Pose {
-    int x;
-    int y;
+    double x;
+    double y;
 };
 
 namespace nav2_definedwaypoints_planner
