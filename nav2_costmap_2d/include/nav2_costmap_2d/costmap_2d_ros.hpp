@@ -199,7 +199,7 @@ public:
   
   double getOriginX()
   {
-    return layered_costmap_.getOriginX();
+    return layered_costmap_->getOriginX();
   }
 
   /**
