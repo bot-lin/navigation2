@@ -133,7 +133,7 @@ std::vector<std::pair<int, int>> DefinedWaypoints::aStar(std::vector<std::vector
     int cols = grid[0].size();
 
     std::vector<std::vector<bool>> closedSet(rows, std::vector<bool>(cols, false));
-    std::vector<std::vector<Node>> nodes(rows, std::vector<Node>(cols));
+    std::vector<std::vector<MapNode>> nodes(rows, std::vector<MapNode>(cols));
 
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
@@ -149,11 +149,11 @@ std::vector<std::pair<int, int>> DefinedWaypoints::aStar(std::vector<std::vector
     nodes[start.first][start.second].h = manhattanDistance(start.first, start.second, end.first, end.second);
     nodes[start.first][start.second].f = nodes[start.first][start.second].g + nodes[start.first][start.second].h;
 
-    std::set<Node> openSet;
+    std::set<MapNode> openSet;
     openSet.insert(nodes[start.first][start.second]);
 
     while (!openSet.empty()) {
-        Node current = *openSet.begin();
+        MapNode current = *openSet.begin();
         openSet.erase(openSet.begin());
 
         if (current.x == end.first && current.y == end.second) {
