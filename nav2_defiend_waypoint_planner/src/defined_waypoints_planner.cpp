@@ -61,9 +61,14 @@ void DefinedWaypoints::configure(
   costmap_ = costmap_ros->getCostmap();
   global_frame_ = costmap_ros->getGlobalFrameID();
   double origin_x = costmap_ros->getOriginX();
+  double origin_y = costmap_ros->getOriginY();
+  double resolution  = costmap_ros->getResolution();
+  unsigned int size_x = costmap_ros->getSizeInCellsX();
+  unsigned int size_y = costmap_ros->getSizeInCellsY();
+
   RCLCPP_INFO(
-    node_->get_logger(), "corigin x %f",
-    origin_x);
+    node_->get_logger(), "origin x %f y, resolution: %f,  size of x %d y %d",
+    origin_x, origin_y, resolution, size_x, size_y);
   // Parameter initialization
   nav2_util::declare_parameter_if_not_declared(
     node_, name_ + ".interpolation_resolution", rclcpp::ParameterValue(

@@ -116,6 +116,26 @@ public:
     return combined_costmap_.getOriginX();
   }
 
+  double getOriginY()
+  {
+    return combined_costmap_.getOriginY();
+  }
+
+  double getResolution()
+  {
+    return combined_costmap_.getResolution();
+  }
+
+  unsigned int getSizeInCellsX()
+  {
+    return combined_costmap_.getSizeInCellsX()
+  }
+
+  unsigned int getSizeInCellsY()
+  {
+    return combined_costmap_.getSizeInCellsY()
+  }
+
   /**
    * @brief If this costmap is rolling or not
    */

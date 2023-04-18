@@ -202,6 +202,29 @@ public:
     return layered_costmap_->getOriginX();
   }
 
+  double getOriginY()
+  {
+    return layered_costmap_->getOriginY();
+  }
+
+
+  double getResolution()
+  {
+    return layered_costmap_->getResolution();
+  }
+
+  unsigned int getSizeInCellsX()
+  {
+    return layered_costmap_->getSizeInCellsX()
+  }
+
+  unsigned int getSizeInCellsY()
+  {
+    return layered_costmap_->getSizeInCellsY()
+  }
+
+
+
   /**
    * @brief  Returns the global frame of the costmap
    * @return The global frame of the costmap
