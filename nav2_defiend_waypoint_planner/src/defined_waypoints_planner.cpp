@@ -133,7 +133,7 @@ std::vector<std::pair<int, int>> DefinedWaypoints::aStar(std::vector<std::vector
     int cols = grid[0].size();
 
     std::vector<std::vector<bool>> closedSet(rows, std::vector<bool>(cols, false));
-    std::vector<std::vector<Node>> nodes(rows, std::vector<Node>(cols));
+    std::vector<std::vector<MapNode>> nodes(rows, std::vector<MapNode>(cols));
 
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
@@ -149,12 +149,12 @@ std::vector<std::pair<int, int>> DefinedWaypoints::aStar(std::vector<std::vector
     nodes[start.first][start.second].h = manhattanDistance(start.first, start.second, end.first, end.second);
     nodes[start.first][start.second].f = nodes[start.first][start.second].g + nodes[start.first][start.second].h;
 
-    auto compare = [](const Node& a, const Node& b) { return a.f > b.f; };
-    std::priority_queue<Node, std::vector<Node>, decltype(compare)> openSet(compare);
+    auto compare = [](const MapNode& a, const MapNode& b) { return a.f > b.f; };
+    std::priority_queue<MapNode, std::vector<MapNode>, decltype(compare)> openSet(compare);
     openSet.push(nodes[start.first][start.second]);
 
     while (!openSet.empty()) {
-        Node current = openSet.top();
+        MapNode current = openSet.top();
         openSet.pop();
 
         if (current.x == end.first && current.y == end.second) {
@@ -188,7 +188,7 @@ std::vector<std::pair<int, int>> DefinedWaypoints::aStar(std::vector<std::vector
                 nodes[x][y].f = nodes[x][y].g + nodes[x][y].h;
                 nodes[x][y] = current;
                 bool inOpenSet = false;
-            for (const Node& node : openSet) {
+            for (const MapNode& node : openSet) {
                 if (node.x == x && node.y == y) {
                     inOpenSet = true;
                     break;

@@ -60,7 +60,7 @@ struct Pose {
     double y;
 };
 
-struct Node {
+struct MapNode {
     int x, y;
     int g, h, f;
 };
