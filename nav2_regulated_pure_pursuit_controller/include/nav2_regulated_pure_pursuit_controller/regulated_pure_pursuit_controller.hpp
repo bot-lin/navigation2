@@ -30,6 +30,7 @@
 #include "nav2_util/odometry_utils.hpp"
 #include "nav2_util/geometry_utils.hpp"
 #include "geometry_msgs/msg/pose2_d.hpp"
+#include "std_msgs/msg/float32.hpp"
 
 namespace nav2_regulated_pure_pursuit_controller
 {
