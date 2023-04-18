@@ -182,7 +182,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
     global_path.poses.push_back(pose);
   }
 
-  global_path.poses.push_back(goal);
+  // global_path.poses.push_back(goal);
 
   return global_path;
 }
