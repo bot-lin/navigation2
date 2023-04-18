@@ -128,12 +128,12 @@ public:
 
   unsigned int getSizeInCellsX()
   {
-    return combined_costmap_.getSizeInCellsX()
+    return combined_costmap_.getSizeInCellsX();
   }
 
   unsigned int getSizeInCellsY()
   {
-    return combined_costmap_.getSizeInCellsY()
+    return combined_costmap_.getSizeInCellsY();
   }
 
   /**

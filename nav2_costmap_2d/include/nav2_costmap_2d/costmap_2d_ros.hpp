@@ -215,12 +215,12 @@ public:
 
   unsigned int getSizeInCellsX()
   {
-    return layered_costmap_->getSizeInCellsX()
+    return layered_costmap_->getSizeInCellsX();
   }
 
   unsigned int getSizeInCellsY()
   {
-    return layered_costmap_->getSizeInCellsY()
+    return layered_costmap_->getSizeInCellsY();
   }
 
 
