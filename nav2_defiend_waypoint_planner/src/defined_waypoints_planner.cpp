@@ -80,7 +80,7 @@ void DefinedWaypoints::configure(
     node_->get_logger(), "configure plugin %s of type NavfnPlanner",
     name_.c_str());
   std::string filename = "/data/path.txt";
-  std::vector<Pose> poses = readPathsFromFile(filename);
+  poses = readPathsFromFile(filename);
   std::vector<std::vector<int>> graph = convertPosesToGridMap(poses, size_y_, size_x_);
 }
 

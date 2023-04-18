@@ -110,6 +110,7 @@ private:
   unsigned int size_x_;
   unsigned int size_y_;
   double interpolation_resolution_;
+  std::vector<Pose> poses;
 };
 
 }  // namespace nav2_straightline_planner
