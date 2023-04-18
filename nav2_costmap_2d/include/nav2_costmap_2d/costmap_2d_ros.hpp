@@ -196,6 +196,11 @@ public:
   {
     return layered_costmap_->getCostmap();
   }
+  
+  double getOriginX()
+  {
+    return layered_costmap_->getOriginX();
+  }
 
   /**
    * @brief  Returns the global frame of the costmap

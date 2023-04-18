@@ -111,6 +111,11 @@ public:
     return &combined_costmap_;
   }
 
+  double getOriginX()
+  {
+    return combined_costmap_->getOriginX();
+  }
+
   /**
    * @brief If this costmap is rolling or not
    */

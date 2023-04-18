@@ -60,7 +60,10 @@ void DefinedWaypoints::configure(
   tf_ = tf;
   costmap_ = costmap_ros->getCostmap();
   global_frame_ = costmap_ros->getGlobalFrameID();
-
+  double origin_x = costmap_ros->getOriginX();
+  RCLCPP_INFO(
+    node_->get_logger(), "corigin x %f",
+    origin_x);
   // Parameter initialization
   nav2_util::declare_parameter_if_not_declared(
     node_, name_ + ".interpolation_resolution", rclcpp::ParameterValue(
@@ -71,23 +74,14 @@ void DefinedWaypoints::configure(
     name_.c_str());
   std::string filename = "/data/path.txt";
     std::vector<Pose> poses = readPathsFromFile(filename);
-  for (Pose element : poses){
-    std::cout << element.x << " " << element.y << " " <<std::endl;
-  }
-
 }
 
 std::vector<Pose> DefinedWaypoints::readPathsFromFile(const std::string& filename){
   std::vector<Pose> poses;
     std::ifstream file(filename);
-    RCLCPP_INFO(node_->get_logger(), "Opening file");
     if (file.is_open()) {
         double x, y;
-    RCLCPP_INFO(node_->get_logger(), "opened file");
-        
         while (file >> x >> y) {
-              RCLCPP_INFO(node_->get_logger(), "%f, %f", x, y);
-
             poses.push_back({x, y});
         }
     }
