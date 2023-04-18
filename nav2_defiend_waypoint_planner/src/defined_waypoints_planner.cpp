@@ -86,7 +86,8 @@ std::vector<Pose> DefinedWaypoints::readPathsFromFile(const std::string& filenam
     RCLCPP_INFO(node_->get_logger(), "opened file");
         
         while (file >> x >> y) {
-          std::cout << x << " " << y << " " <<std::endl;
+              RCLCPP_INFO(node_->get_logger(), "%f, %f", x, y);
+
             poses.push_back({x, y});
         }
     }
