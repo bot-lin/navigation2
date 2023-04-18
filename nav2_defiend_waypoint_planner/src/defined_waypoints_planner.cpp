@@ -41,6 +41,8 @@
 #include <cmath>
 #include <string>
 #include <memory>
+#include <fstream>
+
 #include "nav2_util/node_utils.hpp"
 
 #include "nav2_definedwaypoints_planner/defined_waypoints_planner.hpp"
