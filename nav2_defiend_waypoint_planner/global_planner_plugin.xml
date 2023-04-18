@@ -1,5 +1,5 @@
 <library path="nav2_definedwaypoints_planner_plugin">
-	<class name="nav2_definedwaypoints_planner/DefinedWaypoints" type="nav2_defiendwaypoint_planner::DefinedWaypoints" base_class_type="nav2_core::GlobalPlanner">
+	<class name="nav2_definedwaypoints_planner/DefinedWaypoints" type="nav2_definedwaypoint_planner::DefinedWaypoints" base_class_type="nav2_core::GlobalPlanner">
 	  <description>This is an example plugin which produces waypoint path.</description>
 	</class>
 </library>

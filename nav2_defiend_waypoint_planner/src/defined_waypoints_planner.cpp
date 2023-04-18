@@ -48,7 +48,7 @@
 namespace nav2_definedwaypoints_planner
 {
 
-void DefiendWaypoints::configure(
+void DefinedWaypoints::configure(
   const rclcpp_lifecycle::LifecycleNode::WeakPtr & parent,
   std::string name, std::shared_ptr<tf2_ros::Buffer> tf,
   std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros)
@@ -69,28 +69,28 @@ void DefiendWaypoints::configure(
     name_.c_str());
 }
 
-void DefiendWaypoints::cleanup()
+void DefinedWaypoints::cleanup()
 {
   RCLCPP_INFO(
     node_->get_logger(), "CleaningUp plugin %s of type NavfnPlanner",
     name_.c_str());
 }
 
-void DefiendWaypoints::activate()
+void DefinedWaypoints::activate()
 {
   RCLCPP_INFO(
     node_->get_logger(), "Activating plugin %s of type NavfnPlanner",
     name_.c_str());
 }
 
-void DefiendWaypoints::deactivate()
+void DefinedWaypoints::deactivate()
 {
   RCLCPP_INFO(
     node_->get_logger(), "Deactivating plugin %s of type NavfnPlanner",
     name_.c_str());
 }
 
-nav_msgs::msg::Path DefiendWaypoints::createPlan(
+nav_msgs::msg::Path DefinedWaypoints::createPlan(
   const geometry_msgs::msg::PoseStamped & start,
   const geometry_msgs::msg::PoseStamped & goal)
 {

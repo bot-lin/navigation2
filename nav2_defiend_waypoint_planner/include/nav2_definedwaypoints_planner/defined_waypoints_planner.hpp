@@ -57,11 +57,11 @@
 namespace nav2_definedwaypoints_planner
 {
 
-class DefiendWaypoints : public nav2_core::GlobalPlanner
+class DefinedWaypoints : public nav2_core::GlobalPlanner
 {
 public:
-  DefiendWaypoints() = default;
-  ~DefiendWaypoints() = default;
+  DefinedWaypoints() = default;
+  ~DefinedWaypoints() = default;
 
   // plugin configure
   void configure(
