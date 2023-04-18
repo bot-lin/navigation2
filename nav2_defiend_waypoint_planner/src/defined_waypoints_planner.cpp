@@ -95,7 +95,7 @@ std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std:
       gridMap[y_index][x_index] = Vec3b(0, 0, 0);
     }
     Mat img(grid_height, grid_width, CV_8UC3, reinterpret_cast<uchar*>(gridMap.data()));
-    std::string filename = "/data/grid_map.png";
+    std::string filename = "/data/grid_map.jpg";
     imwrite(filename, img);
     return grid_map;
 }
