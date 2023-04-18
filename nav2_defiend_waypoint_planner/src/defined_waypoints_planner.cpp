@@ -79,7 +79,7 @@ void DefinedWaypoints::configure(
     name_.c_str());
   std::string filename = "/data/path.txt";
     std::vector<Pose> poses = readPathsFromFile(filename);
-    auto data = convertPosesToGridMap(poses, size_y_, size_x_)
+    auto data = convertPosesToGridMap(poses, size_y_, size_x_);
 }
 
 std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std::vector<Pose>& poses, int grid_width, int grid_height) {
@@ -87,13 +87,13 @@ std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std:
     std::vector<std::vector<Vec3b>> gridMap(grid_height, std::vector<Vec3b>(grid_width, Vec3b(255, 255, 255))); // Initialize with white color
 
     for (const auto& pose : poses) {
-      unsigned int y_index = std::floor((pose.y - origin_y_) / resolution);
-      unsigned int x_index = std::floor((pose.x - origin_x_) / resolution);
+      unsigned int y_index = std::floor((pose.y - origin_y_) / resolution_);
+      unsigned int x_index = std::floor((pose.x - origin_x_) / resolution_);
       grid_map[y_index][x_index] = 1;
       gridMap[y_index][x_index] = Vec3b(0, 0, 0);
     }
-    Mat img(height, width, CV_8UC3, reinterpret_cast<uchar*>(gridMap.data()));
-    string filename = "/data/grid_map.png";
+    Mat img(grid_height, grid_width, CV_8UC3, reinterpret_cast<uchar*>(gridMap.data()));
+    std::string filename = "/data/grid_map.png";
     imwrite(filename, img);
     return grid_map;
 }
