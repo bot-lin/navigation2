@@ -133,7 +133,7 @@ std::vector<std::pair<int, int>> DefinedWaypoints::aStar(std::vector<std::vector
     int cols = grid[0].size();
 
     std::vector<std::vector<bool>> closedSet(rows, std::vector<bool>(cols, false));
-    std::vector<std::vector<MapNode>> nodes(rows, std::vector<MapNode>(cols));
+    std::vector<std::vector<Node>> nodes(rows, std::vector<Node>(cols));
 
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
@@ -149,13 +149,12 @@ std::vector<std::pair<int, int>> DefinedWaypoints::aStar(std::vector<std::vector
     nodes[start.first][start.second].h = manhattanDistance(start.first, start.second, end.first, end.second);
     nodes[start.first][start.second].f = nodes[start.first][start.second].g + nodes[start.first][start.second].h;
 
-    auto compare = [](const MapNode& a, const MapNode& b) { return a.f > b.f; };
-    std::priority_queue<MapNode, std::vector<MapNode>, decltype(compare)> openSet(compare);
-    openSet.push(nodes[start.first][start.second]);
+    std::set<Node> openSet;
+    openSet.insert(nodes[start.first][start.second]);
 
     while (!openSet.empty()) {
-        MapNode current = openSet.top();
-        openSet.pop();
+        Node current = *openSet.begin();
+        openSet.erase(openSet.begin());
 
         if (current.x == end.first && current.y == end.second) {
             std::vector<std::pair<int, int>> path;
@@ -175,28 +174,21 @@ std::vector<std::pair<int, int>> DefinedWaypoints::aStar(std::vector<std::vector
         for (const auto& neighbor : getNeighbors(current.x, current.y)) {
             int x = neighbor.first;
             int y = neighbor.second;
+             if (!isValid(x, y, grid) || grid[x][y] == 1 || closedSet[x][y]) {
+            continue;
+        }
+        int tentative_g = current.g + 1;
 
-            if (!isValid(x, y, grid) || grid[x][y] == 1 || closedSet[x][y]) {
-                continue;
-            }
+        if (tentative_g < nodes[x][y].g) {
+            nodes[x][y].g = tentative_g;
+            nodes[x][y].h = manhattanDistance(x, y, end.first, end.second);
+            nodes[x][y].f = nodes[x][y].g + nodes[x][y].h;
+            nodes[x][y] = current;
 
-            int tentative_g = current.g + 1;
-
-            if (tentative_g < nodes[x][y].g) {
-                nodes[x][y].g = tentative_g;
-                nodes[x][y].h = manhattanDistance(x, y, end.first, end.second);
-                nodes[x][y].f = nodes[x][y].g + nodes[x][y].h;
-                nodes[x][y] = current;
-                bool inOpenSet = false;
-            for (const MapNode& node : openSet) {
-                if (node.x == x && node.y == y) {
-                    inOpenSet = true;
-                    break;
-                }
-            }
+            bool inOpenSet = openSet.count(nodes[x][y]) > 0;
 
             if (!inOpenSet) {
-                openSet.push(nodes[x][y]);
+                openSet.insert(nodes[x][y]);
             }
         }
     }
@@ -204,6 +196,8 @@ std::vector<std::pair<int, int>> DefinedWaypoints::aStar(std::vector<std::vector
 
 return {}; // No path found
 }
+
+
 
 void DefinedWaypoints::cleanup()
 {
