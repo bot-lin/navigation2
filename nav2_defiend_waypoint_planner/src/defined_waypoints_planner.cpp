@@ -64,6 +64,9 @@ void DefiendWaypoints::configure(
     node_, name_ + ".interpolation_resolution", rclcpp::ParameterValue(
       0.1));
   node_->get_parameter(name_ + ".interpolation_resolution", interpolation_resolution_);
+  RCLCPP_INFO(
+    node_->get_logger(), "configure plugin %s of type NavfnPlanner",
+    name_.c_str());
 }
 
 void DefiendWaypoints::cleanup()
