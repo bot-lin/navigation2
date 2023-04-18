@@ -68,9 +68,7 @@ void DefinedWaypoints::configure(
   size_x_ = costmap_ros->getSizeInCellsX();
   size_y_ = costmap_ros->getSizeInCellsY();
 
-  RCLCPP_INFO(
-    node_->get_logger(), "origin x %f y %f, resolution: %f,  size of x %d y %d",
-    origin_x, origin_y, resolution, size_x, size_y);
+  
   // Parameter initialization
   nav2_util::declare_parameter_if_not_declared(
     node_, name_ + ".interpolation_resolution", rclcpp::ParameterValue(
@@ -86,11 +84,11 @@ void DefinedWaypoints::configure(
 
 std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std::vector<Pose>& poses, int grid_width, int grid_height) {
   std::vector<std::vector<int>> grid_map(grid_height, std::vector<int>(grid_width, 0));
-    vector<vector<Vec3b>> gridMap(grid_height, vector<Vec3b>(grid_width, Vec3b(255, 255, 255))); // Initialize with white color
+    std::vector<std::vector<Vec3b>> gridMap(grid_height, std::vector<Vec3b>(grid_width, Vec3b(255, 255, 255))); // Initialize with white color
 
     for (const auto& pose : poses) {
-      unsignd int y_index = std::floor((pose.y - origin_y_) / resolution);
-      unsignd int x_index = std::floor((pose.x - origin_x_) / resolution);
+      unsigned int y_index = std::floor((pose.y - origin_y_) / resolution);
+      unsigned int x_index = std::floor((pose.x - origin_x_) / resolution);
       grid_map[y_index][x_index] = 1;
       gridMap[y_index][x_index] = Vec3b(0, 0, 0);
     }
