@@ -115,6 +115,96 @@ std::vector<Pose> DefinedWaypoints::readPathsFromFile(const std::string& filenam
     file.close();
     return poses;
 }
+
+bool DefinedWaypoints::isValid(int x, int y, const std::vector<std::vector<int>>& grid) {
+    return x >= 0 && x < grid.size() && y >= 0 && y < grid[0].size();
+}
+
+std::vector<std::pair<int, int>> DefinedWaypoints::getNeighbors(int x, int y) {
+    return {{x - 1, y}, {x + 1, y}, {x, y - 1}, {x, y + 1}};
+}
+
+int DefinedWaypoints::manhattanDistance(int x1, int y1, int x2, int y2) {
+    return abs(x1 - x2) + abs(y1 - y2);
+}
+
+std::vector<std::pair<int, int>> DefinedWaypoints::aStar(std::vector<std::vector<int>>& grid, std::pair<int, int> start, std::pair<int, int> end) {
+    int rows = grid.size();
+    int cols = grid[0].size();
+
+    std::vector<std::vector<bool>> closedSet(rows, std::vector<bool>(cols, false));
+    std::vector<std::vector<Node>> nodes(rows, std::vector<Node>(cols));
+
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            nodes[i][j].x = i;
+            nodes[i][j].y = j;
+            nodes[i][j].f = INT_MAX;
+            nodes[i][j].g = INT_MAX;
+            nodes[i][j].h = INT_MAX;
+        }
+    }
+
+    nodes[start.first][start.second].g = 0;
+    nodes[start.first][start.second].h = manhattanDistance(start.first, start.second, end.first, end.second);
+    nodes[start.first][start.second].f = nodes[start.first][start.second].g + nodes[start.first][start.second].h;
+
+    auto compare = [](const Node& a, const Node& b) { return a.f > b.f; };
+    std::priority_queue<Node, std::vector<Node>, decltype(compare)> openSet(compare);
+    openSet.push(nodes[start.first][start.second]);
+
+    while (!openSet.empty()) {
+        Node current = openSet.top();
+        openSet.pop();
+
+        if (current.x == end.first && current.y == end.second) {
+            std::vector<std::pair<int, int>> path;
+            while (current.x != start.first || current.y != start.second) {
+                path.push_back({current.x, current.y});
+                int x = current.x;
+                int y = current.y;
+                current = nodes[current.x][current.y];
+            }
+            path.push_back({start.first, start.second});
+            std::reverse(path.begin(), path.end());
+            return path;
+        }
+
+        closedSet[current.x][current.y] = true;
+
+        for (const auto& neighbor : getNeighbors(current.x, current.y)) {
+            int x = neighbor.first;
+            int y = neighbor.second;
+
+            if (!isValid(x, y, grid) || grid[x][y] == 1 || closedSet[x][y]) {
+                continue;
+            }
+
+            int tentative_g = current.g + 1;
+
+            if (tentative_g < nodes[x][y].g) {
+                nodes[x][y].g = tentative_g;
+                nodes[x][y].h = manhattanDistance(x, y, end.first, end.second);
+                nodes[x][y].f = nodes[x][y].g + nodes[x][y].h;
+                nodes[x][y] = current;
+                bool inOpenSet = false;
+            for (const Node& node : openSet) {
+                if (node.x == x && node.y == y) {
+                    inOpenSet = true;
+                    break;
+                }
+            }
+
+            if (!inOpenSet) {
+                openSet.push(nodes[x][y]);
+            }
+        }
+    }
+}
+
+return {}; // No path found
+}
+
 void DefinedWaypoints::cleanup()
 {
   RCLCPP_INFO(

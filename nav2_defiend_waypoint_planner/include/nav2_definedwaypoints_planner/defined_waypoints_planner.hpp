@@ -60,6 +60,11 @@ struct Pose {
     double y;
 };
 
+struct Node {
+    int x, y;
+    int g, h, f;
+};
+
 namespace nav2_definedwaypoints_planner
 {
 
@@ -86,6 +91,11 @@ public:
 
   std::vector<Pose> readPathsFromFile(const std::string& filename);
   std::vector<std::vector<int>> convertPosesToGridMap(const std::vector<Pose>& poses, int grid_width, int grid_height);
+  bool isValid(int x, int y, const std::vector<std::vector<int>>& grid);
+  std::vector<std::pair<int, int>> getNeighbors(int x, int y);
+  int manhattanDistance(int x1, int y1, int x2, int y2);
+  std::vector<std::pair<int, int>> aStar(std::vector<std::vector<int>>& grid, std::pair<int, int> start, std::pair<int, int> end);
+
 
   // This method creates path for given start and goal pose.
   nav_msgs::msg::Path createPlan(
