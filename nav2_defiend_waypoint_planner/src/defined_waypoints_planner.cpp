@@ -67,7 +67,9 @@ void DefinedWaypoints::configure(
   resolution_  = costmap_ros->getResolution();
   size_x_ = costmap_ros->getSizeInCellsX();
   size_y_ = costmap_ros->getSizeInCellsY();
-
+  RCLCPP_INFO(
+    node_->get_logger(), "origin x %f y %f, resolution: %f,  size of x %d y %d",
+    origin_x_, origin_y_, resolution_, size_x_, size_y_);
   
   // Parameter initialization
   nav2_util::declare_parameter_if_not_declared(
