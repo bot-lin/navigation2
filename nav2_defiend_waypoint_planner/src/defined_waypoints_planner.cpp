@@ -42,10 +42,12 @@
 #include <string>
 #include <memory>
 #include <fstream>
+#include <opencv2/opencv.hpp>
 
 #include "nav2_util/node_utils.hpp"
 
 #include "nav2_definedwaypoints_planner/defined_waypoints_planner.hpp"
+using namespace cv;
 
 namespace nav2_definedwaypoints_planner
 {
@@ -60,11 +62,11 @@ void DefinedWaypoints::configure(
   tf_ = tf;
   costmap_ = costmap_ros->getCostmap();
   global_frame_ = costmap_ros->getGlobalFrameID();
-  double origin_x = costmap_ros->getOriginX();
-  double origin_y = costmap_ros->getOriginY();
-  double resolution  = costmap_ros->getResolution();
-  unsigned int size_x = costmap_ros->getSizeInCellsX();
-  unsigned int size_y = costmap_ros->getSizeInCellsY();
+  origin_x_ = costmap_ros->getOriginX();
+  origin_y_ = costmap_ros->getOriginY();
+  resolution_  = costmap_ros->getResolution();
+  size_x_ = costmap_ros->getSizeInCellsX();
+  size_y_ = costmap_ros->getSizeInCellsY();
 
   RCLCPP_INFO(
     node_->get_logger(), "origin x %f y %f, resolution: %f,  size of x %d y %d",
@@ -79,6 +81,23 @@ void DefinedWaypoints::configure(
     name_.c_str());
   std::string filename = "/data/path.txt";
     std::vector<Pose> poses = readPathsFromFile(filename);
+    auto data = convertPosesToGridMap(poses, size_y_, size_x_)
+}
+
+std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std::vector<Pose>& poses, int grid_width, int grid_height) {
+  std::vector<std::vector<int>> grid_map(grid_height, std::vector<int>(grid_width, 0));
+    vector<vector<Vec3b>> gridMap(grid_height, vector<Vec3b>(grid_width, Vec3b(255, 255, 255))); // Initialize with white color
+
+    for (const auto& pose : poses) {
+      unsignd int y_index = std::floor((pose.y - origin_y_) / resolution);
+      unsignd int x_index = std::floor((pose.x - origin_x_) / resolution);
+      grid_map[y_index][x_index] = 1;
+      gridMap[y_index][x_index] = Vec3b(0, 0, 0);
+    }
+    Mat img(height, width, CV_8UC3, reinterpret_cast<uchar*>(gridMap.data()));
+    string filename = "/data/grid_map.png";
+    imwrite(filename, img);
+    return grid_map;
 }
 
 std::vector<Pose> DefinedWaypoints::readPathsFromFile(const std::string& filename){

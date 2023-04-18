@@ -85,6 +85,7 @@ public:
   void deactivate() override;
 
   std::vector<Pose> readPathsFromFile(const std::string& filename);
+  std::vector<std::vector<int>> convertPosesToGridMap(const std::vector<Pose>& poses, int grid_width, int grid_height);
 
   // This method creates path for given start and goal pose.
   nav_msgs::msg::Path createPlan(
@@ -103,7 +104,11 @@ private:
 
   // The global frame of the costmap
   std::string global_frame_, name_;
-
+  double origin_x_;
+  double origin_y_;
+  double resolution_;
+  unsigned int size_x_;
+  unsigned int size_y_;
   double interpolation_resolution_;
 };
 
