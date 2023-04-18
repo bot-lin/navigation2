@@ -75,7 +75,7 @@ void DefinedWaypoints::configure(
 
 }
 
-voide DefinedWaypoints::readPathsFromFile(const std::string& filename){
+std::vector<Pose> DefinedWaypoints::readPathsFromFile(const std::string& filename){
   std::vector<Pose> poses;
     std::ifstream file(filename);
 
