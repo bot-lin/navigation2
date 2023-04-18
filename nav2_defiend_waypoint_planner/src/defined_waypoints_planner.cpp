@@ -67,8 +67,27 @@ void DefinedWaypoints::configure(
   RCLCPP_INFO(
     node_->get_logger(), "configure plugin %s of type NavfnPlanner",
     name_.c_str());
+  std::string filename = "/data/path.txt";
+    std::vector<Pose> poses = readPathsFromFile(filename);
+  for (Pose element : poses){
+    std::cout << element.x << " " << element.y << " " <<std::endl;
+  }
+
 }
 
+voide DefinedWaypoints::readPathsFromFile(const std::string& filename){
+  std::vector<Pose> poses;
+    std::ifstream file(filename);
+
+    if (file.is_open()) {
+        int x, y;
+        while (file >> x >> y) {
+            poses.push_back({x, y});
+        }
+    }
+    file.close();
+    return poses;
+}
 void DefinedWaypoints::cleanup()
 {
   RCLCPP_INFO(

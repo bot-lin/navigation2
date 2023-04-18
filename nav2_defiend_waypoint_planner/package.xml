@@ -3,7 +3,7 @@
 <package format="3">
   <name>nav2_definedwaypoints_planner</name>
   <version>1.0.0</version>
-  <description>Defiend waypoints planner.</description>
+  <description>Defined waypoints planner.</description>
   <maintainer email="zlin6364@hotmail.com">Zheng Lin</maintainer>
   <license>BSD-3-Clause</license>
 

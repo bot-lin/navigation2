@@ -53,6 +53,12 @@
 #include "nav2_util/robot_utils.hpp"
 #include "nav2_util/lifecycle_node.hpp"
 #include "nav2_costmap_2d/costmap_2d_ros.hpp"
+#include <vector>
+
+struct Pose {
+    int x;
+    int y;
+};
 
 namespace nav2_definedwaypoints_planner
 {
@@ -77,6 +83,8 @@ public:
 
   // plugin deactivate
   void deactivate() override;
+
+  std::vector<Pose> readPathsFromFile(const std::string& filename);
 
   // This method creates path for given start and goal pose.
   nav_msgs::msg::Path createPlan(
