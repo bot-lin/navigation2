@@ -62,7 +62,7 @@ struct Pose {
 
 struct MapNode {
     int x, y;
-    int g, h, f;
+    int cost, heuristic;
 };
 
 namespace nav2_definedwaypoints_planner
@@ -92,9 +92,10 @@ public:
   std::vector<Pose> readPathsFromFile(const std::string& filename);
   std::vector<std::vector<int>> convertPosesToGridMap(const std::vector<Pose>& poses, int grid_width, int grid_height);
   bool isValid(int x, int y, const std::vector<std::vector<int>>& grid);
-  std::vector<std::pair<int, int>> getNeighbors(int x, int y);
+  vector<MapNode> getNeighbors(MapNode current, const vector<vector<int>>& grid, MapNode endNode);
+  vector<pair<int, int>> getPath(MapNode endNode, unordered_map<MapNode, MapNode>& cameFrom);
   int manhattanDistance(int x1, int y1, int x2, int y2);
-  std::vector<std::pair<int, int>> aStar(std::vector<std::vector<int>>& grid, std::pair<int, int> start, std::pair<int, int> end);
+  vector<pair<int, int>> findShortestPath(const vector<vector<int>>& grid, int startX, int startY, int endX, int endY);
 
 
   // This method creates path for given start and goal pose.
