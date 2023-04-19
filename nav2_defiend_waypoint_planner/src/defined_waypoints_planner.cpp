@@ -48,7 +48,6 @@
 
 #include "nav2_definedwaypoints_planner/defined_waypoints_planner.hpp"
 using namespace cv;
-using namespace std;
 namespace nav2_definedwaypoints_planner
 {
 
@@ -138,8 +137,8 @@ vector<MapNode> DefinedWaypoints::getNeighbors(MapNode current, const vector<vec
     return neighbors;
 }
 
-std::vector<pair<int, int>> DefinedWaypoints::getPath(MapNode endNode, unordered_map<MapNode, MapNode>& cameFrom) {
-    std::vector<pair<int, int>> path;
+std::vector<std::pair<int, int>> DefinedWaypoints::getPath(MapNode endNode, unordered_map<MapNode, MapNode>& cameFrom) {
+    std::vector<std::pair<int, int>> path;
     MapNode current = endNode;
     while (cameFrom.count(current)) {
         path.push_back({current.x, current.y});
@@ -154,7 +153,7 @@ int DefinedWaypoints::manhattanDistance(int x1, int y1, int x2, int y2) {
     return abs(x1 - x2) + abs(y1 - y2);
 }
 
-std::vector<pair<int, int>> DefinedWaypoints::findShortestPath(const std::vector<std::vector<int>>& grid, int startX, int startY, int endX, int endY) {
+std::vector<pstd::air<int, int>> DefinedWaypoints::findShortestPath(const std::vector<std::vector<int>>& grid, int startX, int startY, int endX, int endY) {
     MapNode startNode = {startX, startY, 0, 0};
     MapNode endNode = {endX, endY, 0, 0};
 
