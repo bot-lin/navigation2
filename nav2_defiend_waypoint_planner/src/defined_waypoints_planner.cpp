@@ -177,8 +177,8 @@ std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std:
     for (const auto& pose : poses) {
       unsigned int y_index = std::floor((pose.y - origin_y_) / resolution_);
       unsigned int x_index = std::floor((pose.x - origin_x_) / resolution_);
-      grid_map[y_index][x_index] = 1;
-      gridMap[y_index][x_index] = Vec3b(0, 0, 0);
+      grid_map[x_index][y_index] = 1;
+      gridMap[x_index][y_index] = Vec3b(0, 0, 0);
       RCLCPP_INFO(
     node_->get_logger(), "pose x %f y %f, index x: %d,  y %d",
     pose.x, pose.y, x_index, y_index);
