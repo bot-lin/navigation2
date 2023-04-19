@@ -207,8 +207,8 @@ std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std:
     Mat img(grid_height, grid_width, CV_8UC3, reinterpret_cast<uchar*>(gridMap.data()));
     std::string filename = "/data/grid_map.jpg";
     imwrite(filename, img);
-    std::string filename = "/data/grid_map1.png";
-    saveBinaryImageAsPNG(binaryImage, filename);
+    filename = "/data/grid_map1.png";
+    saveBinaryImageAsPNG(grid_map, filename);
     std::cout << "Image saved as " << filename << std::endl;
     return grid_map;
 }
