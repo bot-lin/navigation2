@@ -206,7 +206,7 @@ void DefinedWaypoints::deactivate()
     name_.c_str());
 }
 
-nav_msgs::msg::Path DefinedWaypoints::createPlan(0
+nav_msgs::msg::Path DefinedWaypoints::createPlan(
   const geometry_msgs::msg::PoseStamped & start,
   const geometry_msgs::msg::PoseStamped & goal)
 {
