@@ -76,24 +76,7 @@ struct MapNode {
     int x, y;
     MapNode(int x, int y) : x(x), y(y) {}
 };
-double euclideanDistance(const Point& p1, const Point& p2) {
-    return std::sqrt(std::pow(p1.first - p2.first, 2) + std::pow(p1.second - p2.second, 2));
-}
 
-Point findClosestPoint(const Point& target, const std::vector<Point>& points) {
-    double minDistance = std::numeric_limits<double>::max();
-    Point closestPoint = points[0];
-
-    for (const auto& point : points) {
-        double distance = euclideanDistance(target, point);
-        if (distance < minDistance) {
-            minDistance = distance;
-            closestPoint = point;
-        }
-    }
-
-    return closestPoint;
-}
 const int dx[] = {-1, 1, 0, 0};
 const int dy[] = {0, 0, -1, 1};
 bool operator==(const MapNode& a, const MapNode& b) {
@@ -269,11 +252,11 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   global_path.header.stamp = node_->now();
   global_path.header.frame_id = global_frame_;
   DoublePoint closestPoint = findClosestPoint({start.pose.position.x, start.pose.position.y}, poses);
-  unsigned int start_y_index = std::floor((closestPoint[1] - origin_y_) / resolution_);
-  unsigned int start_x_index = std::floor((closestPoint[0] - origin_x_) / resolution_);
+  unsigned int start_y_index = std::floor((closestPoint.second - origin_y_) / resolution_);
+  unsigned int start_x_index = std::floor((closestPoint.first - origin_x_) / resolution_);
   DoublePoint closestPoint = findClosestPoint({goal.pose.position.x, goal.pose.position.y}, poses);
-  unsigned int end_y_index = std::floor((closestPoint[1] - origin_y_) / resolution_);
-  unsigned int end_x_index = std::floor((closestPoint[0] - origin_x_) / resolution_);
+  unsigned int end_y_index = std::floor((closestPoint.second - origin_y_) / resolution_);
+  unsigned int end_x_index = std::floor((closestPoint.first - origin_x_) / resolution_);
   MapNode start_node = MapNode(start_x_index, start_y_index);
   MapNode end_node = MapNode(end_x_index, end_y_index);
   std::vector<MapNode> shortest_path = bfs(graph_, start_node, end_node);
