@@ -61,10 +61,7 @@ struct Pose {
     double y;
 };
 
-struct Point {
-    int x, y;
-    Point(int x, int y) : x(x), y(y) {}
-};
+
 
 namespace nav2_definedwaypoints_planner
 {

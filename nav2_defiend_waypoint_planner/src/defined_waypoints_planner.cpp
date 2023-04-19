@@ -52,6 +52,10 @@
 
 
 using namespace cv;
+struct Point {
+    int x, y;
+    Point(int x, int y) : x(x), y(y) {}
+};
 const int dx[] = {-1, 1, 0, 0};
 const int dy[] = {0, 0, -1, 1};
 bool operator==(const Point& a, const Point& b) {
