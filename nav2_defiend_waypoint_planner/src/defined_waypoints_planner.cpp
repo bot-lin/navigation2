@@ -64,7 +64,7 @@ DoublePoint findClosestPoint(const DoublePoint& target, const std::vector<Pose>&
         double distance = euclideanDistance(target, {point.x,point.y});
         if (distance < minDistance) {
             minDistance = distance;
-            closestPoint = point;
+            closestPoint = {point.x, point.y};
         }
     }
 
