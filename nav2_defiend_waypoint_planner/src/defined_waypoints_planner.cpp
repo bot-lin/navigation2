@@ -52,6 +52,16 @@
 #include <limits>
 
 typedef std::pair<double, double> DoublePoint;
+using BinaryImage = std::vector<std::vector<int>>;
+
+void displayBinaryImage(const BinaryImage& image) {
+    for (const auto& row : image) {
+        for (bool pixel : row) {
+            std::cout << (pixel==1 ? '#' : '.');
+        }
+        std::cout << '\n';
+    }
+}
 double euclideanDistance(const DoublePoint& p1, const DoublePoint& p2) {
     return std::sqrt(std::pow(p1.first - p2.first, 2) + std::pow(p1.second - p2.second, 2));
 }
@@ -186,6 +196,7 @@ std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std:
     Mat img(grid_height, grid_width, CV_8UC3, reinterpret_cast<uchar*>(gridMap.data()));
     std::string filename = "/data/grid_map.jpg";
     imwrite(filename, img);
+    displayBinaryImage(grid_map);
     return grid_map;
 }
 
