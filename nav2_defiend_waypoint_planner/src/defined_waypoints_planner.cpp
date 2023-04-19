@@ -52,32 +52,32 @@
 
 
 using namespace cv;
-struct Point {
+struct MapNode {
     int x, y;
-    Point(int x, int y) : x(x), y(y) {}
+    MapNode(int x, int y) : x(x), y(y) {}
 };
 const int dx[] = {-1, 1, 0, 0};
 const int dy[] = {0, 0, -1, 1};
-bool operator==(const Point& a, const Point& b) {
+bool operator==(const MapNode& a, const MapNode& b) {
     return a.x == b.x && a.y == b.y;
 }
 bool isValid(int x, int y, int rows, int cols, const std::vector<std::vector<bool>>& visited) {
     return x >= 0 && x < rows && y >= 0 && y < cols && !visited[x][y];
 }
 
-std::vector<Point> bfs(std::vector<std::vector<int>>& grid, Point start, Point end) {
+std::vector<MapNode> bfs(std::vector<std::vector<int>>& grid, MapNode start, MapNode end) {
     int rows = grid.size();
     int cols = grid[0].size();
 
-    std::queue<Point> q;
+    std::queue<MapNode> q;
     std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
-    std::vector<std::vector<Point>> parent(rows, std::vector<Point>(cols, Point(-1, -1)));
+    std::vector<std::vector<MapNode>> parent(rows, std::vector<MapNode>(cols, MapNode(-1, -1)));
 
     q.push(start);
     visited[start.x][start.y] = true;
 
     while (!q.empty()) {
-        Point current = q.front();
+        MapNode current = q.front();
         q.pop();
 
         if (current == end) {
@@ -89,20 +89,20 @@ std::vector<Point> bfs(std::vector<std::vector<int>>& grid, Point start, Point e
             int newY = current.y + dy[i];
 
             if (isValid(newX, newY, rows, cols, visited) && grid[newX][newY] == 1) {
-                q.push(Point(newX, newY));
+                q.push(MapNode(newX, newY));
                 visited[newX][newY] = true;
                 parent[newX][newY] = current;
             }
         }
     }
 
-    std::vector<Point> path;
+    std::vector<MapNode> path;
     if (!visited[end.x][end.y]) {
         return path;  // Empty path if end point not visited
     }
 
     // Reconstruct the path from the parent matrix
-    Point current = end;
+    MapNode current = end;
     while (!(current == start)) {
         path.push_back(current);
         current = parent[current.x][current.y];
