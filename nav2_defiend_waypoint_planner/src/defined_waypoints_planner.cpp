@@ -91,7 +91,6 @@ DoublePoint findClosestPoint(const DoublePoint& target, const std::vector<Pose>&
     return closestPoint;
 }
 
-using namespace cv;
 struct MapNode {
     int x, y;
     MapNode(int x, int y) : x(x), y(y) {}
