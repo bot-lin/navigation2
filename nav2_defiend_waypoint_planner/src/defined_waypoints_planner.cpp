@@ -291,7 +291,23 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   for (const auto& point : shortest_path) {
         std::cout << "(" << point.x << ", " << point.y << ") ";
     }
-    std::cout << std::endl;
+  std::cout << std::endl;
+  for (const auto& point : shortest_path) {
+    float x = point.x * resolution_ + origin_x_;
+    float y = point.y * resolution + origin_y_;
+    geometry_msgs::msg::PoseStamped pose;
+    pose.pose.position.x = x;
+    pose.pose.position.y = y;
+    pose.pose.position.z = 0.0;
+    pose.pose.orientation.x = 0.0;
+    pose.pose.orientation.y = 0.0;
+    pose.pose.orientation.z = 0.0;
+    pose.pose.orientation.w = 1.0;
+    pose.header.stamp = node_->now();
+    pose.header.frame_id = global_frame_;
+    global_path.poses.push_back(pose);
+
+  }  
 
 
   // // calculating the number of loops for current value of interpolation_resolution_
