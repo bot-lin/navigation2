@@ -254,7 +254,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   DoublePoint closestPoint = findClosestPoint({start.pose.position.x, start.pose.position.y}, poses);
   unsigned int start_y_index = std::floor((closestPoint.second - origin_y_) / resolution_);
   unsigned int start_x_index = std::floor((closestPoint.first - origin_x_) / resolution_);
-  DoublePoint closestPoint = findClosestPoint({goal.pose.position.x, goal.pose.position.y}, poses);
+  closestPoint = findClosestPoint({goal.pose.position.x, goal.pose.position.y}, poses);
   unsigned int end_y_index = std::floor((closestPoint.second - origin_y_) / resolution_);
   unsigned int end_x_index = std::floor((closestPoint.first - origin_x_) / resolution_);
   MapNode start_node = MapNode(start_x_index, start_y_index);
