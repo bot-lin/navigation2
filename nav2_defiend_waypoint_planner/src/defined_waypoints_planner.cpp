@@ -47,7 +47,69 @@
 #include "nav2_util/node_utils.hpp"
 
 #include "nav2_definedwaypoints_planner/defined_waypoints_planner.hpp"
+#include <utility>
+#include <queue>
+
+
 using namespace cv;
+const int dx[] = {-1, 1, 0, 0};
+const int dy[] = {0, 0, -1, 1};
+bool operator==(const Point& a, const Point& b) {
+    return a.x == b.x && a.y == b.y;
+}
+bool isValid(int x, int y, int rows, int cols, const std::vector<std::vector<bool>>& visited) {
+    return x >= 0 && x < rows && y >= 0 && y < cols && !visited[x][y];
+}
+
+std::vector<Point> bfs(std::vector<std::vector<int>>& grid, Point start, Point end) {
+    int rows = grid.size();
+    int cols = grid[0].size();
+
+    std::queue<Point> q;
+    std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
+    std::vector<std::vector<Point>> parent(rows, std::vector<Point>(cols, Point(-1, -1)));
+
+    q.push(start);
+    visited[start.x][start.y] = true;
+
+    while (!q.empty()) {
+        Point current = q.front();
+        q.pop();
+
+        if (current == end) {
+            break;
+        }
+
+        for (int i = 0; i < 4; ++i) {
+            int newX = current.x + dx[i];
+            int newY = current.y + dy[i];
+
+            if (isValid(newX, newY, rows, cols, visited) && grid[newX][newY] == 1) {
+                q.push(Point(newX, newY));
+                visited[newX][newY] = true;
+                parent[newX][newY] = current;
+            }
+        }
+    }
+
+    std::vector<Point> path;
+    if (!visited[end.x][end.y]) {
+        return path;  // Empty path if end point not visited
+    }
+
+    // Reconstruct the path from the parent matrix
+    Point current = end;
+    while (!(current == start)) {
+        path.push_back(current);
+        current = parent[current.x][current.y];
+    }
+    path.push_back(start);
+
+    std::reverse(path.begin(), path.end());
+    return path;
+}
+
+
 namespace nav2_definedwaypoints_planner
 {
 
@@ -115,86 +177,6 @@ std::vector<Pose> DefinedWaypoints::readPathsFromFile(const std::string& filenam
     return poses;
 }
 
-bool DefinedWaypoints::isValid(int x, int y, const std::vector<std::vector<int>>& grid) {
-    return x >= 0 && x < grid.size() && y >= 0 && y < grid[0].size();
-}
-
-vector<MapNode> DefinedWaypoints::getNeighbors(MapNode current, const vector<vector<int>>& grid, MapNode endNode) {
-    int dx[4] = {1, 0, -1, 0};
-    int dy[4] = {0, 1, 0, -1};
-
-    vector<MapNode> neighbors;
-    for (int i = 0; i < 4; i++) {
-        int x = current.x + dx[i];
-        int y = current.y + dy[i];
-        if (isValid(x, y, grid)) {
-            MapNode neighbor = {x, y, 0, 0};
-            neighbor.cost = current.cost + 1;
-            neighbor.heuristic = manhattanDistance(x, y, endNode.x, endNode.y);
-            neighbors.push_back(neighbor);
-        }
-    }
-    return neighbors;
-}
-
-std::vector<std::pair<int, int>> DefinedWaypoints::getPath(MapNode endNode, std::unordered_map<MapNode, MapNode>& cameFrom) {
-    std::vector<std::pair<int, int>> path;
-    MapNode current = endNode;
-    while (cameFrom.count(current)) {
-        path.push_back({current.x, current.y});
-        current = cameFrom[current];
-    }
-    path.push_back({current.x, current.y});
-    reverse(path.begin(), path.end());
-    return path;
-}
-
-int DefinedWaypoints::manhattanDistance(int x1, int y1, int x2, int y2) {
-    return abs(x1 - x2) + abs(y1 - y2);
-}
-
-std::vector<std::pair<int, int>> DefinedWaypoints::findShortestPath(const std::vector<std::vector<int>>& grid, int startX, int startY, int endX, int endY) {
-    MapNode startNode = {startX, startY, 0, 0};
-    MapNode endNode = {endX, endY, 0, 0};
-
-    set<MapNode> openSet;
-    std::unordered_map<MapNode, MapNode> cameFrom;
-    std::unordered_map<MapNode, int> gScore;
-    std::unordered_map<MapNode, int> fScore;
-
-    gScore[startNode] = 0;
-    fScore[startNode] = manhattanDistance(startX, startY, endX, endY);
-    openSet.insert(startNode);
-
-    while (!openSet.empty()) {
-        MapNode current = *openSet.begin();
-        for (const auto& node: openSet) {
-        if (fScore[node] < fScore[current]) {
-            current = node;
-        }
-    }
-
-    if (current.x == endX && current.y == endY) {
-        return getPath(current, cameFrom);
-    }
-
-    openSet.erase(current);
-
-    for (const auto& neighbor : getNeighbors(current, grid, endNode)) {
-        int tentativeGScore = gScore[current] + 1;
-        if (!gScore.count(neighbor) || tentativeGScore < gScore[neighbor]) {
-            cameFrom[neighbor] = current;
-            gScore[neighbor] = tentativeGScore;
-            fScore[neighbor] = tentativeGScore + neighbor.heuristic;
-            if (!openSet.count(neighbor)) {
-                openSet.insert(neighbor);
-            }
-        }
-    }
-}
-return {};
-}
-
 
 
 
@@ -220,7 +202,7 @@ void DefinedWaypoints::deactivate()
     name_.c_str());
 }
 
-nav_msgs::msg::Path DefinedWaypoints::createPlan(
+nav_msgs::msg::Path DefinedWaypoints::createPlan(0
   const geometry_msgs::msg::PoseStamped & start,
   const geometry_msgs::msg::PoseStamped & goal)
 {
