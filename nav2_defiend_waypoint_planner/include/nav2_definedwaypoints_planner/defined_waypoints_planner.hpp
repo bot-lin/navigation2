@@ -54,6 +54,7 @@
 #include "nav2_util/lifecycle_node.hpp"
 #include "nav2_costmap_2d/costmap_2d_ros.hpp"
 #include <vector>
+#include <unordered_map>
 
 struct Pose {
     double x;

@@ -153,7 +153,7 @@ int DefinedWaypoints::manhattanDistance(int x1, int y1, int x2, int y2) {
     return abs(x1 - x2) + abs(y1 - y2);
 }
 
-std::vector<pstd::air<int, int>> DefinedWaypoints::findShortestPath(const std::vector<std::vector<int>>& grid, int startX, int startY, int endX, int endY) {
+std::vector<std::pair<int, int>> DefinedWaypoints::findShortestPath(const std::vector<std::vector<int>>& grid, int startX, int startY, int endX, int endY) {
     MapNode startNode = {startX, startY, 0, 0};
     MapNode endNode = {endX, endY, 0, 0};
 
