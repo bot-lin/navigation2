@@ -234,8 +234,8 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   unsigned int start_x_index = std::floor((start.pose.position.x - origin_x_) / resolution_);
   unsigned int end_y_index = std::floor((goal.pose.position.y - origin_y_) / resolution_);
   unsigned int end_x_index = std::floor((goal.pose.position.x - origin_x_) / resolution_);
-  MapNode start_node = (0, 0);
-  MapNode end_node = (0, 0);
+  MapNode start_node = MapNode(start_x_index, start_y_index);
+  MapNode end_node = MapNode(end_x_index, end_y_index);
   std::vector<MapNode> shortest_path = bfs(graph_, start_node, end_node);
   for (const auto& point : shortest_path) {
         std::cout << "(" << point.x << ", " << point.y << ") ";
