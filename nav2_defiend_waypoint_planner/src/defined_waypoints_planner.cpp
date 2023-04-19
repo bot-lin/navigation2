@@ -47,6 +47,7 @@
 #include "nav2_util/node_utils.hpp"
 
 #include "nav2_definedwaypoints_planner/defined_waypoints_planner.hpp"
+#include "nav2_definedwaypoints_planner/stb_image_write.h"
 #include <utility>
 #include <queue>
 #include <limits>
@@ -54,13 +55,23 @@
 typedef std::pair<double, double> DoublePoint;
 using BinaryImage = std::vector<std::vector<int>>;
 
-void displayBinaryImage(const BinaryImage& image) {
-    for (const auto& row : image) {
-        for (bool pixel : row) {
-            std::cout << (pixel==1 ? '#' : '.');
+void saveBinaryImageAsPNG(const std::vector<std::vector<int>>& binaryImage, const std::string& filename) {
+    int width = binaryImage[0].size();
+    int height = binaryImage.size();
+    int channels = 1; // Grayscale image
+
+    // Create a 1D vector to store the image data
+    std::vector<unsigned char> imageData(width * height * channels);
+
+    // Convert the binary image to grayscale
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            imageData[i * width + j] = binaryImage[i][j] ? 255 : 0;
         }
-        std::cout << '\n';
     }
+
+    // Save the grayscale image as a PNG file
+    stbi_write_png(filename.c_str(), width, height, channels, imageData.data(), width * channels);
 }
 double euclideanDistance(const DoublePoint& p1, const DoublePoint& p2) {
     return std::sqrt(std::pow(p1.first - p2.first, 2) + std::pow(p1.second - p2.second, 2));
@@ -196,7 +207,9 @@ std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std:
     Mat img(grid_height, grid_width, CV_8UC3, reinterpret_cast<uchar*>(gridMap.data()));
     std::string filename = "/data/grid_map.jpg";
     imwrite(filename, img);
-    displayBinaryImage(grid_map);
+    std::string filename = "/data/grid_map1.png";
+    saveBinaryImageAsPNG(binaryImage, filename);
+    std::cout << "Image saved as " << filename << std::endl;
     return grid_map;
 }
 
