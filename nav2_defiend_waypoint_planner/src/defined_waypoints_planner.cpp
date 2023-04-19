@@ -191,13 +191,11 @@ void DefinedWaypoints::configure(
 
 std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std::vector<Pose>& poses, int grid_width, int grid_height) {
   std::vector<std::vector<int>> grid_map(grid_height, std::vector<int>(grid_width, 0));
-    std::vector<std::vector<Vec3b>> gridMap(grid_height, std::vector<Vec3b>(grid_width, Vec3b(255, 255, 255))); // Initialize with white color
 
     for (const auto& pose : poses) {
       unsigned int y_index = std::floor((pose.y - origin_y_) / resolution_);
       unsigned int x_index = std::floor((pose.x - origin_x_) / resolution_);
       grid_map[x_index][y_index] = 1;
-      gridMap[x_index][y_index] = Vec3b(0, 0, 0);
       RCLCPP_INFO(
     node_->get_logger(), "pose x %f y %f, index x: %d,  y %d",
     pose.x, pose.y, x_index, y_index);
