@@ -42,8 +42,6 @@
 #include <string>
 #include <memory>
 #include <fstream>
-#include <opencv2/opencv.hpp>
-
 #include "nav2_util/node_utils.hpp"
 
 #include "nav2_definedwaypoints_planner/defined_waypoints_planner.hpp"
@@ -205,10 +203,7 @@ std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std:
     node_->get_logger(), "pose x %f y %f, index x: %d,  y %d",
     pose.x, pose.y, x_index, y_index);
     }
-    Mat img(grid_height, grid_width, CV_8UC3, reinterpret_cast<uchar*>(gridMap.data()));
-    std::string filename = "/data/grid_map.jpg";
-    imwrite(filename, img);
-    filename = "/data/grid_map1.png";
+    std::string filename = "/data/grid_map1.png";
     saveBinaryImageAsPNG(grid_map, filename);
     std::cout << "Image saved as " << filename << std::endl;
     return grid_map;
@@ -308,30 +303,6 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
     global_path.poses.push_back(pose);
 
   }  
-
-
-  // // calculating the number of loops for current value of interpolation_resolution_
-  // int total_number_of_loop = std::hypot(
-  //   goal.pose.position.x - start.pose.position.x,
-  //   goal.pose.position.y - start.pose.position.y) /
-  //   interpolation_resolution_;
-  // double x_increment = (goal.pose.position.x - start.pose.position.x) / total_number_of_loop;
-  // double y_increment = (goal.pose.position.y - start.pose.position.y) / total_number_of_loop;
-
-  // for (const auto& pose_struct : poses){
-  //   geometry_msgs::msg::PoseStamped pose;
-  //   pose.pose.position.x = pose_struct.x;
-  //   pose.pose.position.y = pose_struct.y;
-  //   pose.pose.position.z = 0.0;
-  //   pose.pose.orientation.x = 0.0;
-  //   pose.pose.orientation.y = 0.0;
-  //   pose.pose.orientation.z = 0.0;
-  //   pose.pose.orientation.w = 1.0;
-  //   pose.header.stamp = node_->now();
-  //   pose.header.frame_id = global_frame_;
-  //   global_path.poses.push_back(pose);
-  // }
-
   // global_path.poses.push_back(goal);
 
   return global_path;
