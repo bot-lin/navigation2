@@ -146,7 +146,7 @@ void DefinedWaypoints::configure(
     name_.c_str());
   std::string filename = "/data/path.txt";
   poses = readPathsFromFile(filename);
-  std::vector<std::vector<int>> graph = convertPosesToGridMap(poses, size_y_, size_x_);
+  graph_ = convertPosesToGridMap(poses, size_y_, size_x_);
 }
 
 std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std::vector<Pose>& poses, int grid_width, int grid_height) {
@@ -230,27 +230,40 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   global_path.poses.clear();
   global_path.header.stamp = node_->now();
   global_path.header.frame_id = global_frame_;
-  // calculating the number of loops for current value of interpolation_resolution_
-  int total_number_of_loop = std::hypot(
-    goal.pose.position.x - start.pose.position.x,
-    goal.pose.position.y - start.pose.position.y) /
-    interpolation_resolution_;
-  double x_increment = (goal.pose.position.x - start.pose.position.x) / total_number_of_loop;
-  double y_increment = (goal.pose.position.y - start.pose.position.y) / total_number_of_loop;
+  unsigned int start_y_index = std::floor((start.pose.position.y - origin_y_) / resolution_);
+  unsigned int start_x_index = std::floor((start.pose.position.x - origin_x_) / resolution_);
+  unsigned int end_y_index = std::floor((goal.pose.position.y - origin_y_) / resolution_);
+  unsigned int end_x_index = std::floor((goal.pose.position.x - origin_x_) / resolution_);
+  MapNode start_node = (start_x_index, start_y_index);
+  MapNode end_node = (end_x_index, end_y_index);
+  std::vector<MapNode> shortest_path = bfs(graph_, start_node, end_node);
+  for (const auto& point : shortest_path) {
+        std::cout << "(" << point.x << ", " << point.y << ") ";
+    }
+    std::cout << std::endl;
 
-  for (const auto& pose_struct : poses){
-    geometry_msgs::msg::PoseStamped pose;
-    pose.pose.position.x = pose_struct.x;
-    pose.pose.position.y = pose_struct.y;
-    pose.pose.position.z = 0.0;
-    pose.pose.orientation.x = 0.0;
-    pose.pose.orientation.y = 0.0;
-    pose.pose.orientation.z = 0.0;
-    pose.pose.orientation.w = 1.0;
-    pose.header.stamp = node_->now();
-    pose.header.frame_id = global_frame_;
-    global_path.poses.push_back(pose);
-  }
+
+  // // calculating the number of loops for current value of interpolation_resolution_
+  // int total_number_of_loop = std::hypot(
+  //   goal.pose.position.x - start.pose.position.x,
+  //   goal.pose.position.y - start.pose.position.y) /
+  //   interpolation_resolution_;
+  // double x_increment = (goal.pose.position.x - start.pose.position.x) / total_number_of_loop;
+  // double y_increment = (goal.pose.position.y - start.pose.position.y) / total_number_of_loop;
+
+  // for (const auto& pose_struct : poses){
+  //   geometry_msgs::msg::PoseStamped pose;
+  //   pose.pose.position.x = pose_struct.x;
+  //   pose.pose.position.y = pose_struct.y;
+  //   pose.pose.position.z = 0.0;
+  //   pose.pose.orientation.x = 0.0;
+  //   pose.pose.orientation.y = 0.0;
+  //   pose.pose.orientation.z = 0.0;
+  //   pose.pose.orientation.w = 1.0;
+  //   pose.header.stamp = node_->now();
+  //   pose.header.frame_id = global_frame_;
+  //   global_path.poses.push_back(pose);
+  // }
 
   // global_path.poses.push_back(goal);
 
