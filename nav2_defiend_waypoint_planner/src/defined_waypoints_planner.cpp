@@ -137,7 +137,7 @@ vector<MapNode> DefinedWaypoints::getNeighbors(MapNode current, const vector<vec
     return neighbors;
 }
 
-std::vector<std::pair<int, int>> DefinedWaypoints::getPath(MapNode endNode, unordered_map<MapNode, MapNode>& cameFrom) {
+std::vector<std::pair<int, int>> DefinedWaypoints::getPath(MapNode endNode, std::unordered_map<MapNode, MapNode>& cameFrom) {
     std::vector<std::pair<int, int>> path;
     MapNode current = endNode;
     while (cameFrom.count(current)) {
@@ -158,9 +158,9 @@ std::vector<std::pair<int, int>> DefinedWaypoints::findShortestPath(const std::v
     MapNode endNode = {endX, endY, 0, 0};
 
     set<MapNode> openSet;
-    unordered_map<MapNode, MapNode> cameFrom;
-    unordered_map<MapNode, int> gScore;
-    unordered_map<MapNode, int> fScore;
+    std::unordered_map<MapNode, MapNode> cameFrom;
+    std::unordered_map<MapNode, int> gScore;
+    std::unordered_map<MapNode, int> fScore;
 
     gScore[startNode] = 0;
     fScore[startNode] = manhattanDistance(startX, startY, endX, endY);

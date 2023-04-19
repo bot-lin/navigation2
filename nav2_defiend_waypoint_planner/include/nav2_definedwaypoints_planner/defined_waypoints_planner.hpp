@@ -94,7 +94,7 @@ public:
   std::vector<std::vector<int>> convertPosesToGridMap(const std::vector<Pose>& poses, int grid_width, int grid_height);
   bool isValid(int x, int y, const std::vector<std::vector<int>>& grid);
   std::vector<MapNode> getNeighbors(MapNode current, const std::vector<std::vector<int>>& grid, MapNode endNode);
-  std::vector<std::pair<int, int>> getPath(MapNode endNode, unordered_map<MapNode, MapNode>& cameFrom);
+  std::vector<std::pair<int, int>> getPath(MapNode endNode, std::unordered_map<MapNode, MapNode>& cameFrom);
   int manhattanDistance(int x1, int y1, int x2, int y2);
   std::vector<std::pair<int, int>> findShortestPath(const std::vector<std::vector<int>>& grid, int startX, int startY, int endX, int endY);
 
