@@ -58,7 +58,7 @@ double euclideanDistance(const DoublePoint& p1, const DoublePoint& p2) {
 
 DoublePoint findClosestPoint(const DoublePoint& target, const std::vector<Pose>& points) {
     double minDistance = std::numeric_limits<double>::max();
-    DoublePoint closestPoint = points[0];
+    DoublePoint closestPoint = {points[0].x, points[0].y};
 
     for (const auto& point : points) {
         double distance = euclideanDistance(target, {point.x,point.y});
