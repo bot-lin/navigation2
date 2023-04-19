@@ -47,6 +47,7 @@
 #include "nav2_util/node_utils.hpp"
 
 #include "nav2_definedwaypoints_planner/defined_waypoints_planner.hpp"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "nav2_definedwaypoints_planner/stb_image_write.h"
 #include <utility>
 #include <queue>
