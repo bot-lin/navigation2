@@ -679,11 +679,16 @@ Nav2Panel::startWaypointFollowing(std::vector<geometry_msgs::msg::PoseStamped> p
   RCLCPP_DEBUG(
     client_node_->get_logger(), "Sending a path of %zu waypoints:",
     waypoint_follower_goal_.waypoints.size());
-  for (auto waypoint : waypoint_follower_goal_.waypoints) {
+    for (auto pose : poses) {
     RCLCPP_DEBUG(
       client_node_->get_logger(),
-      "\t(%lf, %lf)", waypoint.pose.position.x, waypoint.pose.position.y);
+      "\t(%lf, %lf)", pose.position.x, pose.position.y);
   }
+  // for (auto waypoint : waypoint_follower_goal_.waypoints) {
+  //   RCLCPP_DEBUG(
+  //     client_node_->get_logger(),
+  //     "\t(%lf, %lf)", waypoint.pose.position.x, waypoint.pose.position.y);
+  // }
 
   // Enable result awareness by providing an empty lambda function
   auto send_goal_options =
