@@ -674,12 +674,12 @@ Nav2Panel::startWaypointFollowing(std::vector<geometry_msgs::msg::PoseStamped> p
   }
 
   // Send the goal poses
-  waypoint_follower_goal_.waypoints = [];
+  // waypoint_follower_goal_.waypoints = [];
 
   RCLCPP_DEBUG(
     client_node_->get_logger(), "Sending a path of %zu waypoints:",
     waypoint_follower_goal_.waypoints.size());
-    for (auto pose : poses) {
+  for (auto pose : poses) {
     RCLCPP_DEBUG(
       client_node_->get_logger(),
       "\t(%lf, %lf)", pose.pose.position.x, pose.pose.position.y);
