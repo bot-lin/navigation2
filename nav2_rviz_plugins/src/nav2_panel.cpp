@@ -682,7 +682,7 @@ Nav2Panel::startWaypointFollowing(std::vector<geometry_msgs::msg::PoseStamped> p
     for (auto pose : poses) {
     RCLCPP_DEBUG(
       client_node_->get_logger(),
-      "\t(%lf, %lf)", pose.position.x, pose.position.y);
+      "\t(%lf, %lf)", pose.pose.position.x, pose.pose.position.y);
   }
   // for (auto waypoint : waypoint_follower_goal_.waypoints) {
   //   RCLCPP_DEBUG(
