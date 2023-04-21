@@ -1,19 +1,3 @@
-#!/usr/bin/env python3
-
-# Copyright (c) 2020 Samsung Research Russia
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -56,10 +40,12 @@ def generate_launch_description():
 
     declare_params_file_cmd = DeclareLaunchArgument(
             'params_file',
-            description='Full path to the ROS2 parameters file to use')
+            default_value=os.path.join(costmap_filters_demo_dir, 'params', 'keepout_params.yaml'),
+            description='Full path to the ROS 2 parameters file to use')
 
     declare_mask_yaml_file_cmd = DeclareLaunchArgument(
             'mask',
+            default_value=os.path.join(costmap_filters_demo_dir, 'maps', 'keepout_mask.yaml'),
             description='Full path to filter mask yaml file to load')
 
     # Make re-written yaml
