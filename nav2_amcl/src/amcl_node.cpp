@@ -904,7 +904,7 @@ AmclNode::getMaxWeightHyp(
     }
   }
   if (sum_weights_squared == 0.0) {
-    effective_sample_size = 0.0
+    effective_sample_size = 0.0;
   }
   else{
     effective_sample_size = sum_weights * sum_weights / sum_weights_squared;
@@ -1535,7 +1535,7 @@ AmclNode::initPubSub()
     "amcl_pose",
     rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
   
-  pose_ess_pub_ = create_publisher<std_msgs::msg::float32>(
+  pose_ess_pub_ = create_publisher<std_msgs::msg::Float32>(
     "amcl_pose_ess",
     rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
 
