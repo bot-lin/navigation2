@@ -224,6 +224,7 @@ WaypointFollower::followWaypoints()
         ClientT::Goal client_goal;
         client_goal.pose = goal->waypoints[goal_index].pose;
         client_goal.behavior_tree = goal->waypoints[goal_index].behavior_tree;
+        client_goal.planner_id = goal->waypoints[goal_index].planner_id;
           auto send_goal_options = rclcpp_action::Client<ClientT>::SendGoalOptions();
         send_goal_options.result_callback =
           std::bind(&WaypointFollower::resultCallback, this, std::placeholders::_1);
