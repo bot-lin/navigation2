@@ -228,6 +228,10 @@ WaypointFollower::followWaypoints()
         RCLCPP_INFO(get_logger(), "2");
 
         client_goal.planner_id = goal->waypoints[goal_index].planner_id;
+        client_goal.controller_id = "controller_id";
+        client_goal.goal_checker_id = "goal_checker_id";
+        client_goal.precise_goal = [1.0, 1.0];
+
         RCLCPP_INFO(get_logger(), "1");
           auto send_goal_options = rclcpp_action::Client<ClientT>::SendGoalOptions();
         send_goal_options.result_callback =
