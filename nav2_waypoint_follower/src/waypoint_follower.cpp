@@ -219,6 +219,7 @@ WaypointFollower::followWaypoints()
       }
       else
       {
+        RCLCPP_INFO(get_logger(), "here");
         //navigate to pose
         current_nav_type_ = false;
         ClientT::Goal client_goal;
