@@ -4,7 +4,8 @@ string behavior_tree
 string planner_id
 string controller_id
 string goal_checker_id
-float32[] precise_goal
+float32 precise_distance_tolerance
+float32 precise_yaw_tolerance
 ---
 #result definition
 std_msgs/Empty result
