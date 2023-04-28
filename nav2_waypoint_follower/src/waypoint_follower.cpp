@@ -281,7 +281,7 @@ WaypointFollower::followWaypoints()
         RCLCPP_INFO(
           get_logger(), "Task execution at waypoint %i %s", goal_index,
           is_task_executed ? "succeeded" : "failed!");
-        if task execution was failed and stop_on_failure_ is on , terminate action
+        //if task execution was failed and stop_on_failure_ is on , terminate action
         if (!is_task_executed && stop_on_failure_) {
           failed_ids_.push_back(goal_index);
           RCLCPP_WARN(
