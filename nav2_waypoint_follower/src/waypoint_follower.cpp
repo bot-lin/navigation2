@@ -20,6 +20,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <nlohmann/json.hpp>
 
 namespace nav2_waypoint_follower
 {
@@ -78,8 +79,6 @@ WaypointFollower::on_configure(const rclcpp_lifecycle::State & /*state*/)
     get_node_logging_interface(),
     get_node_waitables_interface(),
     "follow_waypoints", std::bind(&WaypointFollower::followWaypoints, this));
-
-  // createTaskExecutor(waypoint_task_executor_id_)
 
   return nav2_util::CallbackReturn::SUCCESS;
 }
@@ -269,9 +268,13 @@ WaypointFollower::followWaypoints()
       RCLCPP_INFO(
         get_logger(), "Succeeded processing waypoint %i, processing waypoint task execution",
         goal_index);
-      createTaskExecutor(goal->waypoints[goal_index].task_name, goal->waypoints[goal_index].task_params);
-      bool is_task_executed = waypoint_task_executor_->processAtWaypoint(
-        goal->waypoints[goal_index].pose, goal_index);
+      nlohmann::json j = nlohmann::json::parse(goal->waypoints[goal_index].task_name_and_params);
+      for (auto& [key, value] : j.items()) {
+        std::cout << "Key: " << key << ", Value: " << value << std::endl;
+      }
+      // createTaskExecutor(goal->waypoints[goal_index].task_name, goal->waypoints[goal_index].task_params);
+      // bool is_task_executed = waypoint_task_executor_->processAtWaypoint(
+      //   goal->waypoints[goal_index].pose, goal_index);
       RCLCPP_INFO(
         get_logger(), "Task execution at waypoint %i %s", goal_index,
         is_task_executed ? "succeeded" : "failed!");

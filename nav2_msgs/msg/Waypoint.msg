@@ -8,3 +8,4 @@ string planner_id
 float32[] precise_goal
 string task_name
 string task_params
+string task_name_and_params
