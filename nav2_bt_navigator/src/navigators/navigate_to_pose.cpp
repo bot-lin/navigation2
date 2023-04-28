@@ -232,6 +232,7 @@ NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr goal)
 
   // Update the goal pose on the blackboard
   blackboard->set<geometry_msgs::msg::PoseStamped>(goal_blackboard_id_, goal->pose);
+  blackboard->set<std_msgs::msg::String>(planner_blackboard_id_, goal->planner_id);
 }
 
 void
