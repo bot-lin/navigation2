@@ -274,7 +274,8 @@ WaypointFollower::followWaypoints()
       for (auto& [key, value] : j.items()) {
         std::cout << "Key: " << key << ", Value: " << value << std::endl;
         std::cout << "The type of the given data is: " << typeid(value).name() << std::endl;
-        createTaskExecutor(key, value);
+        std::string value_string = value.dump();
+        createTaskExecutor(key, value_string);
       }
       // createTaskExecutor(goal->waypoints[goal_index].task_name, goal->waypoints[goal_index].task_params);
       // bool is_task_executed = waypoint_task_executor_->processAtWaypoint(
