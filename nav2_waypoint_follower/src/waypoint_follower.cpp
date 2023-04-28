@@ -21,6 +21,8 @@
 #include <utility>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include <typeinfo>
+
 
 namespace nav2_waypoint_follower
 {
@@ -271,6 +273,8 @@ WaypointFollower::followWaypoints()
       nlohmann::json j = nlohmann::json::parse(goal->waypoints[goal_index].task_name_and_params);
       for (auto& [key, value] : j.items()) {
         std::cout << "Key: " << key << ", Value: " << value << std::endl;
+        std::cout << "The type of the given data is: " << typeid(value).name() << std::endl;
+        createTaskExecutor(goal->waypoints[goal_index].task_name, goal->waypoints[goal_index].task_params);
       }
       // createTaskExecutor(goal->waypoints[goal_index].task_name, goal->waypoints[goal_index].task_params);
       // bool is_task_executed = waypoint_task_executor_->processAtWaypoint(
