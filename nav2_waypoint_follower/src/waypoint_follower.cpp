@@ -219,13 +219,11 @@ WaypointFollower::followWaypoints()
       }
       else
       {
-        RCLCPP_INFO(get_logger(), "here");
         //navigate to pose
         current_nav_type_ = false;
         ClientT::Goal client_goal;
         client_goal.pose = goal->waypoints[goal_index].pose;
         client_goal.behavior_tree = goal->waypoints[goal_index].behavior_tree;
-        RCLCPP_INFO(get_logger(), "2");
 
         client_goal.planner_id = goal->waypoints[goal_index].planner_id;
         client_goal.controller_id = "controller_id";
@@ -233,18 +231,15 @@ WaypointFollower::followWaypoints()
         // std::vector<float> my_vector = {1.2f, 3.4f, 5.6f, 7.8f};
         // client_goal.precise_goal = my_vector;
 
-        RCLCPP_INFO(get_logger(), "1");
           auto send_goal_options = rclcpp_action::Client<ClientT>::SendGoalOptions();
         send_goal_options.result_callback =
           std::bind(&WaypointFollower::resultCallback, this, std::placeholders::_1);
         send_goal_options.goal_response_callback =
           std::bind(&WaypointFollower::goalResponseCallback, this, std::placeholders::_1);
-        RCLCPP_INFO(get_logger(), "4");
 
         future_goal_handle_ =
           nav_to_pose_client_->async_send_goal(client_goal, send_goal_options);
         current_goal_status_ = ActionStatus::PROCESSING;
-        RCLCPP_INFO(get_logger(), "3");
 
       }
 
