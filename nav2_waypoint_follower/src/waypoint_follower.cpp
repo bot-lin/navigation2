@@ -225,7 +225,10 @@ WaypointFollower::followWaypoints()
         ClientT::Goal client_goal;
         client_goal.pose = goal->waypoints[goal_index].pose;
         client_goal.behavior_tree = goal->waypoints[goal_index].behavior_tree;
+        RCLCPP_INFO(get_logger(), "2");
+
         client_goal.planner_id = goal->waypoints[goal_index].planner_id;
+        RCLCPP_INFO(get_logger(), "1");
           auto send_goal_options = rclcpp_action::Client<ClientT>::SendGoalOptions();
         send_goal_options.result_callback =
           std::bind(&WaypointFollower::resultCallback, this, std::placeholders::_1);
@@ -234,6 +237,8 @@ WaypointFollower::followWaypoints()
         future_goal_handle_ =
           nav_to_pose_client_->async_send_goal(client_goal, send_goal_options);
         current_goal_status_ = ActionStatus::PROCESSING;
+        RCLCPP_INFO(get_logger(), "3");
+
       }
 
     }
