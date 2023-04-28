@@ -276,6 +276,27 @@ WaypointFollower::followWaypoints()
         std::cout << "The type of the given data is: " << typeid(value).name() << std::endl;
         std::string value_string = value.dump();
         createTaskExecutor(key, value_string);
+        bool is_task_executed = waypoint_task_executor_->processAtWaypoint(
+        goal->waypoints[goal_index].pose, goal_index);
+        RCLCPP_INFO(
+          get_logger(), "Task execution at waypoint %i %s", goal_index,
+          is_task_executed ? "succeeded" : "failed!");
+        if task execution was failed and stop_on_failure_ is on , terminate action
+        if (!is_task_executed && stop_on_failure_) {
+          failed_ids_.push_back(goal_index);
+          RCLCPP_WARN(
+            get_logger(), "Failed to execute task at waypoint %i "
+            " stop on failure is enabled."
+            " Terminating action.", goal_index);
+          result->missed_waypoints = failed_ids_;
+          action_server_->terminate_current(result);
+          failed_ids_.clear();
+          return;
+        } else {
+          RCLCPP_INFO(
+            get_logger(), "Handled task %s execution on waypoint %i,"
+            " moving to next.", key.c_str(),goal_index);
+        }
       }
       // createTaskExecutor(goal->waypoints[goal_index].task_name, goal->waypoints[goal_index].task_params);
       // bool is_task_executed = waypoint_task_executor_->processAtWaypoint(
