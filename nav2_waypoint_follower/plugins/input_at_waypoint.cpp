@@ -17,7 +17,7 @@
 #include <exception>
 
 #include "pluginlib/class_list_macros.hpp"
-
+#include <nlohmann/json.hpp>
 #include "nav2_util/node_utils.hpp"
 
 namespace nav2_waypoint_follower
@@ -50,12 +50,13 @@ void InputAtWaypoint::initialize(
 
   logger_ = node->get_logger();
   clock_ = node->get_clock();
+  nlohmann::json j = json::parse(params);
 
   double timeout;
   std::string input_topic;
   nav2_util::declare_parameter_if_not_declared(
     node, plugin_name + ".timeout",
-    rclcpp::ParameterValue(10.0));
+    rclcpp::ParameterValue(1000.0));
   nav2_util::declare_parameter_if_not_declared(
     node, plugin_name + ".enabled",
     rclcpp::ParameterValue(true));
@@ -65,7 +66,9 @@ void InputAtWaypoint::initialize(
   node->get_parameter(plugin_name + ".timeout", timeout);
   node->get_parameter(plugin_name + ".enabled", is_enabled_);
   node->get_parameter(plugin_name + ".input_topic", input_topic);
-
+  timeout_enabled_ = false;
+  timeout_enabled_ = j['timeout_enabled'];
+  timeout = j['time_out'];
   timeout_ = rclcpp::Duration(timeout, 0.0);
 
   RCLCPP_INFO(
@@ -94,6 +97,7 @@ bool InputAtWaypoint::processAtWaypoint(
   rclcpp::Rate r(50);
   bool input_received = false;
   while (clock_->now() - start < timeout_) {
+    if (!timeout_enabled_) start = clock_->now();
     {
       std::lock_guard<std::mutex> lock(mutex_);
       input_received = input_received_;
