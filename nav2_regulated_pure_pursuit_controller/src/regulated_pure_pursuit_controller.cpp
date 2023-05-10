@@ -368,7 +368,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   if (use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
     std_msgs::msg::Bool msg;
     msg.data = true;
-    collision_pub_->publish(msg)
+    collision_pub_->publish(msg);
     throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
   }
 
@@ -379,7 +379,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   cmd_vel.twist.angular.z = angular_vel;
   std_msgs::msg::Bool msg;
   msg.data = false;
-  collision_pub_->publish(msg)
+  collision_pub_->publish(msg);
   return cmd_vel;
 }
 
