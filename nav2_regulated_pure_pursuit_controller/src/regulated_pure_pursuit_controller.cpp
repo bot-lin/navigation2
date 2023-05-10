@@ -225,7 +225,7 @@ void RegulatedPurePursuitController::cleanup()
   carrot_pub_.reset();
   carrot_arc_pub_.reset();
   turning_radius_pub_.reset();
-  collision_pub_.reset()
+  collision_pub_.reset();
 }
 
 void RegulatedPurePursuitController::activate()
