@@ -225,6 +225,7 @@ void RegulatedPurePursuitController::cleanup()
   carrot_pub_.reset();
   carrot_arc_pub_.reset();
   turning_radius_pub_.reset();
+  collision_pub_.reset()
 }
 
 void RegulatedPurePursuitController::activate()
@@ -238,6 +239,7 @@ void RegulatedPurePursuitController::activate()
   carrot_pub_->on_activate();
   carrot_arc_pub_->on_activate();
   turning_radius_pub_->on_activate();
+  collision_pub_->on_activate();
   // Add callback for dynamic parameters
   auto node = node_.lock();
   dyn_params_handler_ = node->add_on_set_parameters_callback(
@@ -258,6 +260,7 @@ void RegulatedPurePursuitController::deactivate()
   carrot_arc_pub_->on_deactivate();
   turning_radius_pub_->on_deactivate();
   dyn_params_handler_.reset();
+  collision_pub_->on_deactivate();
 }
 
 std::unique_ptr<geometry_msgs::msg::PointStamped> RegulatedPurePursuitController::createCarrotMsg(
