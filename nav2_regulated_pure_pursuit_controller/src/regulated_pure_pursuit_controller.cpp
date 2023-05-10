@@ -206,6 +206,7 @@ void RegulatedPurePursuitController::configure(
   carrot_pub_ = node->create_publisher<geometry_msgs::msg::PointStamped>("lookahead_point", 1);
   carrot_arc_pub_ = node->create_publisher<nav_msgs::msg::Path>("lookahead_collision_arc", 1);
   turning_radius_pub_ = node->create_publisher<std_msgs::msg::Float32>("rpp_turning_radius", 1);
+  collision_pub_ = node->create_publisher<std_msgs::msg::Bool>("rpp/collision", 1);
 
   // initialize collision checker and set costmap
   collision_checker_ = std::make_unique<nav2_costmap_2d::
@@ -365,6 +366,9 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   // Collision checking on this velocity heading
   const double & carrot_dist = hypot(carrot_pose.pose.position.x, carrot_pose.pose.position.y);
   if (use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
+    std::msgs::msg::Bool msg;
+    msg.data = true;
+    collision_pub_.publish(msg)
     throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
   }
 
@@ -373,6 +377,9 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   cmd_vel.header = pose.header;
   cmd_vel.twist.linear.x = linear_vel;
   cmd_vel.twist.angular.z = angular_vel;
+  std::msgs::msg::Bool msg;
+  msg.data = false;
+  collision_pub_.publish(msg)
   return cmd_vel;
 }
 
