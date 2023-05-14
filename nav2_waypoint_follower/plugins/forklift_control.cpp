@@ -73,10 +73,10 @@ bool ForkliftControl::processAtWaypoint(
   RCLCPP_INFO(
     logger_, "Arrived at %i'th waypoint, controlling fork height  to %i millimeter",
     curr_waypoint_index,
-    fork_height_publisher_);
+    height_control);
   auto message = std_msgs::msg::UInt64MultiArray();
   message.data.push_back(0);
-  message.data.push_back(fork_height_publisher_);
+  message.data.push_back(height_control);
   fork_height_publisher_->publish(message);
   return true;
 }
