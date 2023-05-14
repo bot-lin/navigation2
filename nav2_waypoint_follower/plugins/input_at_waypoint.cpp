@@ -68,8 +68,8 @@ void InputAtWaypoint::initialize(
   node->get_parameter(plugin_name + ".enabled", is_enabled_);
   node->get_parameter(plugin_name + ".input_topic", input_topic);
   timeout_enabled_ = false;
-  timeout_enabled_ = j['timeout_enabled'];
-  timeout = j['time_out'];
+  timeout_enabled_ = j["timeout_enabled"];
+  timeout = j["time_out"];
   timeout_ = rclcpp::Duration(timeout, 0.0);
 
   RCLCPP_INFO(
