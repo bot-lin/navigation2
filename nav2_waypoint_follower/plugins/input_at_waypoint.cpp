@@ -20,6 +20,7 @@
 #include <nlohmann/json.hpp>
 #include "nav2_util/node_utils.hpp"
 
+using json = nlohmann::json;
 namespace nav2_waypoint_follower
 {
 
