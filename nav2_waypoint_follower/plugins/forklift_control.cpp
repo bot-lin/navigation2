@@ -27,8 +27,7 @@ using json = nlohmann::json;
 namespace nav2_waypoint_follower
 {
 ForkliftControl::ForkliftControl()
-: waypoint_pause_duration_(0),
-  is_enabled_(true)
+: is_enabled_(true)
 {
 }
 
@@ -50,7 +49,7 @@ void ForkliftControl::initialize(
   json j = json::parse(params);
   logger_ = node->get_logger();
 
-  fork_height_publisher_ = create_publisher<std_msgs::msg::UInt64MultiArray>("fk_height", 10);
+  fork_height_publisher_ = node->create_publisher<std_msgs::msg::UInt64MultiArray>("fk_height", 10);
 
 
   height_control = j["control_height"];
