@@ -51,7 +51,7 @@ void InputAtWaypoint::initialize(
 
   logger_ = node->get_logger();
   clock_ = node->get_clock();
-  nlohmann::json j = json::parse(params);
+  json j = json::parse(params);
 
   double timeout;
   std::string input_topic;
