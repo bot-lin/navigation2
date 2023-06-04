@@ -75,7 +75,7 @@ bool ForkliftControl::processAtWaypoint(
     curr_waypoint_index,
     height_control);
   auto message = std_msgs::msg::UInt64MultiArray();
-  message.data.push_back(0);
+  message.data.push_back(3);
   message.data.push_back(height_control);
   fork_height_publisher_->publish(message);
   return true;
