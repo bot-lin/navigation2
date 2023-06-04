@@ -70,10 +70,9 @@ bool MoveOdom::processAtWaypoint(
   if (!is_enabled_) {
     return true;
   }
-  // RCLCPP_INFO(
-  //   logger_, "Arrived at %i'th waypoint, controlling fork height  to %i millimeter",
-  //   curr_waypoint_index,
-  //   height_control);
+  RCLCPP_INFO(
+    logger_, "Arrived at %i'th waypoint",
+    curr_waypoint_index);
   if (!this->backup_client_ptr_->wait_for_action_server()) {
     RCLCPP_ERROR(logger_, "Action server not available after waiting");
     rclcpp::shutdown();
