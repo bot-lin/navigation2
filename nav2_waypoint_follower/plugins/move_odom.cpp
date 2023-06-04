@@ -51,8 +51,8 @@ void MoveOdom::initialize(
   logger_ = node->get_logger();
 
   direnction_ = j["direction"];
-  speed_ = j['speed'];
-  target_ = j['target'];
+  speed_ = j["speed"];
+  target_ = j["target"];
   this->backup_client_ptr_ = rclcpp_action::create_client<BackUp>(
       this,
       "backup");
