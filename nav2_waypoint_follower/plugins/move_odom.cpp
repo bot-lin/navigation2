@@ -82,8 +82,8 @@ bool MoveOdom::processAtWaypoint(
   auto message = geometry_msgs::msg::Point();
   message.x = target_;
   goal_msg.speed = speed_;
-  goal_msg.time_allowance = 100000;
-  goal_msg.target = message
+  goal_msg.time_allowance = rclcpp::Duration::from_seconds(1000000);
+  goal_msg.target = message;
   auto send_goal_options = rclcpp_action::Client<nav2_msgs::action::BackUp>::SendGoalOptions();
   send_goal_options.result_callback =
       std::bind(&MoveOdom::result_callback, this, std::placeholders::_1);
