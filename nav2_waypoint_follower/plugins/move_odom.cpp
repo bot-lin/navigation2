@@ -97,9 +97,20 @@ void MoveOdom::result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::
 {
 
   is_done_ = true;
-  RCLCPP_INFO(
-    logger_, "Result %d",
-    result.total_elapsed_time.seconds());
+  switch (result.code) {
+    case rclcpp_action::ResultCode::SUCCEEDED:
+      current_goal_status_ = ActionStatus::SUCCEEDED;
+      return;
+    case rclcpp_action::ResultCode::ABORTED:
+      current_goal_status_ = ActionStatus::FAILED;
+      return;
+    case rclcpp_action::ResultCode::CANCELED:
+      current_goal_status_ = ActionStatus::FAILED;
+      return;
+    default:
+      current_goal_status_ = ActionStatus::UNKNOWN;
+      return;
+  }
 }  // namespace nav2_waypoint_follower
 PLUGINLIB_EXPORT_CLASS(
   nav2_waypoint_follower::MoveOdom,
