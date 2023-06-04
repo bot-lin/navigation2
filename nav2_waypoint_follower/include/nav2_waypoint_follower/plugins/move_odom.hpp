@@ -72,7 +72,7 @@ public:
    */
   bool processAtWaypoint(
     const geometry_msgs::msg::PoseStamped & curr_pose, const int & curr_waypoint_index);
-  void result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::BackUp>::WrappedResult & result)
+  void result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::BackUp>::WrappedResult & result);
 protected:
   // the robot will sleep waypoint_pause_duration_ milliseconds
   int direnction_; //linear 0; angular 1; 
