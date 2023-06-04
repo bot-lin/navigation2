@@ -10,3 +10,4 @@ geometry_msgs/PoseStamped docking_point
 ---
 #feedback definition
 float32 distance_traveled
+ 

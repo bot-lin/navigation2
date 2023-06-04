@@ -20,4 +20,9 @@
       <description>Control Forklidt arm</description>
     </class>
   </library>
+  <library path="move_odom">
+    <class type="nav2_waypoint_follower::MoveOdom" base_class_type="nav2_core::WaypointTaskExecutor">
+      <description>Move by target</description>
+    </class>
+  </library>
 </class_libraries>

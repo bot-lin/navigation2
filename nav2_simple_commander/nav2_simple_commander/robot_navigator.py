@@ -182,7 +182,7 @@ class BasicNavigator(Node):
         self.result_future = self.goal_handle.get_result_async()
         return True
 
-    def spin(self, spin_dist=1.57, time_allowance=10):
+    def spin(self, spin_dist=1.57, time_allowance=10): 
         self.debug("Waiting for 'Spin' action server")
         while not self.spin_client.wait_for_server(timeout_sec=1.0):
             self.info("'Spin' action server not available, waiting...")
