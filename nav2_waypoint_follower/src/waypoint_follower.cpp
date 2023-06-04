@@ -227,7 +227,7 @@ WaypointFollower::followWaypoints()
         client_goal.behavior_tree = goal->waypoints[goal_index].behavior_tree;
 
         client_goal.planner_id = goal->waypoints[goal_index].planner_id;
-        client_goal.controller_id = "controller_id";
+        client_goal.controller_id = goal->waypoints[goal_index].planner_id; 
         client_goal.goal_checker_id = "goal_checker_id";
         // std::vector<float> my_vector = {1.2f, 3.4f, 5.6f, 7.8f};
         // client_goal.precise_goal = my_vector;
