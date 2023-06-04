@@ -57,7 +57,7 @@ NavigateToPoseNavigator::configure(
   if (!node->has_parameter("is_reverse_blackboard_id")) {
     node->declare_parameter("is_reverse_blackboard_id", std::string("is_reverse"));
   }
-  is_reverse_blackboard_id_ = node->get_parameter("checker_blackboard_id").as_string();
+  is_reverse_blackboard_id_ = node->get_parameter("is_reverse_blackboard_id").as_string();
 
   if (!node->has_parameter("path_blackboard_id")) {
     node->declare_parameter("path_blackboard_id", std::string("path"));
