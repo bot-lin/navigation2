@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "nav2_waypoint_follower/plugins/back_up.hpp"
+#include "nav2_waypoint_follower/plugins/back_up_wp.hpp"
 
 #include <string>
 #include <exception>
@@ -27,16 +27,16 @@ using json = nlohmann::json;
 
 namespace nav2_waypoint_follower
 {
-BackUp::BackUp()
+BackUpWp::BackUpWp()
 : is_enabled_(true)
 {
 }
 
-BackUp::~BackUp()
+BackUpWp::~BackUpWp()
 {
 }
 
-void BackUp::initialize(
+void BackUpWp::initialize(
   const rclcpp_lifecycle::LifecycleNode::WeakPtr & parent,
   const std::string & plugin_name, const std::string & params)
 {
@@ -64,7 +64,7 @@ void BackUp::initialize(
   is_done_ = false;
 }
 
-bool BackUp::processAtWaypoint(
+bool BackUpWp::processAtWaypoint(
   const geometry_msgs::msg::PoseStamped & /*curr_pose*/, const int & curr_waypoint_index)
 {
   if (!is_enabled_) {
@@ -85,7 +85,7 @@ bool BackUp::processAtWaypoint(
   goal_msg.target = message;
   auto send_goal_options = rclcpp_action::Client<nav2_msgs::action::BackUp>::SendGoalOptions();
   send_goal_options.result_callback =
-      std::bind(&BackUp::result_callback, this, std::placeholders::_1);
+      std::bind(&BackUpWp::result_callback, this, std::placeholders::_1);
   this->backup_client_ptr_->async_send_goal(goal_msg, send_goal_options);
   while(!is_done_){
     usleep(1000);
@@ -93,7 +93,7 @@ bool BackUp::processAtWaypoint(
   return true;
 }
 
-void BackUp::result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::BackUp>::WrappedResult & result)
+void BackUpWp::result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::BackUp>::WrappedResult & result)
 {
 
   is_done_ = true;
@@ -113,5 +113,5 @@ void BackUp::result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::ac
 }
 }  // namespace nav2_waypoint_follower
 PLUGINLIB_EXPORT_CLASS(
-  nav2_waypoint_follower::BackUp,
+  nav2_waypoint_follower::BackUpWp,
   nav2_core::WaypointTaskExecutor)

@@ -20,8 +20,8 @@
       <description>Control Forklidt arm</description>
     </class>
   </library>
-  <library path="back_up">
-    <class type="nav2_waypoint_follower::BackUp" base_class_type="nav2_core::WaypointTaskExecutor">
+  <library path="back_up_wp">
+    <class type="nav2_waypoint_follower::BackUpWp" base_class_type="nav2_core::WaypointTaskExecutor">
       <description>Backup by target</description>
     </class>
   </library>
