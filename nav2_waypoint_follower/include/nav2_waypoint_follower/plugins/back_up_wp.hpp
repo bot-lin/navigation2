@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NAV2_WAYPOINT_FOLLOWER__PLUGINS__MOVE_ODOM_HPP_
-#define NAV2_WAYPOINT_FOLLOWER__PLUGINS__MOVE_ODOM_HPP_
+#ifndef NAV2_WAYPOINT_FOLLOWER__PLUGINS__BACK_UP_WP_HPP_
+#define NAV2_WAYPOINT_FOLLOWER__PLUGINS__BACK_UP_WP_HPP_
 #pragma once
 
 #include <string>
@@ -21,7 +21,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "nav2_core/waypoint_task_executor.hpp"
-#include "nav2_msgs/action/back_up.hpp"
+#include "nav2_msgs/action/back_up_wp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 
 #include <std_msgs/msg/u_int64_multi_array.hpp>
@@ -36,20 +36,20 @@ namespace nav2_waypoint_follower
  *        your own task and rewrite the body for it.
  *
  */
-class MoveOdom : public nav2_core::WaypointTaskExecutor
+class BackUpWp : public nav2_core::WaypointTaskExecutor
 {
 public:
 /**
  * @brief Construct a new Wait At Waypoint Arrival object
  *
  */
-  MoveOdom();
+  BackUpWp();
 
   /**
    * @brief Destroy the Wait At Waypoint Arrival object
    *
    */
-  ~MoveOdom();
+  ~BackUpWp();
 
   /**
    * @brief declares and loads parameters used (waypoint_pause_duration_)
@@ -85,4 +85,4 @@ protected:
 };
 
 }  // namespace nav2_waypoint_follower
-#endif  // NAV2_WAYPOINT_FOLLOWER__PLUGINS__MOVE_ODOM_HPP_
+#endif  // NAV2_WAYPOINT_FOLLOWER__PLUGINS__BACK_UP_WP_HPP_
