@@ -71,7 +71,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     pose_tmp.pose.orientation.w = command->pose.pose.orientation.w;
     pose_tmp.header.frame_id = command->pose.header.frame_id;
     is_reverse_ = command->is_reverse;
-    RCLCPP_INFO(this->logger_, "Failed to transform goal pose in odom frame from %d", is_reverse_);
+    RCLCPP_INFO(this->logger_, "Is reverse %d", is_reverse_);
 
     if (command->pose.header.frame_id != "odom")
     {
