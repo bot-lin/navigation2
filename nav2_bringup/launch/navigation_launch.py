@@ -187,7 +187,7 @@ def generate_launch_description():
                            [('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')]),
             Node(
                 package='nav2_collision_monitor',
-                plugin='nav2_collision_monitor::CollisionMonitor',
+                executable='collision_monitor',
                 name='collision_monitor',
                 parameters=[configured_params]),
             Node(
