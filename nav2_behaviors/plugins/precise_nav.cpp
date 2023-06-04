@@ -158,7 +158,8 @@ Status PreciseNav::onCycleUpdate()
     if (distance_to_goal > distance_goal_tolerance_ && !reached_distance_goal_)
     {
         if (std::fabs(heading_error) > heading_tolerance_){
-            cmd_vel->linear.x = 0.005;
+            if (is_reverse_) cmd_vel->linear.x = -0.005;
+            else cmd_vel->linear.x = 0.005;
             if (heading_error > 0) cmd_vel->angular.z = angular_velocity_;
             else cmd_vel->angular.z = -angular_velocity_;
         }
