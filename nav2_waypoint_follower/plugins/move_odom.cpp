@@ -53,16 +53,9 @@ void MoveOdom::initialize(
   direnction_ = j["direction"];
   speed_ = j['speed'];
   target_ = j['target'];
-  if (direnction_ == 0){
-    if (speed_ > 0){
-      //forward
-    }else{
-      //backward
-      this->backup_client_ptr_ = rclcpp_action::create_client<BackUp>(
+  this->backup_client_ptr_ = rclcpp_action::create_client<BackUp>(
       this,
       "backup");
-    }
-  }
 
   if (!is_enabled_) {
       RCLCPP_INFO(
