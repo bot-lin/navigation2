@@ -21,7 +21,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "nav2_core/waypoint_task_executor.hpp"
-#include "nav2_msgs/action/back_up_wp.hpp"
+#include "nav2_msgs/action/back_up.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 
 #include <std_msgs/msg/u_int64_multi_array.hpp>
