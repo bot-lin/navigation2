@@ -35,15 +35,20 @@ void PreciseNavAction::on_tick()
     return;
   }
   getInput("goal", goal_.pose);
+  getInput("is_reverse", goal_.is_reverse);
 }
+
 void PreciseNavAction::on_wait_for_result(
   std::shared_ptr<const nav2_msgs::action::PreciseNav::Feedback>/*feedback*/)
 {
   geometry_msgs::msg::PoseStamped new_goal;
+  bool is_reverse;
   getInput("goal", new_goal);
+  getInput("is_reverse", is_reverse);
   if (new_goal != goal_.pose)
   {
     goal_.pose = new_goal;
+    goal_.is_reverse = is_reverse;
     goal_updated_ = true;
   }
   

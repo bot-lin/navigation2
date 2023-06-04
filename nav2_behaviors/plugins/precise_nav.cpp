@@ -60,7 +60,7 @@ void PreciseNav::onConfigure()
 
 }
 
-Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> command)
+Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> command) 
 {
     geometry_msgs::msg::PoseStamped pose_tmp;
     pose_tmp.pose.position.x = command->pose.pose.position.x;
@@ -70,6 +70,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     pose_tmp.pose.orientation.z = command->pose.pose.orientation.z;
     pose_tmp.pose.orientation.w = command->pose.pose.orientation.w;
     pose_tmp.header.frame_id = command->pose.header.frame_id;
+    bool is_reverse = command->is_reverse;
     if (command->pose.header.frame_id != "odom")
     {
         bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);

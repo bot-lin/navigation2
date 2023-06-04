@@ -6,6 +6,7 @@ string controller_id
 string goal_checker_id
 float32 precise_distance_tolerance
 float32 precise_yaw_tolerance
+bool is_reverse
 ---
 #result definition
 std_msgs/Empty result

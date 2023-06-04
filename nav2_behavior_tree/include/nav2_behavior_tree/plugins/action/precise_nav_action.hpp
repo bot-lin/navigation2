@@ -56,6 +56,7 @@ public:
     return providedBasicPorts(
       {
         BT::InputPort<geometry_msgs::msg::PoseStamped>("goal", "Destination to plan to"),
+        BT::InputPort<bool>("is_reverse", "Is reverse"),
       });
   }
 };

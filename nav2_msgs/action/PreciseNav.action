@@ -1,6 +1,6 @@
 #goal definition
 geometry_msgs/PoseStamped pose
-
+bool is_reverse
 builtin_interfaces/Duration time_allowance
 ---
 #result definition

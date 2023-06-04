@@ -53,6 +53,12 @@ NavigateToPoseNavigator::configure(
   }
   checker_blackboard_id_ = node->get_parameter("checker_blackboard_id").as_string();
 
+  //is reverse
+  if (!node->has_parameter("is_reverse_blackboard_id")) {
+    node->declare_parameter("is_reverse_blackboard_id", std::string("is_reverse"));
+  }
+  is_reverse_blackboard_id_ = node->get_parameter("checker_blackboard_id").as_string();
+
   if (!node->has_parameter("path_blackboard_id")) {
     node->declare_parameter("path_blackboard_id", std::string("path"));
   }
@@ -234,6 +240,7 @@ NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr goal)
   blackboard->set<geometry_msgs::msg::PoseStamped>(goal_blackboard_id_, goal->pose);
   blackboard->set<std::string>(planner_blackboard_id_, goal->planner_id);
   blackboard->set<std::string>(controller_blackboard_id_, goal->controller_id);
+  blackboard->set<bool>(is_reverse_blackboard_id_, goal->is_reverse);
 }
 
 void
