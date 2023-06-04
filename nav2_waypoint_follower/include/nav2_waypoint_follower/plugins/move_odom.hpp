@@ -72,7 +72,7 @@ public:
    */
   bool processAtWaypoint(
     const geometry_msgs::msg::PoseStamped & curr_pose, const int & curr_waypoint_index);
-  void result_callback(const rclcpp_action::ClientGoalHandle<BackUp>::WrappedResult & result)
+  void result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::BackUp>::WrappedResult & result)
 protected:
   // the robot will sleep waypoint_pause_duration_ milliseconds
   int direnction_; //linear 0; angular 1; 
@@ -81,7 +81,7 @@ protected:
   bool is_enabled_;
   bool is_done_;
   rclcpp::Logger logger_{rclcpp::get_logger("nav2_waypoint_follower")};
-  rclcpp_action::Client<BackUp>::SharedPtr backup_client_ptr_;
+  rclcpp_action::Client<nav2_msgs::action::BackUp>::SharedPtr backup_client_ptr_;
 };
 
 }  // namespace nav2_waypoint_follower
