@@ -53,7 +53,7 @@ void MoveOdom::initialize(
   direnction_ = j["direction"];
   speed_ = j["speed"];
   target_ = j["target"];
-  this->backup_client_ptr_ = rclcpp_action::create_client<BackUp>(
+  this->backup_client_ptr_ = rclcpp_action::create_client<nav2_msgs::action::BackUp>(
       this,
       "backup");
 
@@ -84,7 +84,7 @@ bool MoveOdom::processAtWaypoint(
   goal_msg.speed = speed_;
   goal_msg.time_allowance = 100000;
   goal_msg.target = message
-  auto send_goal_options = rclcpp_action::Client<BackUp>::SendGoalOptions();
+  auto send_goal_options = rclcpp_action::Client<nav2_msgs::action::BackUp>::SendGoalOptions();
   send_goal_options.result_callback =
       std::bind(&MoveOdom::result_callback, this, _1);
   this->backup_client_ptr_->async_send_goal(goal_msg, send_goal_options);
@@ -94,7 +94,7 @@ bool MoveOdom::processAtWaypoint(
   return true;
 }
 
-void MoveOdom::result_callback(const rclcpp_action::ClientGoalHandle<BackUp>::WrappedResult & result)
+void MoveOdom::result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::BackUp>::WrappedResult & result)
 {
   is_done_ = true;
 }  // namespace nav2_waypoint_follower
