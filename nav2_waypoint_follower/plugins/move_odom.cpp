@@ -96,7 +96,11 @@ bool MoveOdom::processAtWaypoint(
 
 void MoveOdom::result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::BackUp>::WrappedResult & result)
 {
+
   is_done_ = true;
+  RCLCPP_INFO(
+    logger_, "Result %d",
+    result.total_elapsed_time.seconds());
 }  // namespace nav2_waypoint_follower
 PLUGINLIB_EXPORT_CLASS(
   nav2_waypoint_follower::MoveOdom,
