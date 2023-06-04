@@ -54,7 +54,7 @@ void MoveOdom::initialize(
   speed_ = j["speed"];
   target_ = j["target"];
   this->backup_client_ptr_ = rclcpp_action::create_client<nav2_msgs::action::BackUp>(
-      this,
+      node,
       "backup");
 
   if (!is_enabled_) {
