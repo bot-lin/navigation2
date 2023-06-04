@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "nav2_waypoint_follower/plugins/move_odom.hpp"
+#include "nav2_waypoint_follower/plugins/back_up.hpp"
 
 #include <string>
 #include <exception>
@@ -27,16 +27,16 @@ using json = nlohmann::json;
 
 namespace nav2_waypoint_follower
 {
-MoveOdom::MoveOdom()
+BackUp::BackUp()
 : is_enabled_(true)
 {
 }
 
-MoveOdom::~MoveOdom()
+BackUp::~BackUp()
 {
 }
 
-void MoveOdom::initialize(
+void BackUp::initialize(
   const rclcpp_lifecycle::LifecycleNode::WeakPtr & parent,
   const std::string & plugin_name, const std::string & params)
 {
@@ -50,7 +50,7 @@ void MoveOdom::initialize(
   json j = json::parse(params);
   logger_ = node->get_logger();
 
-  direnction_ = j["direction"];
+  time_allowance_ = j["time_allowance"];
   speed_ = j["speed"];
   target_ = j["target"];
   this->backup_client_ptr_ = rclcpp_action::create_client<nav2_msgs::action::BackUp>(
@@ -64,7 +64,7 @@ void MoveOdom::initialize(
   is_done_ = false;
 }
 
-bool MoveOdom::processAtWaypoint(
+bool BackUp::processAtWaypoint(
   const geometry_msgs::msg::PoseStamped & /*curr_pose*/, const int & curr_waypoint_index)
 {
   if (!is_enabled_) {
@@ -81,11 +81,11 @@ bool MoveOdom::processAtWaypoint(
   auto message = geometry_msgs::msg::Point();
   message.x = target_;
   goal_msg.speed = speed_;
-  goal_msg.time_allowance = rclcpp::Duration::from_seconds(1000000);
+  goal_msg.time_allowance = rclcpp::Duration::from_seconds(time_allowance_);
   goal_msg.target = message;
   auto send_goal_options = rclcpp_action::Client<nav2_msgs::action::BackUp>::SendGoalOptions();
   send_goal_options.result_callback =
-      std::bind(&MoveOdom::result_callback, this, std::placeholders::_1);
+      std::bind(&BackUp::result_callback, this, std::placeholders::_1);
   this->backup_client_ptr_->async_send_goal(goal_msg, send_goal_options);
   while(!is_done_){
     usleep(1000);
@@ -93,7 +93,7 @@ bool MoveOdom::processAtWaypoint(
   return true;
 }
 
-void MoveOdom::result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::BackUp>::WrappedResult & result)
+void BackUp::result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::BackUp>::WrappedResult & result)
 {
 
   is_done_ = true;
@@ -113,5 +113,5 @@ void MoveOdom::result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::
 }
 }  // namespace nav2_waypoint_follower
 PLUGINLIB_EXPORT_CLASS(
-  nav2_waypoint_follower::MoveOdom,
+  nav2_waypoint_follower::BackUp,
   nav2_core::WaypointTaskExecutor)

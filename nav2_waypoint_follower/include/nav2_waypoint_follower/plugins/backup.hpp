@@ -75,9 +75,9 @@ public:
   void result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::BackUp>::WrappedResult & result);
 protected:
   // the robot will sleep waypoint_pause_duration_ milliseconds
-  int direnction_; //linear 0; angular 1; 
-  float speed_; 
-  float target_;
+  double speed_; 
+  double target_;
+  int time_allowance_;
   bool is_enabled_;
   bool is_done_;
   rclcpp::Logger logger_{rclcpp::get_logger("nav2_waypoint_follower")};
