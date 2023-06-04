@@ -75,10 +75,10 @@ bool MoveOdom::processAtWaypoint(
   //   curr_waypoint_index,
   //   height_control);
   if (!this->backup_client_ptr_->wait_for_action_server()) {
-    RCLCPP_ERROR(this->get_logger(), "Action server not available after waiting");
+    RCLCPP_ERROR(logger_, "Action server not available after waiting");
     rclcpp::shutdown();
   }
-  auto goal_msg = BackUp::Goal();
+  auto goal_msg = nav2_msgs::action::BackUp::Goal();
   auto message = geometry_msgs::msg::Point();
   message.x = target_;
   goal_msg.speed = speed_;
@@ -86,7 +86,7 @@ bool MoveOdom::processAtWaypoint(
   goal_msg.target = message
   auto send_goal_options = rclcpp_action::Client<nav2_msgs::action::BackUp>::SendGoalOptions();
   send_goal_options.result_callback =
-      std::bind(&MoveOdom::result_callback, this, _1);
+      std::bind(&MoveOdom::result_callback, this, std::placeholders::_1);
   this->backup_client_ptr_->async_send_goal(goal_msg, send_goal_options);
   while(!is_done_){
     usleep(1000);
