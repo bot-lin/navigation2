@@ -70,7 +70,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     pose_tmp.pose.orientation.z = command->pose.pose.orientation.z;
     pose_tmp.pose.orientation.w = command->pose.pose.orientation.w;
     pose_tmp.header.frame_id = command->pose.header.frame_id;
-    bool is_reverse = command->is_reverse;
+    is_reverse_ = command->is_reverse;
     if (command->pose.header.frame_id != "odom")
     {
         bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
@@ -109,6 +109,8 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     pose_tmp.pose.orientation.z = command->pose.pose.orientation.z;
     pose_tmp.pose.orientation.w = command->pose.pose.orientation.w;
     pose_tmp.header.frame_id = command->pose.header.frame_id;
+    is_reverse_ = command->is_reverse;
+
     if (command->pose.header.frame_id != "odom")
     {
         bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
@@ -198,8 +200,15 @@ double PreciseNav::getHeadingErrorToGoal(geometry_msgs::msg::PoseStamped current
     tf2::Matrix3x3 m(q);
     double roll, pitch, current_robot_heading;
     m.getRPY(roll, pitch, current_robot_heading);
-    double delta_x = target_x_ - current_pose.pose.position.x;
-    double delta_y = target_y_ - current_pose.pose.position.y;
+    double delta_x, delta_y;
+    if (is_reverse_){
+        delta_x = current_pose.pose.position.x - target_x_ ;
+        delta_y = current_pose.pose.position.y - target_y_;
+    }else{
+        delta_x = target_x_ - current_pose.pose.position.x;
+        delta_y = target_y_ - current_pose.pose.position.y;
+    }
+
     double desired_heading = std::atan2(delta_y, delta_x);
     double heading_error = desired_heading - current_robot_heading;
     if (heading_error > M_PI) heading_error = heading_error - (2 * M_PI);
