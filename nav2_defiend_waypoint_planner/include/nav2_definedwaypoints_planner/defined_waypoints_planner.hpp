@@ -114,7 +114,7 @@ private:
   unsigned int size_x_;
   unsigned int size_y_;
   double interpolation_resolution_;
-  std::vector<Pose> poses;
+  std::vector<Pose> poses_;
   std::vector<std::vector<int>> graph_;
 };
 
