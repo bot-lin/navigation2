@@ -155,7 +155,7 @@ void
 DWBLocalPlanner::cleanup()
 {
   pub_->on_cleanup();
-  sonar_enable_pub_->on_cleanup();
+  sonar_enable_pub_->reset();
 
   traj_generator_.reset();
 }
