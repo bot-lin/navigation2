@@ -121,7 +121,7 @@ void DWBLocalPlanner::configure(
     dwb_plugin_name_ + ".short_circuit_trajectory_evaluation",
     short_circuit_trajectory_evaluation_);
   node->get_parameter(dwb_plugin_name_ + ".shorten_transformed_plan", shorten_transformed_plan_);
-
+  sonar_enable_pub_ = node->create_publisher<std_msgs::msg::Bool>("rpp/collision", 1);
   pub_ = std::make_unique<DWBPublisher>(node, dwb_plugin_name_);
   pub_->on_configure();
 
@@ -141,18 +141,21 @@ void
 DWBLocalPlanner::activate()
 {
   pub_->on_activate();
+  sonar_enable_pub_->on_activate();
 }
 
 void
 DWBLocalPlanner::deactivate()
 {
   pub_->on_deactivate();
+  sonar_enable_pub_->on_deactivate();
 }
 
 void
 DWBLocalPlanner::cleanup()
 {
   pub_->on_cleanup();
+  sonar_enable_pub_->on_cleanup();
 
   traj_generator_.reset();
 }
@@ -329,7 +332,9 @@ DWBLocalPlanner::computeVelocityCommands(
     }
 
     lock.unlock();
-
+    std_msgs::msg::Bool msg;
+    msg.data = true;
+    sonar_enable_pub_->publish(msg);
     pub_->publishLocalPlan(pose.header, empty_traj);
     pub_->publishCostGrid(costmap_ros_, critics_);
 

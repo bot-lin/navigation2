@@ -50,6 +50,7 @@
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "pluginlib/class_loader.hpp"
 #include "pluginlib/class_list_macros.hpp"
+#include "std_msgs/msg/bool.hpp"
 
 namespace dwb_core
 {
@@ -224,6 +225,7 @@ protected:
   std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros_;
 
   std::unique_ptr<DWBPublisher> pub_;
+  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Bool>> sonar_enable_pub_;
   std::vector<std::string> default_critic_namespaces_;
 
   // Plugin handling
