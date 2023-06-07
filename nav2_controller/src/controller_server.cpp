@@ -575,7 +575,7 @@ bool ControllerServer::isGoalReached()
     return false;
   }
 
-  if ((now() - star_time_).seconds() < min_travel_time_threshold_ ) {
+  if ((now() - start_time_).seconds() < min_travel_time_threshold_ ) {
     return false;
   }
 
@@ -647,6 +647,8 @@ ControllerServer::dynamicParametersCallback(std::vector<rclcpp::Parameter> param
         min_theta_velocity_threshold_ = parameter.as_double();
       } else if (name == "failure_tolerance") {
         failure_tolerance_ = parameter.as_double();
+      } else if (name == "min_travel_time_threshold") {
+        min_travel_time_threshold_ = parameter.as_double();
       }
     }
 
