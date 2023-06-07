@@ -252,6 +252,7 @@ protected:
   double min_x_velocity_threshold_;
   double min_y_velocity_threshold_;
   double min_theta_velocity_threshold_;
+  double min_time_threshold_;
 
   double failure_tolerance_;
 
@@ -260,6 +261,7 @@ protected:
 
   // Last time the controller generated a valid command
   rclcpp::Time last_valid_cmd_time_;
+  rclcpp::Time start_time_;
 
   // Current path container
   nav_msgs::msg::Path current_path_;

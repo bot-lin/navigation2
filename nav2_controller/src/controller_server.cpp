@@ -53,6 +53,7 @@ ControllerServer::ControllerServer(const rclcpp::NodeOptions & options)
   declare_parameter("goal_checker_plugins", default_goal_checker_ids_);
   declare_parameter("controller_plugins", default_ids_);
   declare_parameter("min_x_velocity_threshold", rclcpp::ParameterValue(0.0001));
+  declare_parameter("min_travel_time_threshold", rclcpp::ParameterValue(5.0));
   declare_parameter("min_y_velocity_threshold", rclcpp::ParameterValue(0.0001));
   declare_parameter("min_theta_velocity_threshold", rclcpp::ParameterValue(0.0001));
 
@@ -116,6 +117,7 @@ ControllerServer::on_configure(const rclcpp_lifecycle::State & /*state*/)
   get_parameter("min_x_velocity_threshold", min_x_velocity_threshold_);
   get_parameter("min_y_velocity_threshold", min_y_velocity_threshold_);
   get_parameter("min_theta_velocity_threshold", min_theta_velocity_threshold_);
+  get_parameter("min_travel_time_threshold", min_travel_time_threshold_);
   RCLCPP_INFO(get_logger(), "Controller frequency set to %.4fHz", controller_frequency_);
 
   std::string speed_limit_topic;
@@ -375,7 +377,7 @@ void ControllerServer::computeControl()
       if (action_server_ == nullptr || !action_server_->is_server_active()) {
         RCLCPP_DEBUG(get_logger(), "Action server unavailable or inactive. Stopping.");
         return;
-      }
+      } 
 
       if (action_server_->is_cancel_requested()) {
         RCLCPP_INFO(get_logger(), "Goal was canceled. Stopping the robot.");
@@ -431,6 +433,7 @@ void ControllerServer::setPlannerPath(const nav_msgs::msg::Path & path)
   controllers_[current_controller_]->setPlan(path);
 
   end_pose_ = path.poses.back();
+  start_time_ = now();
   end_pose_.header.frame_id = path.header.frame_id;
   goal_checkers_[current_goal_checker_]->reset();
 
@@ -569,6 +572,10 @@ bool ControllerServer::isGoalReached()
   geometry_msgs::msg::PoseStamped pose;
 
   if (!getRobotPose(pose)) {
+    return false;
+  }
+
+  if ((now() - star_time_).seconds() < min_travel_time_threshold_ ) {
     return false;
   }
 
