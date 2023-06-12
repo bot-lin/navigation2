@@ -185,8 +185,8 @@ void DefinedWaypoints::configure(
     node_->get_logger(), "configure plugin %s of type NavfnPlanner",
     name_.c_str());
   std::string filename = "/data/path.txt";
-  poses_ = readPathsFromFile(filename);
-  graph_ = convertPosesToGridMap(poses, size_y_, size_x_);
+  // poses_ = readPathsFromFile(filename);
+  // graph_ = convertPosesToGridMap(poses_, size_y_, size_x_);
 }
 
 std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std::vector<Pose>& poses, int grid_width, int grid_height) {
@@ -246,7 +246,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
 {
   std::string filename = "/data/path.txt";
   poses_ = readPathsFromFile(filename);
-  graph_ = convertPosesToGridMap(poses, size_y_, size_x_);
+  graph_ = convertPosesToGridMap(poses_, size_y_, size_x_);
   nav_msgs::msg::Path global_path;
 
   // Checking if the goal and start state is in the global frame
