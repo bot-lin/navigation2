@@ -267,11 +267,11 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   global_path.poses.clear();
   global_path.header.stamp = node_->now();
   global_path.header.frame_id = global_frame_;
-  DoublePoint closestPoint = findClosestPoint({start.pose.position.x, start.pose.position.y}, poses);
+  DoublePoint closestPoint = findClosestPoint({start.pose.position.x, start.pose.position.y}, poses_);
   RCLCPP_INFO(node_->get_logger(), "Closest point to start is: %f, %f", closestPoint.first, closestPoint.second);
   unsigned int start_y_index = std::floor((closestPoint.second - origin_y_) / resolution_);
   unsigned int start_x_index = std::floor((closestPoint.first - origin_x_) / resolution_);
-  closestPoint = findClosestPoint({goal.pose.position.x, goal.pose.position.y}, poses);
+  closestPoint = findClosestPoint({goal.pose.position.x, goal.pose.position.y}, poses_);
   RCLCPP_INFO(node_->get_logger(), "Closest point to end is: %f, %f", closestPoint.first, closestPoint.second);
 
   unsigned int end_y_index = std::floor((closestPoint.second - origin_y_) / resolution_);
