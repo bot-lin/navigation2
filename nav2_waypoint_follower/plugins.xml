@@ -25,4 +25,14 @@
       <description>Backup by target</description>
     </class>
   </library>
+  <library path="drive_on_wp">
+    <class type="nav2_waypoint_follower::DriveOnWp" base_class_type="nav2_core::WaypointTaskExecutor">
+      <description>Driveon by target</description>
+    </class>
+  </library>
+  <library path="spin_wp">
+    <class type="nav2_waypoint_follower::SpinWp" base_class_type="nav2_core::WaypointTaskExecutor">
+      <description>Spin by target</description>
+    </class>
+  </library>
 </class_libraries>
