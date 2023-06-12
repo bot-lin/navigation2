@@ -75,7 +75,6 @@ public:
   void result_callback(const rclcpp_action::ClientGoalHandle<nav2_msgs::action::Spin>::WrappedResult & result);
 protected:
   // the robot will sleep waypoint_pause_duration_ milliseconds
-  double speed_; 
   double target_;
   int time_allowance_;
   bool is_enabled_;

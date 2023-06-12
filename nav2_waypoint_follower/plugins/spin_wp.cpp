@@ -51,7 +51,6 @@ void SpinWp::initialize(
   logger_ = node->get_logger();
 
   time_allowance_ = j["time_allowance"];
-  speed_ = j["speed"];
   target_ = j["target"];
   this->spin_client_ptr_ = rclcpp_action::create_client<nav2_msgs::action::Spin>(
       node,
@@ -75,14 +74,11 @@ bool SpinWp::processAtWaypoint(
     curr_waypoint_index);
   if (!this->spin_client_ptr_->wait_for_action_server()) {
     RCLCPP_ERROR(logger_, "Action server not available after waiting");
-    rclcpp::shutdown();
+    rclcpp::shutdown(); 
   }
   auto goal_msg = nav2_msgs::action::Spin::Goal();
-  auto message = geometry_msgs::msg::Point();
-  message.x = target_;
-  goal_msg.speed = speed_;
   goal_msg.time_allowance = rclcpp::Duration::from_seconds(time_allowance_);
-  goal_msg.target = message;
+  goal_msg.target_yaw = target_;
   auto send_goal_options = rclcpp_action::Client<nav2_msgs::action::Spin>::SendGoalOptions();
   send_goal_options.result_callback =
       std::bind(&SpinWp::result_callback, this, std::placeholders::_1);
