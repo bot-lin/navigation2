@@ -196,9 +196,9 @@ std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std:
       unsigned int y_index = std::floor((pose.y - origin_y_) / resolution_);
       unsigned int x_index = std::floor((pose.x - origin_x_) / resolution_);
       grid_map[x_index][y_index] = 1;
-      RCLCPP_INFO(
-    // node_->get_logger(), "pose x %f y %f, index x: %d,  y %d",
-    pose.x, pose.y, x_index, y_index);
+      // RCLCPP_INFO(
+      //   node_->get_logger(), "pose x %f y %f, index x: %d,  y %d",
+      //   pose.x, pose.y, x_index, y_index);
     }
     std::string filename = "/data/grid_map1.png";
     saveBinaryImageAsPNG(grid_map, filename);
