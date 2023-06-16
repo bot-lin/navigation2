@@ -368,7 +368,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
 
   std_msgs::msg::Bool msg;
   // Collision checking on this velocity heading
-  bool first_collision = true;
+  // bool first_collision = true;
   const double & carrot_dist = hypot(carrot_pose.pose.position.x, carrot_pose.pose.position.y);
   if (use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
       throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
