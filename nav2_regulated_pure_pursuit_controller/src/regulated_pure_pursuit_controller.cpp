@@ -371,6 +371,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   bool first_collision = true;
   const double & carrot_dist = hypot(carrot_pose.pose.position.x, carrot_pose.pose.position.y);
   while (use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
+    RCLCPP_INFO(logger_, "RegulatedPurePursuitController detected collision ahead!");
     msg.data = true;
     collision_pub_->publish(msg);
     if (first_collision){
