@@ -370,22 +370,24 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   // Collision checking on this velocity heading
   bool first_collision = true;
   const double & carrot_dist = hypot(carrot_pose.pose.position.x, carrot_pose.pose.position.y);
-  while (use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
-    RCLCPP_INFO(logger_, "RegulatedPurePursuitController detected collision ahead!");
-    msg.data = true;
-    collision_pub_->publish(msg);
-    if (first_collision){
-      first_collision = false;
-      angular_vel = 0.1;
-    }
-    else{
-      angular_vel = -angular_vel;
-    }
-    linear_vel -= 0.01;
-    if (linear_vel < 0.0){
-      linear_vel = 0.0;
-      // throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
-    }
+  if (use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
+      throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
+
+    // RCLCPP_INFO(logger_, "RegulatedPurePursuitController detected collision ahead!");
+    // msg.data = true;
+    // collision_pub_->publish(msg);
+    // if (first_collision){
+    //   first_collision = false;
+    //   angular_vel = 0.1;
+    // }
+    // else{
+    //   angular_vel = -angular_vel;
+    // }
+    // linear_vel -= 0.01;
+    // if (linear_vel < 0.0){
+    //   linear_vel = 0.0;
+    //   throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
+    // }
   }
 
   // populate and return message
