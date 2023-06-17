@@ -61,11 +61,8 @@ void RotationShimController::configure(
     node, plugin_name_ + ".simulate_ahead_time", rclcpp::ParameterValue(1.0));
   nav2_util::declare_parameter_if_not_declared(
     node, plugin_name_ + ".primary_controller", rclcpp::PARAMETER_STRING);
-  nav2_util::declare_parameter_if_not_declared(
-    node, plugin_name_ + ".enable_reset", rclcpp::ParameterValue(false));
 
   node->get_parameter(plugin_name_ + ".angular_dist_threshold", angular_dist_threshold_);
-  node->get_parameter(plugin_name_ + ".enable_reset", enable_reset_);
   node->get_parameter(plugin_name_ + ".forward_sampling_distance", forward_sampling_distance_);
   node->get_parameter(
     plugin_name_ + ".rotate_to_heading_angular_vel",
@@ -160,7 +157,6 @@ geometry_msgs::msg::TwistStamped RotationShimController::computeVelocityCommands
           logger_,
           "Robot is at the new path's rough heading, passing to controller");
         path_updated_ = false;
-        if (enable_reset_) return resetVelocity(pose);
       }
     } catch (const std::runtime_error & e) {
       RCLCPP_DEBUG(
@@ -168,14 +164,10 @@ geometry_msgs::msg::TwistStamped RotationShimController::computeVelocityCommands
         "Rotation Shim Controller was unable to find a sampling point,"
         " a rotational collision was detected, or TF failed to transform"
         " into base frame! what(): %s", e.what());
-
       path_updated_ = false;
     }
   }
-  if (enable_reset_){
-        sleep(2);
-        enable_reset_ = false;
-      }
+
   // If at this point, use the primary controller to path track
   return primary_controller_->computeVelocityCommands(pose, velocity, goal_checker);
 }
@@ -215,14 +207,6 @@ RotationShimController::transformPoseToBaseFrame(const geometry_msgs::msg::PoseS
     throw nav2_core::PlannerException("Failed to transform pose to base frame!");
   }
   return pt_base.pose;
-}
-geometry_msgs::msg::TwistStamped
-RotationShimController::resetVelocity(
-  const geometry_msgs::msg::PoseStamped & pose)
-{
-  geometry_msgs::msg::TwistStamped cmd_vel;
-  cmd_vel.header = pose.header;
-  return cmd_vel;
 }
 
 geometry_msgs::msg::TwistStamped
@@ -288,7 +272,6 @@ void RotationShimController::setPlan(const nav_msgs::msg::Path & path)
 {
   path_updated_ = true;
   current_path_ = path;
-  enable_reset_ = true;
   primary_controller_->setPlan(path);
 }
 
