@@ -18,8 +18,10 @@
 #define NAV2_UTIL__ROBOT_UTILS_HPP_
 
 #include <string>
+#include <memory>
 
 #include "geometry_msgs/msg/pose_stamped.hpp"
+#include "tf2/time.h"
 #include "tf2_ros/buffer.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -55,6 +57,23 @@ bool transformPoseInTargetFrame(
   geometry_msgs::msg::PoseStamped & transformed_pose,
   tf2_ros::Buffer & tf_buffer, const std::string target_frame,
   const double transform_timeout = 0.1);
+
+bool getTransform(
+  const std::string & source_frame_id,
+  const std::string & target_frame_id,
+  const tf2::Duration & transform_tolerance,
+  const std::shared_ptr<tf2_ros::Buffer> tf_buffer,
+  tf2::Transform & tf2_transform);
+
+bool getTransform(
+  const std::string & source_frame_id,
+  const rclcpp::Time & source_time,
+  const std::string & target_frame_id,
+  const rclcpp::Time & target_time,
+  const std::string & fixed_frame_id,
+  const tf2::Duration & transform_tolerance,
+  const std::shared_ptr<tf2_ros::Buffer> tf_buffer,
+  tf2::Transform & tf2_transform);
 
 }  // end namespace nav2_util
 
