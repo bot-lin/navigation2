@@ -356,8 +356,8 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
       curvature = 2.0 * carrot_pose.pose.position.y / carrot_dist2;
     }
   }
-
-
+  
+auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan);
   // Setting the velocity direction
   double sign = 1.0;
   if (allow_reversing_) {
@@ -371,7 +371,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   if (shouldRotateToGoalHeading(carrot_pose)) {
     double angle_to_goal = tf2::getYaw(transformed_plan.poses.back().pose.orientation);
     rotateToHeading(linear_vel, angular_vel, angle_to_goal);
-  } else if (shouldRotateToPath(carrot_pose, angle_to_heading)) {
+  } else if (shouldRotateToPath(rotate_pose, angle_to_heading)) {
     RCLCPP_INFO(
     logger_,
     "Rotating");
