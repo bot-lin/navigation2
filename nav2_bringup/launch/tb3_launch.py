@@ -17,6 +17,7 @@
 import os
 
 from ament_index_python.packages import get_package_share_directory
+from launch_ros.actions import ComposableNodeContainer
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
@@ -25,6 +26,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 
+from launch_ros.descriptions import ComposableNode
 
 def generate_launch_description():
     # Get the launch directory
@@ -215,6 +217,21 @@ def generate_launch_description():
                           'autostart': autostart,
                           'use_composition': use_composition,
                           'use_respawn': use_respawn}.items())
+    
+    container = ComposableNodeContainer(
+            name='nest_container',
+            namespace='',
+            package='rclcpp_components',
+            executable='component_container',
+            composable_node_descriptions=[
+                ComposableNode(
+                    package='tf_to_pose_cpp',
+                    plugin='PosePublisher',
+                    name='posepublisher',
+                    extra_arguments=[{'use_intra_process_comms': True}])
+            ],
+            output='both',
+    )
 
     # Create the launch description and populate
     ld = LaunchDescription()
@@ -228,7 +245,6 @@ def generate_launch_description():
     ld.add_action(declare_params_file_cmd)
     ld.add_action(declare_autostart_cmd)
     ld.add_action(declare_use_composition_cmd)
-
     ld.add_action(declare_rviz_config_file_cmd)
     ld.add_action(declare_use_simulator_cmd)
     ld.add_action(declare_use_robot_state_pub_cmd)
@@ -244,5 +260,7 @@ def generate_launch_description():
     # Add the actions to launch all of the navigation nodes
     ld.add_action(start_robot_state_publisher_cmd)
     ld.add_action(bringup_cmd)
+    ld.add_action(container)
+
 
     return ld
