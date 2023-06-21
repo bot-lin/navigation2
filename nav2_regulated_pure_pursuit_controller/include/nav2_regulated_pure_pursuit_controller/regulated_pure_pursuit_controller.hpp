@@ -283,6 +283,7 @@ protected:
   rclcpp::Clock::SharedPtr clock_;
 
   double desired_linear_vel_, base_desired_linear_vel_;
+  double curvature_lookahead_dist_;
   double lookahead_dist_;
   double rotate_to_heading_angular_vel_;
   double max_lookahead_dist_;
@@ -296,6 +297,7 @@ protected:
   double max_allowed_time_to_collision_up_to_carrot_;
   bool use_collision_detection_;
   bool use_regulated_linear_velocity_scaling_;
+  bool use_fixed_curvature_lookahead_;
   bool use_cost_regulated_linear_velocity_scaling_;
   double cost_scaling_dist_;
   double cost_scaling_gain_;

@@ -63,6 +63,8 @@ void RegulatedPurePursuitController::configure(
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".desired_linear_vel", rclcpp::ParameterValue(0.5));
   declare_parameter_if_not_declared(
+    node, plugin_name_ + ".curvature_lookahead_dist", rclcpp::ParameterValue(1.0));
+  declare_parameter_if_not_declared(
     node, plugin_name_ + ".lookahead_dist", rclcpp::ParameterValue(0.6));
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".min_lookahead_dist", rclcpp::ParameterValue(0.3));
@@ -90,6 +92,8 @@ void RegulatedPurePursuitController::configure(
     rclcpp::ParameterValue(true));
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".use_regulated_linear_velocity_scaling", rclcpp::ParameterValue(true));
+  declare_parameter_if_not_declared(
+    node, plugin_name_ + ".use_fixed_curvature_lookahead", rclcpp::ParameterValue(true));
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".use_cost_regulated_linear_velocity_scaling",
     rclcpp::ParameterValue(true));
@@ -121,6 +125,7 @@ void RegulatedPurePursuitController::configure(
     rclcpp::ParameterValue(true));
 
   node->get_parameter(plugin_name_ + ".desired_linear_vel", desired_linear_vel_);
+  node->get_parameter(plugin_name_ + ".curvature_lookahead_dist", curvature_lookahead_dist_);
   base_desired_linear_vel_ = desired_linear_vel_;
   node->get_parameter(plugin_name_ + ".lookahead_dist", lookahead_dist_);
   node->get_parameter(plugin_name_ + ".min_lookahead_dist", min_lookahead_dist_);
@@ -153,6 +158,9 @@ void RegulatedPurePursuitController::configure(
   node->get_parameter(
     plugin_name_ + ".use_regulated_linear_velocity_scaling",
     use_regulated_linear_velocity_scaling_);
+  node->get_parameter(
+    plugin_name_ + ".use_fixed_curvature_lookahead",
+    use_fixed_curvature_lookahead_);
   node->get_parameter(
     plugin_name_ + ".use_cost_regulated_linear_velocity_scaling",
     use_cost_regulated_linear_velocity_scaling_);
@@ -322,6 +330,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   }
 
   auto carrot_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
+
   carrot_pub_->publish(createCarrotMsg(carrot_pose));
 
   double linear_vel, angular_vel;
@@ -334,9 +343,20 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
 
   // Find curvature of circle (k = 1 / R)
   double curvature = 0.0;
-  if (carrot_dist2 > 0.001) {
-    curvature = 2.0 * carrot_pose.pose.position.y / carrot_dist2;
+  if (use_fixed_curvature_lookahead_){
+    auto curvature_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan);
+    const double curvature_dist2 =
+    (curvature_pose.pose.position.x * curvature_pose.pose.position.x) +
+    (curvature_pose.pose.position.y * curvature_pose.pose.position.y);
+    if (curvature_dist2 > 0.001) {
+    curvature = 2.0 * curvature_pose.pose.position.y / curvature_dist2;
+    }
+  }else{
+    if (carrot_dist2 > 0.001) {
+      curvature = 2.0 * carrot_pose.pose.position.y / carrot_dist2;
+    }
   }
+
 
   // Setting the velocity direction
   double sign = 1.0;
@@ -885,6 +905,8 @@ RegulatedPurePursuitController::dynamicParametersCallback(
         base_desired_linear_vel_ = parameter.as_double();
       } else if (name == plugin_name_ + ".lookahead_dist") {
         lookahead_dist_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".curvature_lookahead_dist") {
+        curvature_lookahead_dist_ = parameter.as_double();
       } else if (name == plugin_name_ + ".max_lookahead_dist") {
         max_lookahead_dist_ = parameter.as_double();
       } else if (name == plugin_name_ + ".min_lookahead_dist") {
@@ -920,6 +942,8 @@ RegulatedPurePursuitController::dynamicParametersCallback(
         use_velocity_scaled_lookahead_dist_ = parameter.as_bool();
       } else if (name == plugin_name_ + ".use_regulated_linear_velocity_scaling") {
         use_regulated_linear_velocity_scaling_ = parameter.as_bool();
+      } else if (name == plugin_name_ + ".use_fixed_curvature_lookahead") {
+        use_fixed_curvature_lookahead_ = parameter.as_bool();
       } else if (name == plugin_name_ + ".use_cost_regulated_linear_velocity_scaling") {
         use_cost_regulated_linear_velocity_scaling_ = parameter.as_bool();
       } else if (name == plugin_name_ + ".use_rotate_to_heading") {
