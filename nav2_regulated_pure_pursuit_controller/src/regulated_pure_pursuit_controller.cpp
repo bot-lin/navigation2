@@ -129,6 +129,7 @@ void RegulatedPurePursuitController::configure(
   base_desired_linear_vel_ = desired_linear_vel_;
   node->get_parameter(plugin_name_ + ".lookahead_dist", lookahead_dist_);
   node->get_parameter(plugin_name_ + ".min_lookahead_dist", min_lookahead_dist_);
+  node->get_parameter(plugin_name_ + ".min_vel_lookahead", min_vel_lookahead_);
   node->get_parameter(plugin_name_ + ".max_lookahead_dist", max_lookahead_dist_);
   node->get_parameter(plugin_name_ + ".lookahead_time", lookahead_time_);
   node->get_parameter(
@@ -289,8 +290,25 @@ double RegulatedPurePursuitController::getLookAheadDistance(
   // Else, use the static look ahead distance
   double lookahead_dist = lookahead_dist_;
   if (use_velocity_scaled_lookahead_dist_) {
-    lookahead_dist = fabs(speed.linear.x) * lookahead_time_;
-    lookahead_dist = std::clamp(lookahead_dist, min_lookahead_dist_, max_lookahead_dist_);
+    //use min_vel, below which the lookahead_dist is set to min_lookahead_dist_
+    //     |
+    //max_d|         ______________
+    //     |        /
+    //     |       / 
+    //     |      /
+    //     |     / 
+    //     |    | 
+    //     |    |
+    //min_d|____|
+    //     |____|______________________________________
+    //         min_v
+    if (fabs(speed.linear.x) < min_vel_lookahead_) {
+      lookahead_dist = min_lookahead_dist_;
+    }else {
+      lookahead_dist = fabs(speed.linear.x) * lookahead_time_;
+      lookahead_dist = std::clamp(lookahead_dist, min_lookahead_dist_, max_lookahead_dist_);     
+    }
+
   }
 
   return lookahead_dist;
@@ -393,6 +411,39 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
   if (use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
     msg.data = true;
     collision_pub_->publish(msg);
+    // Current pose and Collision pose
+    //transformPose find pose to base_link
+    //if y > width/2 or y < -width/2
+    //move forward
+    //elif  y > 0
+    //turn right
+    //else
+    //turn left
+    geometry_msgs::msg::PoseStamped transformed_pose;
+    transformPose("base_link", collision_pose_msg_, transformed_pose);
+    double x = transformed_pose.pose.position.x;
+    double y = transformed_pose.pose.position.y;
+    std::vector<geometry_msgs::msg::Point> footprint = costmap_ros_->getRobotFootprint();
+    double half_width = footprint[0].y;
+    if (x > 0){//front
+      if (abs(y)>half_width){
+        linear_vel = 0.05;
+        angular_vel = 0.0;
+      }
+      else if (y > 0)
+      {
+        linear_vel = 0.0;
+        angular_vel = -0.1;
+      }
+      else{
+        linear_vel = 0.0;
+        angular_vel = 0.1;
+      }
+      
+    }else{//back
+
+    }
+    
     throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
       
       
@@ -592,6 +643,7 @@ bool RegulatedPurePursuitController::isCollisionImminent(
 
     // check for collision at the projected pose
     if (inCollision(curr_pose.x, curr_pose.y, curr_pose.theta)) {
+      collision_pose_msg_ = pose_msg;
       carrot_arc_pub_->publish(arc_pts_msg);
       return true;
     }
@@ -911,6 +963,8 @@ RegulatedPurePursuitController::dynamicParametersCallback(
         max_lookahead_dist_ = parameter.as_double();
       } else if (name == plugin_name_ + ".min_lookahead_dist") {
         min_lookahead_dist_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".min_vel_lookahead") {
+        min_vel_lookahead_ = parameter.as_double();
       } else if (name == plugin_name_ + ".lookahead_time") {
         lookahead_time_ = parameter.as_double();
       } else if (name == plugin_name_ + ".rotate_to_heading_angular_vel") {

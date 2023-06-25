@@ -288,6 +288,7 @@ protected:
   double rotate_to_heading_angular_vel_;
   double max_lookahead_dist_;
   double min_lookahead_dist_;
+  double min_vel_lookahead_;
   double lookahead_time_;
   bool use_velocity_scaled_lookahead_dist_;
   tf2::Duration transform_tolerance_;
@@ -312,7 +313,7 @@ protected:
   bool allow_reversing_;
   double max_robot_pose_search_dist_;
   bool use_interpolation_;
-
+  geometry_msgs::msg::PoseStamped collision_pose_msg_;
   nav_msgs::msg::Path global_plan_;
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<nav_msgs::msg::Path>> global_path_pub_;
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<geometry_msgs::msg::PointStamped>>
