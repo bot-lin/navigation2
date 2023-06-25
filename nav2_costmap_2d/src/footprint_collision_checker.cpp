@@ -85,7 +85,7 @@ double FootprintCollisionChecker<CostmapT>::footprintCost(const Footprint footpr
 }
 
 template<typename CostmapT>
-double FootprintCollisionChecker<CostmapT>::lineCost(int x0, int x1, int y0, int y1) const
+double FootprintCollisionChecker<CostmapT>::lineCost(int x0, int x1, int y0, int y1) 
 {
   double line_cost = 0.0;
   double point_cost = -1.0;
@@ -114,7 +114,7 @@ bool FootprintCollisionChecker<CostmapT>::worldToMap(
 }
 
 template<typename CostmapT>
-double FootprintCollisionChecker<CostmapT>::pointCost(int x, int y) const
+double FootprintCollisionChecker<CostmapT>::pointCost(int x, int y) 
 {
   return costmap_->getCost(x, y);
 }

@@ -59,7 +59,7 @@ public:
   /**
    * @brief Get the cost for a line segment
    */
-  double lineCost(int x0, int x1, int y0, int y1) const;
+  double lineCost(int x0, int x1, int y0, int y1);
   /**
    * @brief Get the map coordinates from a world point
    */
@@ -67,7 +67,7 @@ public:
   /**
    * @brief Get the cost of a point
    */
-  double pointCost(int x, int y) const;
+  double pointCost(int x, int y);
   /**
   * @brief Set the current costmap object to use for collision detection
   */
