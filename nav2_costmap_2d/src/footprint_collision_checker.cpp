@@ -59,7 +59,7 @@ double FootprintCollisionChecker<CostmapT>::footprintCost(const Footprint footpr
   // cache the start to eliminate a worldToMap call
   unsigned int xstart = x0;
   unsigned int ystart = y0;
-  unsigned int c_x, c_y;
+  int c_x, c_y;
   // we need to rasterize each line in the footprint
   for (unsigned int i = 0; i < footprint.size() - 1; ++i) {
     // get the cell coord of the second point
