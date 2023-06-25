@@ -80,6 +80,11 @@ public:
     return costmap_;
   }
 
+  geometry_msgs::msg::Pose2D getCurrentCollisionPoint()
+  {
+    return current_collision_point_;
+  }
+  
 protected:
   CostmapT costmap_;
   geometry_msgs::msg::Pose2D current_collision_point_;
