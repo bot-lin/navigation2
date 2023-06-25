@@ -113,10 +113,10 @@ bool FootprintCollisionChecker<CostmapT>::worldToMap(
   return costmap_->worldToMap(wx, wy, mx, my);
 }
 
-bool FootprintCollisionChecker<CostmapT>::mapToWorld(
+void FootprintCollisionChecker<CostmapT>::mapToWorld(
   unsigned int mx, unsigned int my, double & wx, double & wy)
 {
-  return costmap_->mapToWorld(mx, my, wx, wy);
+  costmap_->mapToWorld(mx, my, wx, wy);
 }
 
 template<typename CostmapT>
