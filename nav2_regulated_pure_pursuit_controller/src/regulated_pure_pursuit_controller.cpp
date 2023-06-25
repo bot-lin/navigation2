@@ -428,7 +428,7 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
     // collision_pose_msg.pose.position.x = collision_point.x;
     // collision_pose_msg.pose.position.y = collision_point.y;
 
-    transformPose("base_link", collision_pose_msg, transformed_pose);
+    transformPose("base_link", collision_pose_msg_, transformed_pose);
     double x = transformed_pose.pose.position.x;
     double y = transformed_pose.pose.position.y;
     std::vector<geometry_msgs::msg::Point> footprint = costmap_ros_->getRobotFootprint();
