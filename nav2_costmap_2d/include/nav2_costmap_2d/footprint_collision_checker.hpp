@@ -59,16 +59,15 @@ public:
   /**
    * @brief Get the cost for a line segment
    */
-  double lineCost(int x0, int x1, int y0, int y1) const;
+  double lineCost(int x0, int x1, int y0, int y1, int & c_x, int & c_y) const;
   /**
    * @brief Get the map coordinates from a world point
    */
   bool worldToMap(double wx, double wy, unsigned int & mx, unsigned int & my);
-  void mapToWorld(unsigned int mx, unsigned int my, double & wx, double & wy) const;
   /**
    * @brief Get the cost of a point
    */
-  double pointCost(unsigned int x, unsigned int y) const;
+  double pointCost(int x, int y) const;
   /**
   * @brief Set the current costmap object to use for collision detection
   */
@@ -81,15 +80,8 @@ public:
     return costmap_;
   }
 
-  geometry_msgs::msg::Pose2D getCurrentCollisionPoint()
-  {
-    return current_collision_point_;
-  }
-
 protected:
   CostmapT costmap_;
-  geometry_msgs::msg::Pose2D current_collision_point_;
-
 };
 
 }  // namespace nav2_costmap_2d
