@@ -64,7 +64,7 @@ public:
    * @brief Get the map coordinates from a world point
    */
   bool worldToMap(double wx, double wy, unsigned int & mx, unsigned int & my);
-  void mapToWorld(unsigned int mx, unsigned int my, double & wx, double & wy);
+  void mapToWorld(unsigned int mx, unsigned int my, double & wx, double & wy) const;
   /**
    * @brief Get the cost of a point
    */
@@ -88,8 +88,8 @@ public:
 
 protected:
   CostmapT costmap_;
-  double current_collision_point_x_;
-  double current_collision_point_y_;
+  const current_collision_point_x_;
+  const current_collision_point_y_;
 };
 
 }  // namespace nav2_costmap_2d
