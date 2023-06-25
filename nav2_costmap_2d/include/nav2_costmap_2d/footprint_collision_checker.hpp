@@ -83,8 +83,8 @@ public:
 
 protected:
   CostmapT costmap_;
-  unsigned int current_collision_x_;
-  unsigned int current_collision_y_;
+  int current_collision_x_;
+  int current_collision_y_;
 };
 
 
