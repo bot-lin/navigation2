@@ -118,8 +118,8 @@ double FootprintCollisionChecker<CostmapT>::pointCost(int x, int y) const
 {
   double point_cost = costmap_->getCost(x, y);
   if (point_cost == static_cast<double>(LETHAL_OBSTACLE)) {
-    current_collision_point_.x = x;
-    current_collision_point_.y = y;
+    current_collision_point_x_ = x;
+    current_collision_point_y_ = y;
   }
   return point_cost;
 }

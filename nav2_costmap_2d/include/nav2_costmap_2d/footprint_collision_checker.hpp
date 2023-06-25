@@ -80,14 +80,15 @@ public:
     return costmap_;
   }
 
-  geometry_msgs::msg::Pose2D getCurrentCollisionPoint()
+  std::tuple<double, double> getCurrentCollisionPoint()
   {
-    return current_collision_point_;
+    return std::make_tuple(current_collision_point_x_, current_collision_point_y_);
   }
-  
+
 protected:
   CostmapT costmap_;
-  geometry_msgs::msg::Pose2D current_collision_point_;
+  double current_collision_point_x_;
+  double current_collision_point_y_;
 };
 
 }  // namespace nav2_costmap_2d
