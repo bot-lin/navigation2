@@ -64,6 +64,7 @@ public:
    * @brief Get the map coordinates from a world point
    */
   bool worldToMap(double wx, double wy, unsigned int & mx, unsigned int & my);
+  void mapToWorld(unsigned int mx, unsigned int my, double & wx, double  & wy);
   /**
    * @brief Get the cost of a point
    */
