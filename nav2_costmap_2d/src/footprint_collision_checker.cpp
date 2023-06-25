@@ -114,6 +114,13 @@ bool FootprintCollisionChecker<CostmapT>::worldToMap(
 }
 
 template<typename CostmapT>
+void FootprintCollisionChecker<CostmapT>::mapToWorld(
+  unsigned int mx, unsigned int my, double & wx, double & wy)
+{
+  return costmap_->mapToWorld(mx, my, wx, wy);
+}
+
+template<typename CostmapT>
 double FootprintCollisionChecker<CostmapT>::pointCost(int x, int y) 
 {
   return costmap_->getCost(x, y);
