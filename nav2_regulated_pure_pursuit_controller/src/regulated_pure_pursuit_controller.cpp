@@ -444,7 +444,7 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
 
     }
     
-    throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
+    //throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
       
       
 
