@@ -59,13 +59,11 @@ public:
   /**
    * @brief Get the cost for a line segment
    */
-  //double lineCost(int x0, int x1, int y0, int y1, int & c_x, int & c_y) const;
   double lineCost(int x0, int x1, int y0, int y1) const;
   /**
    * @brief Get the map coordinates from a world point
    */
   bool worldToMap(double wx, double wy, unsigned int & mx, unsigned int & my);
-  void mapToWorld(unsigned int mx, unsigned int my, double & wx, double  & wy);
   /**
    * @brief Get the cost of a point
    */
@@ -82,14 +80,8 @@ public:
     return costmap_;
   }
 
-  geometry_msgs::msg::Pose2D getCurrentCollisionPoint()
-  {
-    return collision_pose_;
-  }
-
 protected:
   CostmapT costmap_;
-  geometry_msgs::msg::Pose2D collision_pose_;
 };
 
 }  // namespace nav2_costmap_2d

@@ -59,7 +59,7 @@ double FootprintCollisionChecker<CostmapT>::footprintCost(const Footprint footpr
   // cache the start to eliminate a worldToMap call
   unsigned int xstart = x0;
   unsigned int ystart = y0;
-  //int c_x, c_y;
+
   // we need to rasterize each line in the footprint
   for (unsigned int i = 0; i < footprint.size() - 1; ++i) {
     // get the cell coord of the second point
@@ -75,10 +75,6 @@ double FootprintCollisionChecker<CostmapT>::footprintCost(const Footprint footpr
 
     // if in collision, no need to continue
     if (footprint_cost == static_cast<double>(LETHAL_OBSTACLE)) {
-      //double x_world, y_world;
-      //mapToWorld(c_x, c_y, x_world, y_world);
-      //collision_pose_.x = x_world;
-      //collision_pose_.y = y_world;
       return footprint_cost;
     }
   }
@@ -95,14 +91,10 @@ double FootprintCollisionChecker<CostmapT>::lineCost(int x0, int x1, int y0, int
   double point_cost = -1.0;
 
   for (nav2_util::LineIterator line(x0, y0, x1, y1); line.isValid(); line.advance()) {
-    int x_int = line.getX();
-    int y_int = line.getY();
-    point_cost = pointCost(x_int, y_int);   // Score the current point
+    point_cost = pointCost(line.getX(), line.getY());   // Score the current point
 
     // if in collision, no need to continue
     if (point_cost == static_cast<double>(LETHAL_OBSTACLE)) {
-      //c_x = x_int;
-      //c_y = y_int;
       return point_cost;
     }
 
@@ -120,13 +112,6 @@ bool FootprintCollisionChecker<CostmapT>::worldToMap(
 {
   return costmap_->worldToMap(wx, wy, mx, my);
 }
-
-template<typename CostmapT>
-void FootprintCollisionChecker<CostmapT>::mapToWorld(unsigned int mx, unsigned int my, double & wx, double  & wy)
-{
-  costmap_->mapToWorld(mx, my, wx, wy);
-}
-
 
 template<typename CostmapT>
 double FootprintCollisionChecker<CostmapT>::pointCost(int x, int y) const
