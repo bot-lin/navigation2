@@ -81,8 +81,14 @@ public:
     return costmap_;
   }
 
+  geometry_msgs::msg::Pose2D getCurrentCollisionPoint()
+  {
+    return collision_pose_;
+  }
+
 protected:
   CostmapT costmap_;
+  geometry_msgs::msg::Pose2D collision_pose_;
 };
 
 }  // namespace nav2_costmap_2d

@@ -77,6 +77,8 @@ double FootprintCollisionChecker<CostmapT>::footprintCost(const Footprint footpr
     if (footprint_cost == static_cast<double>(LETHAL_OBSTACLE)) {
       double x_world, y_world;
       mapToWorld(c_x, c_y, x_world, y_world);
+      collision_pose_.x = x_world;
+      collision_pose_.y = y_world;
       return footprint_cost;
     }
   }

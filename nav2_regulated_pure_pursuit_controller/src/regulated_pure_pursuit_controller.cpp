@@ -421,9 +421,9 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
     //turn left
     RCLCPP_INFO(logger_, "RegulatedPurePursuitController detected collision ahead!");
     geometry_msgs::msg::PoseStamped transformed_pose;
-    //auto collision_point = collision_checker_->getCurrentCollisionPoint();
-    //collision_pose_msg_.pose.position.x = collision_point.x;
-    //collision_pose_msg_.pose.position.y = collision_point.y;
+    auto collision_point = collision_checker_->getCurrentCollisionPoint();
+    collision_pose_msg_.pose.position.x = collision_point.x;
+    collision_pose_msg_.pose.position.y = collision_point.y;
 
     transformPose("base_link", collision_pose_msg_, transformed_pose);
     double x = transformed_pose.pose.position.x;
