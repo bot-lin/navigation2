@@ -423,6 +423,8 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
     geometry_msgs::msg::PoseStamped transformed_pose;
     geometry_msgs::msg::Pose2D collision_point = collision_checker_->getCurrentCollisionPoint();
     geometry_msgs::msg::PoseStamped collision_pose_msg;
+    collision_pose_msg.header.stamp = pose.header.stamp;
+    collision_pose_msg.header.frame_id = costmap_ros_->getGlobalFrameID();
     collision_pose_msg.pose.position.x = collision_point.x;
     collision_pose_msg.pose.position.y = collision_point.y;
 
