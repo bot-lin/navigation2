@@ -68,7 +68,7 @@ public:
   /**
    * @brief Get the cost of a point
    */
-  double pointCost(int x, int y) const;
+  double pointCost(unsigned int x, unsigned int y) const;
   /**
   * @brief Set the current costmap object to use for collision detection
   */

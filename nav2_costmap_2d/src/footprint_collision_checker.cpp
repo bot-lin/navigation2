@@ -121,7 +121,7 @@ void FootprintCollisionChecker<CostmapT>::mapToWorld(
 }
 
 template<typename CostmapT>
-double FootprintCollisionChecker<CostmapT>::pointCost(int x, int y) const
+double FootprintCollisionChecker<CostmapT>::pointCost(unsigned int x, unsigned int y) const
 {
   double point_cost = costmap_->getCost(x, y);
   if (point_cost == static_cast<double>(LETHAL_OBSTACLE)) {
