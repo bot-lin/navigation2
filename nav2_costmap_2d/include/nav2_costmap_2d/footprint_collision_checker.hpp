@@ -88,8 +88,8 @@ public:
 
 protected:
   CostmapT costmap_;
-  const double current_collision_point_x_;
-  const double current_collision_point_y_;
+  double current_collision_point_x_;
+  double current_collision_point_y_;
 };
 
 }  // namespace nav2_costmap_2d
