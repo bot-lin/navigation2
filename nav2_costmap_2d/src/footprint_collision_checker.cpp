@@ -67,7 +67,7 @@ double FootprintCollisionChecker<CostmapT>::footprintCost(const Footprint footpr
       return static_cast<double>(LETHAL_OBSTACLE);
     }
 
-    footprint_cost = std::max(lineCost(x0, x1, y0, y1, c_x, c_y), footprint_cost);
+    footprint_cost = std::max(lineCost(x0, x1, y0, y1), footprint_cost);
 
     // the second point is next iteration's first point
     x0 = x1;
@@ -85,11 +85,11 @@ double FootprintCollisionChecker<CostmapT>::footprintCost(const Footprint footpr
 
   // we also need to connect the first point in the footprint to the last point
   // the last iteration's x1, y1 are the last footprint point's coordinates
-  return std::max(lineCost(xstart, x1, ystart, y1, c_x, c_y), footprint_cost);
+  return std::max(lineCost(xstart, x1, ystart, y1), footprint_cost);
 }
 
 template<typename CostmapT>
-double FootprintCollisionChecker<CostmapT>::lineCost(int x0, int x1, int y0, int y1, int & c_x, int & c_y) const
+double FootprintCollisionChecker<CostmapT>::lineCost(int x0, int x1, int y0, int y1) const
 {
   double line_cost = 0.0;
   double point_cost = -1.0;
