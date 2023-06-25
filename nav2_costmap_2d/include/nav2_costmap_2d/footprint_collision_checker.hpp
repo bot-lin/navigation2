@@ -83,7 +83,10 @@ public:
 
 protected:
   CostmapT costmap_;
+  double current_collision_x_;
+  double current_collision_y_;
 };
+
 
 }  // namespace nav2_costmap_2d
 
