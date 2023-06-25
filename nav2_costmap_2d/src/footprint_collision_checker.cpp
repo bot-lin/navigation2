@@ -113,13 +113,21 @@ bool FootprintCollisionChecker<CostmapT>::worldToMap(
   return costmap_->worldToMap(wx, wy, mx, my);
 }
 
+bool FootprintCollisionChecker<CostmapT>::mapToWorld(
+  unsigned int mx, unsigned int my, double & wx, double & wy)
+{
+  return costmap_->mapToWorld(mx, my, wx, wy);
+}
+
 template<typename CostmapT>
 double FootprintCollisionChecker<CostmapT>::pointCost(int x, int y) const
 {
   double point_cost = costmap_->getCost(x, y);
   if (point_cost == static_cast<double>(LETHAL_OBSTACLE)) {
-    current_collision_point_x_ = x;
-    current_collision_point_y_ = y;
+    double wx, wy;
+    mapToWorld(x, y, wx, wy);
+    current_collision_point_x_ = wx;
+    current_collision_point_y_ = wy;
   }
   return point_cost;
 }
