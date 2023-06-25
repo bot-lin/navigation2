@@ -95,7 +95,7 @@ double FootprintCollisionChecker<CostmapT>::lineCost(int x0, int x1, int y0, int
 
     // if in collision, no need to continue
     if (point_cost == static_cast<double>(LETHAL_OBSTACLE)) {
-      return point_cost;
+      return point_cost; 
     }
 
     if (line_cost < point_cost) {
@@ -116,7 +116,12 @@ bool FootprintCollisionChecker<CostmapT>::worldToMap(
 template<typename CostmapT>
 double FootprintCollisionChecker<CostmapT>::pointCost(int x, int y) const
 {
-  return costmap_->getCost(x, y);
+  double point_cost = costmap_->getCost(x, y);
+  if (point_cost == static_cast<double>(LETHAL_OBSTACLE)) {
+    current_collision_point_.x = x;
+    current_collision_point_.y = y;
+  }
+  return point_cost;
 }
 
 template<typename CostmapT>

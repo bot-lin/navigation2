@@ -82,6 +82,7 @@ public:
 
 protected:
   CostmapT costmap_;
+  geometry_msgs::msg::Pose2D current_collision_point_;
 };
 
 }  // namespace nav2_costmap_2d
