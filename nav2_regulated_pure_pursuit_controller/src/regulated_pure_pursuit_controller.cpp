@@ -419,12 +419,16 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
     //turn right
     //else
     //turn left
+    RCLCPP_INFO(logger_, "RegulatedPurePursuitController detected collision ahead!");
     geometry_msgs::msg::PoseStamped transformed_pose;
     transformPose("base_link", collision_pose_msg_, transformed_pose);
     double x = transformed_pose.pose.position.x;
     double y = transformed_pose.pose.position.y;
     std::vector<geometry_msgs::msg::Point> footprint = costmap_ros_->getRobotFootprint();
     double half_width = footprint[0].y;
+    RCLCPP_INFO(logger_, "x %f", x);
+    RCLCPP_INFO(logger_, "y %f", y);
+    RCLCPP_INFO(logger_, "half_width %f", half_width);
     if (x > 0){//front
       if (abs(y)>half_width){
         linear_vel = 0.05;
