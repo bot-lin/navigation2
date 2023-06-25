@@ -125,7 +125,9 @@ double FootprintCollisionChecker<CostmapT>::pointCost(int x, int y)
 {
   double point_cost = costmap_->getCost(x, y);
   if (point_cost == static_cast<double>(LETHAL_OBSTACLE)) {
-    //mapToWorld(x, y, current_collision_x_, current_collision_y_);
+    unsigned int u_x = static_cast<unsigned int>(x);
+    unsigned int u_y = static_cast<unsigned int>(y);
+    mapToWorld(u_x, u_y, current_collision_x_, current_collision_y_);
   }
   return point_cost;
 }
