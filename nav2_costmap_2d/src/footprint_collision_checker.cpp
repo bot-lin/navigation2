@@ -142,6 +142,85 @@ double FootprintCollisionChecker<CostmapT>::footprintCostAtPose(
   return footprintCost(oriented_footprint);
 }
 
+template<typename CostmapT>
+geometry_msgs::msg::Pose2D FootprintCollisionChecker<CostmapT>::findCollsionPoint(
+  double x, double y, double theta, const Footprint footprint)
+{
+  double cos_th = cos(theta);
+  double sin_th = sin(theta);
+  Footprint oriented_footprint;
+  for (unsigned int i = 0; i < footprint.size(); ++i) {
+    geometry_msgs::msg::Point new_pt;
+    new_pt.x = x + (footprint[i].x * cos_th - footprint[i].y * sin_th);
+    new_pt.y = y + (footprint[i].x * sin_th + footprint[i].y * cos_th);
+    oriented_footprint.push_back(new_pt);
+  }
+
+  // now we really have to lay down the oriented_footprint in the costmap_ grid
+  unsigned int x0, x1, y0, y1;
+  double footprint_cost = 0.0;
+  geometry_msgs::msg::Pose2D collision_pose;
+
+  // get the cell coord of the first point
+  if (!worldToMap(oriented_footprint[0].x, oriented_footprint[0].y, x0, y0)) {
+    collision_pose.x = oriented_footprint[0].x;
+    collision_pose.y = oriented_footprint[0].y;
+    return collision_pose;
+  }
+  // cache the start to eliminate a worldToMap call
+  unsigned int xstart = x0;
+  unsigned int ystart = y0;
+
+  // we need to rasterize each line in the footprint
+  for (unsigned int i = 0; i < oriented_footprint.size() - 1; ++i) {
+    // get the cell coord of the second point
+    if (!worldToMap(oriented_footprint[i + 1].x, oriented_footprint[i + 1].y, x1, y1)) {
+      collision_pose.x = oriented_footprint[i + 1].x;
+      collision_pose.y = oriented_footprint[i + 1].y;
+      return collision_pose;
+    }
+
+    //point  start
+    for (nav2_util::LineIterator line(x0, y0, x1, y1); line.isValid(); line.advance()) {
+      unsigned int temp_x = line.getX();
+      unsigned int temp_y = line.getY();
+      point_cost = pointCost(temp_x, temp_y);   // Score the current point
+
+      // if in collision, no need to continue
+      if (point_cost == static_cast<double>(LETHAL_OBSTACLE)) {
+        costmap_->mapToWorld(temp_x, temp_y, collision_pose.x, collision_pose.y);
+        return collision_pose;
+      }
+    }
+    //point end
+
+    // the second point is next iteration's first point
+    x0 = x1;
+    y0 = y1;
+
+  }
+
+  // we also need to connect the first point in the footprint to the last point
+  // the last iteration's x1, y1 are the last footprint point's coordinates
+    //point  start
+    for (nav2_util::LineIterator line(xstart, x1, ystart, y1); line.isValid(); line.advance()) {
+      unsigned int temp_x = line.getX();
+      unsigned int temp_y = line.getY();
+      point_cost = pointCost(temp_x, temp_y);   // Score the current point
+
+      // if in collision, no need to continue
+      if (point_cost == static_cast<double>(LETHAL_OBSTACLE)) {
+        costmap_->mapToWorld(temp_x, temp_y, collision_pose.x, collision_pose.y);
+        return collision_pose;
+      }
+    }
+    //point end
+  return collision_pose;
+
+ 
+
+}
+
 // declare our valid template parameters
 template class FootprintCollisionChecker<std::shared_ptr<nav2_costmap_2d::Costmap2D>>;
 template class FootprintCollisionChecker<nav2_costmap_2d::Costmap2D *>;

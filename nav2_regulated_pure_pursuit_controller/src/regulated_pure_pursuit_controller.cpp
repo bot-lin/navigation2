@@ -659,7 +659,11 @@ bool RegulatedPurePursuitController::isCollisionImminent(
 
     // check for collision at the projected pose
     if (inCollision(curr_pose.x, curr_pose.y, curr_pose.theta)) {
+      geometry_msgs::msg::Pose2D collision_pose = collision_checker_->findCollsionPoint(
+        curr_pose.x, curr_pose.y, curr_pose.theta, costmap_ros_->getRobotFootprint());
       collision_pose_msg_ = pose_msg;
+      collision_pose_msg_.pose.position.x = collision_pose.x;
+      collision_pose_msg_.pose.position.y = collision_pose.y;
       carrot_arc_pub_->publish(arc_pts_msg);
       return true;
     }

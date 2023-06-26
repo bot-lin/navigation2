@@ -222,6 +222,14 @@
       <input_port name="robot_base_frame">Robot frame to check relative to global_frame</input_port>
     </Condition>
 
+    <Condition ID="CloseToPose">
+      <input_port name="distance">Distance to check if passed</input_port>
+      <input_port name="pose_x">target x</input_port>
+      <input_port name="pose_y">target y</input_port>
+      <input_port name="global_frame">reference frame to check in</input_port>
+      <input_port name="robot_base_frame">Robot frame to check relative to global_frame</input_port>
+    </Condition>
+
     <Condition ID="TimeExpired">
       <input_port name="seconds">Time to check if expired</input_port>
     </Condition>

@@ -56,6 +56,7 @@ public:
    * @brief Find the footprint cost a a post with an unoriented footprint
    */
   double footprintCostAtPose(double x, double y, double theta, const Footprint footprint);
+  geometry_msgs::msg::Pose2D findCollsionPoint(double x, double y, double theta, const Footprint footprint);
   /**
    * @brief Get the cost for a line segment
    */
@@ -83,8 +84,6 @@ public:
 
 protected:
   CostmapT costmap_;
-  int current_collision_x_;
-  int current_collision_y_;
 };
 
 
