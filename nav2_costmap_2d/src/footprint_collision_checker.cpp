@@ -158,7 +158,6 @@ geometry_msgs::msg::Pose2D FootprintCollisionChecker<CostmapT>::findCollsionPoin
 
   // now we really have to lay down the oriented_footprint in the costmap_ grid
   unsigned int x0, x1, y0, y1;
-  double footprint_cost = 0.0;
   geometry_msgs::msg::Pose2D collision_pose;
 
   // get the cell coord of the first point
@@ -184,7 +183,7 @@ geometry_msgs::msg::Pose2D FootprintCollisionChecker<CostmapT>::findCollsionPoin
     for (nav2_util::LineIterator line(x0, y0, x1, y1); line.isValid(); line.advance()) {
       unsigned int temp_x = line.getX();
       unsigned int temp_y = line.getY();
-      point_cost = pointCost(temp_x, temp_y);   // Score the current point
+      double point_cost = pointCost(temp_x, temp_y);   // Score the current point
 
       // if in collision, no need to continue
       if (point_cost == static_cast<double>(LETHAL_OBSTACLE)) {
