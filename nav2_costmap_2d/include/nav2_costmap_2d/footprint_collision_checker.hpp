@@ -60,16 +60,15 @@ public:
   /**
    * @brief Get the cost for a line segment
    */
-  double lineCost(int x0, int x1, int y0, int y1);
+  double lineCost(int x0, int x1, int y0, int y1) const;
   /**
    * @brief Get the map coordinates from a world point
    */
   bool worldToMap(double wx, double wy, unsigned int & mx, unsigned int & my);
-  void mapToWorld(unsigned int mx, unsigned int my, double & wx, double & wy);
   /**
    * @brief Get the cost of a point
    */
-  double pointCost(int x, int y);
+  double pointCost(int x, int y) const;
   /**
   * @brief Set the current costmap object to use for collision detection
   */

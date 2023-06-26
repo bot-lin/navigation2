@@ -205,7 +205,7 @@ geometry_msgs::msg::Pose2D FootprintCollisionChecker<CostmapT>::findCollsionPoin
     for (nav2_util::LineIterator line(xstart, x1, ystart, y1); line.isValid(); line.advance()) {
       unsigned int temp_x = line.getX();
       unsigned int temp_y = line.getY();
-      point_cost = pointCost(temp_x, temp_y);   // Score the current point
+      double point_cost = pointCost(temp_x, temp_y);   // Score the current point
 
       // if in collision, no need to continue
       if (point_cost == static_cast<double>(LETHAL_OBSTACLE)) {
