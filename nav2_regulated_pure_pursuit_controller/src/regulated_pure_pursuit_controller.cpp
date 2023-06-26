@@ -457,7 +457,20 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
       }
       
     }else{//back
-
+      if (y > 0)
+      {
+        linear_vel = 0.05;
+        angular_vel = 0.1;
+      }
+      else if (y < 0){
+        linear_vel = 0.05;
+        angular_vel = -0.1;
+      }
+      else
+      {
+        linear_vel = 0.05;
+        angular_vel = 0.0;
+      }
     }
     
     //throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
