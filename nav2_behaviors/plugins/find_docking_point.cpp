@@ -161,10 +161,11 @@ bool FindDockingPoint::find_docking_spot()
         pose_map_.pose.orientation.y = 0.0;
         pose_map_.pose.orientation.z = 0.0;
         pose_map_.pose.orientation.w = 1.0; //converted to  0 rad to the map
-        nav2_util::transformPoseInTargetFrame(pose_map_, pose_map_,  *this->tf_, "odom");
-
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to map x: %f, y:%f, z: %f", pose_map_.pose.position.x, pose_map_.pose.position.y, pose_map_.pose.position.z);
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to map frame id is %s", pose_map_.header.frame_id.c_str());
+        nav2_util::transformPoseInTargetFrame(pose_map_, pose_map_,  *this->tf_, "odom");
+
+        
         visualization_msgs::msg::Marker markers_msg;
         markers_msg.header.frame_id = "laser";
         markers_msg.type = 8;
