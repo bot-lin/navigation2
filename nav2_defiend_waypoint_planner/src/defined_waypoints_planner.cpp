@@ -282,7 +282,8 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   saveBinaryImageAsPNG(grid_map, filename);
   // graph_ = grid_map;
   nav_msgs::msg::Path global_path;
-
+  RCLCPP_INFO(
+      node_->get_logger(), "validate image saved");
   // Checking if the goal and start state is in the global frame
   if (start.header.frame_id != global_frame_) {
     RCLCPP_ERROR(
