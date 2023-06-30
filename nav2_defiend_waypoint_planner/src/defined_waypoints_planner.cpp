@@ -322,8 +322,8 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   end_y_index = height -end_y_index;
 
   unsigned int end_x_index = std::floor((closestPoint.first - origin_x_) / resolution_);
-  MapNode start_node = MapNode(start_x_index, start_y_index);
-  MapNode end_node = MapNode(end_x_index, end_y_index);
+  MapNode start_node = MapNode(start_y_index, start_x_index);
+  MapNode end_node = MapNode(end_y_index, end_x_index);
   RCLCPP_INFO(node_->get_logger(), "start x: %d, y: %d", start_x_index, start_y_index);
   RCLCPP_INFO(node_->get_logger(), "end x: %d, y: %d", end_x_index, end_y_index);
   
