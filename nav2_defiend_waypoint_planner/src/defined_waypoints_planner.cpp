@@ -249,7 +249,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   Magick::Image img("/data/path.pgm");
   int width = img.size().width();
   int height = img.size().height();
-  RCLCPP_ERROR(
+  RCLCPP_INFO(
       node_->get_logger(), "Width %d, height: %d",
       width, height);
 
@@ -271,7 +271,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
       }
       /// on a scale from 0.0 to 1.0 how bright is the pixel?
       int shade = Magick::ColorGray::scaleQuantumToDouble(sum / channels.size());
-      grid_map[x][y] = shade;
+      grid_map[y][x] = shade;
     }
   }
   // std::string filename = "/data/path.txt";
