@@ -253,8 +253,8 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
       node_->get_logger(), "Width %d, height: %d",
       width, height);
 
-      for (size_t y = 0; y < msg.info.height; y++) {
-    for (size_t x = 0; x < msg.info.width; x++) {
+      for (size_t y = 0; y < height; y++) {
+    for (size_t x = 0; x < width; x++) {
   auto pixel = img.pixelColor(x, y);
 
       std::vector<Magick::Quantum> channels = {pixel.redQuantum(), pixel.greenQuantum(),
