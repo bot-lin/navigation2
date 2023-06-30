@@ -109,7 +109,6 @@ bool isValid(int x, int y, int rows, int cols, const std::vector<std::vector<boo
 std::vector<MapNode> bfs(std::vector<std::vector<int>>& grid, MapNode start, MapNode end) {
     int rows = grid.size();
     int cols = grid[0].size();
-    RCLCPP_INFO(node_->get_logger(), "bfs row: %d, col: %d", rows, cols);
     std::cout << "bfs row:" << rows << std::endl;
     std::cout << "bfs col:" << cols << std::endl;
 
