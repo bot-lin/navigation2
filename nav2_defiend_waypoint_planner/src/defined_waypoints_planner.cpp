@@ -272,6 +272,9 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
       /// on a scale from 0.0 to 1.0 how bright is the pixel?
       int shade = Magick::ColorGray::scaleQuantumToDouble(sum / channels.size());
       grid_map[y][x] = shade;
+      RCLCPP_INFO(
+      node_->get_logger(), "Width %d, height: %d, value: %d",
+      x, y, shade);
     }
   }
   // std::string filename = "/data/path.txt";
