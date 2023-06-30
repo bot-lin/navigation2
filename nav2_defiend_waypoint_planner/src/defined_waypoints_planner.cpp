@@ -272,16 +272,15 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
       /// on a scale from 0.0 to 1.0 how bright is the pixel?
       int shade = Magick::ColorGray::scaleQuantumToDouble(sum / channels.size());
       grid_map[y][x] = shade;
-      RCLCPP_INFO(
-      node_->get_logger(), "Width %d, height: %d, value: %d",
-      x, y, shade);
+
     }
   }
+
   // std::string filename = "/data/path.txt";
   // poses_ = readPathsFromFile(filename);
   std::string filename = "/data/validate_grid_map1.png";
   saveBinaryImageAsPNG(grid_map, filename);
-  graph_ = grid_map;
+  // graph_ = grid_map;
   nav_msgs::msg::Path global_path;
 
   // Checking if the goal and start state is in the global frame
@@ -313,7 +312,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   unsigned int end_x_index = std::floor((closestPoint.first - origin_x_) / resolution_);
   MapNode start_node = MapNode(start_x_index, start_y_index);
   MapNode end_node = MapNode(end_x_index, end_y_index);
-  std::vector<MapNode> shortest_path = bfs(graph_, start_node, end_node);
+  std::vector<MapNode> shortest_path = bfs(grid_map, start_node, end_node);
   for (const auto& point : shortest_path) {
         std::cout << "(" << point.x << ", " << point.y << ") ";
     }
