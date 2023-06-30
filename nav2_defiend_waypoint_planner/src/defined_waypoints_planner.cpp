@@ -187,8 +187,7 @@ void DefinedWaypoints::configure(
   RCLCPP_INFO(
     node_->get_logger(), "configure plugin %s of type NavfnPlanner",
     name_.c_str());
-  std::string filename = "/data/path.txt";
-  poses_ = readPathsFromFile(filename);
+  
   // graph_ = convertPosesToGridMap(poses_, size_y_, size_x_);
 }
 
@@ -249,6 +248,8 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
 {
   Magick::InitializeMagick(nullptr);
   Magick::Image img("/data/path.pgm");
+  std::string filename_txt = "/data/path.txt";
+  poses_ = readPathsFromFile(filename_txt);
   int width = img.size().width();
   int height = img.size().height();
   RCLCPP_INFO(
