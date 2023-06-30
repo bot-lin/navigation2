@@ -299,6 +299,9 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
     return global_path;
   }
 
+  RCLCPP_INFO(
+      node_->get_logger(), "Start calculating path");
+
   global_path.poses.clear();
   global_path.header.stamp = node_->now();
   global_path.header.frame_id = global_frame_;
