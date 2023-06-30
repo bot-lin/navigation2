@@ -252,6 +252,27 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
    RCLCPP_ERROR(
       node_->get_logger(), "Width %d, height: %d",
       width, height);
+
+      for (size_t y = 0; y < msg.info.height; y++) {
+    for (size_t x = 0; x < msg.info.width; x++) {
+  auto pixel = img.pixelColor(x, y);
+
+      std::vector<Magick::Quantum> channels = {pixel.redQuantum(), pixel.greenQuantum(),
+        pixel.blueQuantum()};
+      // if (load_parameters.mode == MapMode::Trinary && img.matte()) {
+      //   // To preserve existing behavior, average in alpha with color channels in Trinary mode.
+      //   // CAREFUL. alpha is inverted from what you might expect. High = transparent, low = opaque
+      //   channels.push_back(MaxRGB - pixel.alphaQuantum());
+      // }
+      double sum = 0;
+      for (auto c : channels) {
+        sum += c;
+      }
+      /// on a scale from 0.0 to 1.0 how bright is the pixel?
+      double shade = Magick::ColorGray::scaleQuantumToDouble(sum / channels.size());
+      RCLCPP_ERROR(
+      node_->get_logger(), "Width %f", shade);
+    }}
   // std::string filename = "/data/path.txt";
   // poses_ = readPathsFromFile(filename);
   graph_ = convertPosesToGridMap(poses_, size_y_, size_x_);
