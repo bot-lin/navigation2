@@ -312,12 +312,15 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
 
   // origin_y_ = origin_y_ + resolution_ * height;
 
-  unsigned int start_y_index = -std::floor((closestPoint.second - origin_y_) / resolution_);
+  unsigned int start_y_index = std::floor((closestPoint.second - origin_y_) / resolution_);
+  start_y_index = height -start_y_index;
   unsigned int start_x_index = std::floor((closestPoint.first - origin_x_) / resolution_);
   closestPoint = findClosestPoint({goal.pose.position.x, goal.pose.position.y}, poses_);
   RCLCPP_INFO(node_->get_logger(), "Closest point to end is: %f, %f", closestPoint.first, closestPoint.second);
 
-  unsigned int end_y_index = -std::floor((closestPoint.second - origin_y_) / resolution_);
+  unsigned int end_y_index = std::floor((closestPoint.second - origin_y_) / resolution_);
+  end_y_index = height -end_y_index;
+
   unsigned int end_x_index = std::floor((closestPoint.first - origin_x_) / resolution_);
   MapNode start_node = MapNode(start_x_index, start_y_index);
   MapNode end_node = MapNode(end_x_index, end_y_index);
