@@ -186,7 +186,7 @@ void DefinedWaypoints::configure(
     node_->get_logger(), "configure plugin %s of type NavfnPlanner",
     name_.c_str());
   std::string filename = "/data/path.txt";
-  // poses_ = readPathsFromFile(filename);
+  poses_ = readPathsFromFile(filename);
   // graph_ = convertPosesToGridMap(poses_, size_y_, size_x_);
 }
 
