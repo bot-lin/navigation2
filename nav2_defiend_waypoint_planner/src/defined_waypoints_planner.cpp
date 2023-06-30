@@ -109,6 +109,8 @@ bool isValid(int x, int y, int rows, int cols, const std::vector<std::vector<boo
 std::vector<MapNode> bfs(std::vector<std::vector<int>>& grid, MapNode start, MapNode end) {
     int rows = grid.size();
     int cols = grid[0].size();
+    RCLCPP_INFO(node_->get_logger(), "bfs row: %d, col: %d", rows, cols);
+  
 
     std::queue<MapNode> q;
     std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
@@ -319,6 +321,9 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   unsigned int end_x_index = std::floor((closestPoint.first - origin_x_) / resolution_);
   MapNode start_node = MapNode(start_x_index, start_y_index);
   MapNode end_node = MapNode(end_x_index, end_y_index);
+    RCLCPP_INFO(node_->get_logger(), "start x: %d, y: %d", start_x_index, start_y_index);
+    RCLCPP_INFO(node_->get_logger(), "end x: %d, y: %d", end_x_index, end_y_index);
+  
   std::vector<MapNode> shortest_path = bfs(grid_map, start_node, end_node);
   for (const auto& point : shortest_path) {
         std::cout << "(" << point.x << ", " << point.y << ") ";
