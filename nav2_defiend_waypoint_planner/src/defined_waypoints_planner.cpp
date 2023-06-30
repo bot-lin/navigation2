@@ -249,13 +249,14 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   Magick::Image img("/data/path.pgm");
   int width = img.size().width();
   int height = img.size().height();
-   RCLCPP_ERROR(
+  RCLCPP_ERROR(
       node_->get_logger(), "Width %d, height: %d",
       width, height);
 
-      for (size_t y = 0; y < height; y++) {
+  std::vector<std::vector<int>> grid_map(height, std::vector<int>(width, 0));
+  for (size_t y = 0; y < height; y++) {
     for (size_t x = 0; x < width; x++) {
-  auto pixel = img.pixelColor(x, y);
+      auto pixel = img.pixelColor(x, y);
 
       std::vector<Magick::Quantum> channels = {pixel.redQuantum(), pixel.greenQuantum(),
         pixel.blueQuantum()};
@@ -269,13 +270,15 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
         sum += c;
       }
       /// on a scale from 0.0 to 1.0 how bright is the pixel?
-      double shade = Magick::ColorGray::scaleQuantumToDouble(sum / channels.size());
-      RCLCPP_ERROR(
-      node_->get_logger(), "Width %f", shade);
-    }}
+      int shade = Magick::ColorGray::scaleQuantumToDouble(sum / channels.size());
+      grid_map[x][y] = shade;
+    }
+  }
   // std::string filename = "/data/path.txt";
   // poses_ = readPathsFromFile(filename);
-  graph_ = convertPosesToGridMap(poses_, size_y_, size_x_);
+  std::string filename = "/data/validate_grid_map1.png";
+  saveBinaryImageAsPNG(grid_map, filename);
+  graph_ = grid_map;
   nav_msgs::msg::Path global_path;
 
   // Checking if the goal and start state is in the global frame
