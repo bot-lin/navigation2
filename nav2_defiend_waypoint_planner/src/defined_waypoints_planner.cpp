@@ -329,12 +329,13 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   
   std::vector<MapNode> shortest_path = bfs(grid_map, start_node, end_node);
   for (const auto& point : shortest_path) {
-        std::cout << "(" << point.x << ", " << point.y << ") ";
+        std::cout << "(" << point.x << ", " << point.y << ") "; //point.x is actually the y, and point.y is the x
     }
+  // int height_result = 
   std::cout << std::endl;
   for (const auto& point : shortest_path) {
-    float x = point.x * resolution_ + origin_x_;
-    float y = point.y * resolution_ + origin_y_;
+    float x = point.y * resolution_ + origin_x_;
+    float y = point.x * resolution_ + origin_y_;
     geometry_msgs::msg::PoseStamped pose;
     pose.pose.position.x = x;
     pose.pose.position.y = y;
