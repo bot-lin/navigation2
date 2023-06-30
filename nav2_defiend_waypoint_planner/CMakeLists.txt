@@ -25,6 +25,7 @@ find_package(nav2_costmap_2d REQUIRED)
 find_package(nav2_core REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(OpenCV 4 QUIET)
+find_package(GRAPHICSMAGICKCPP REQUIRED)
 
 
 include_directories(
@@ -53,6 +54,13 @@ set(dependencies
 add_library(${library_name} SHARED
   src/defined_waypoints_planner.cpp
 )
+
+target_include_directories(${library_name} SYSTEM PRIVATE
+  ${GRAPHICSMAGICKCPP_INCLUDE_DIRS})
+
+target_link_libraries(${library_name}
+  ${GRAPHICSMAGICKCPP_LIBRARIES})
+
 
 ament_target_dependencies(${library_name}
   ${dependencies}

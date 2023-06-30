@@ -49,6 +49,7 @@
 #include "nav2_definedwaypoints_planner/stb_image_write.h"
 #include <utility>
 #include <queue>
+#include "Magick++.h"
 #include <limits>
 
 typedef std::pair<double, double> DoublePoint;
@@ -199,7 +200,7 @@ std::vector<std::vector<int>> DefinedWaypoints::convertPosesToGridMap(const std:
       // RCLCPP_INFO(
       //   node_->get_logger(), "pose x %f y %f, index x: %d,  y %d",
       //   pose.x, pose.y, x_index, y_index);
-    }
+    } 
     std::string filename = "/data/grid_map1.png";
     saveBinaryImageAsPNG(grid_map, filename);
     std::cout << "Image saved as " << filename << std::endl;
@@ -244,8 +245,15 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   const geometry_msgs::msg::PoseStamped & start,
   const geometry_msgs::msg::PoseStamped & goal)
 {
-  std::string filename = "/data/path.txt";
-  poses_ = readPathsFromFile(filename);
+  Magick::InitializeMagick(nullptr);
+  Magick::Image img("/data/path.pgm");
+  int width = img.size().width();
+  int height = img.size().height();
+   RCLCPP_ERROR(
+      node_->get_logger(), "Width %d, height: %d",
+      width, height);
+  // std::string filename = "/data/path.txt";
+  // poses_ = readPathsFromFile(filename);
   graph_ = convertPosesToGridMap(poses_, size_y_, size_x_);
   nav_msgs::msg::Path global_path;
 
