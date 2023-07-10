@@ -4,7 +4,8 @@ string behavior_tree
 string planner_id
 string controller_id
 string goal_checker_id
-float32[] precise_goal
+float32 distance_goal_tolerance
+float32 yaw_goal_tolerance
 bool is_reverse
 ---
 #result definition

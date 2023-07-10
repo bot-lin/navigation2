@@ -250,8 +250,8 @@ NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr goal)
   blackboard->set<geometry_msgs::msg::PoseStamped>(goal_blackboard_id_, goal->pose);
   blackboard->set<std::string>(planner_blackboard_id_, goal->planner_id);
   blackboard->set<std::string>(controller_blackboard_id_, goal->controller_id);
-  blackboard->set<float>(precise_distance_blackboard_id_, goal->precise_goal[0]);
-  blackboard->set<float>(precise_yaw_blackboard_id_, goal->precise_goal[1]);
+  blackboard->set<float>(precise_distance_blackboard_id_, goal->distance_goal_tolerance);
+  blackboard->set<float>(precise_yaw_blackboard_id_, goal->yaw_goal_tolerance);
   blackboard->set<bool>(is_reverse_blackboard_id_, goal->is_reverse);
 }
 
