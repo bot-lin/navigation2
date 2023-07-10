@@ -57,6 +57,8 @@ public:
       {
         BT::InputPort<geometry_msgs::msg::PoseStamped>("goal", "Destination to plan to"),
         BT::InputPort<bool>("is_reverse", "Is reverse"),
+        BT::InputPort<bool>("distance_goal_tolerance", "distance goal tolerance"),
+        BT::InputPort<bool>("yaw_goal_tolerance", "yaw goal tolerance"),
       });
   }
 };
