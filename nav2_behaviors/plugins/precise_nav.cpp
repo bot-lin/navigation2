@@ -71,6 +71,8 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     pose_tmp.pose.orientation.w = command->pose.pose.orientation.w;
     pose_tmp.header.frame_id = command->pose.header.frame_id;
     is_reverse_ = command->is_reverse;
+    yaw_goal_tolerance_ = command->yaw_goal_tolerance;
+    distance_goal_tolerance_ = command->distance_goal_tolerance;
     RCLCPP_INFO(this->logger_, "Is reverse %d", is_reverse_);
 
     if (command->pose.header.frame_id != "odom")
@@ -172,6 +174,14 @@ Status PreciseNav::onCycleUpdate()
     else if (std::fabs(yaw_goal_error) > yaw_goal_tolerance_)
     {
         cmd_vel->angular.z = 0.3 * yaw_goal_error;
+        if (cmd_vel->angular.z < 0.1 && cmd_vel->angular.z >0.0){
+            cmd_vel->angular.z = 0.1;
+        }
+        else if (cmd_vel->angular.z > -0.1 && cmd_vel->angular.z <0.0)
+        {
+            cmd_vel->angular.z = -0.1;
+        }
+        
         reached_distance_goal_ = true;
     }
     else

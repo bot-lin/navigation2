@@ -36,6 +36,8 @@ void PreciseNavAction::on_tick()
   }
   getInput("goal", goal_.pose);
   getInput("is_reverse", goal_.is_reverse);
+  getInput("distance_goal_tolerance", goal_.distance_goal_tolerance);
+  getInput("yaw_goal_tolerance", goal_.yaw_goal_tolerance);
 }
 
 void PreciseNavAction::on_wait_for_result(
@@ -43,12 +45,18 @@ void PreciseNavAction::on_wait_for_result(
 {
   geometry_msgs::msg::PoseStamped new_goal;
   bool is_reverse;
+  float distance_goal_tolerance;
+  float yaw_goal_tolerance;
   getInput("goal", new_goal);
   getInput("is_reverse", is_reverse);
+  getInput("distance_goal_tolerance", distance_goal_tolerance);
+  getInput("yaw_goal_tolerance", yaw_goal_tolerance);
   if (new_goal != goal_.pose)
   {
     goal_.pose = new_goal;
     goal_.is_reverse = is_reverse;
+    goal_.distance_goal_tolerance = distance_goal_tolerance;
+    goal_.yaw_goal_tolerance = yaw_goal_tolerance;
     goal_updated_ = true;
   }
   
