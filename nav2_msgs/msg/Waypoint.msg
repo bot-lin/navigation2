@@ -5,8 +5,9 @@ string controller_id
 string goal_checker_id
 string behavior_tree
 string planner_id
-float32[] precise_goal
+float32 distance_goal_tolerance
+float32 yaw_goal_tolerance
 string task_name
 string task_params
 string task_name_and_params
-bool is_reverse 
+bool is_reverse
