@@ -59,12 +59,22 @@ NavigateToPoseNavigator::configure(
   }
   is_reverse_blackboard_id_ = node->get_parameter("is_reverse_blackboard_id").as_string();
 
+  //path
   if (!node->has_parameter("path_blackboard_id")) {
     node->declare_parameter("path_blackboard_id", std::string("path"));
   }
-
   path_blackboard_id_ = node->get_parameter("path_blackboard_id").as_string();
 
+  //precise goal
+  if (!node->has_parameter("precise_distance_blackboard_id")) {
+    node->declare_parameter("precise_distance_blackboard_id", std::string("distance_goal_tolerance"));
+  }
+  precise_distance_blackboard_id_ = node->get_parameter("precise_distance_blackboard_id").as_string();
+  //
+  if (!node->has_parameter("precise_yaw_blackboard_id")) {
+    node->declare_parameter("precise_yaw_blackboard_id", std::string("yaw_goal_tolerance"));
+  }
+  precise_yaw_blackboard_id_ = node->get_parameter("precise_yaw_blackboard_id").as_string();
   // Odometry smoother object for getting current speed
   odom_smoother_ = odom_smoother;
 
@@ -240,6 +250,8 @@ NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr goal)
   blackboard->set<geometry_msgs::msg::PoseStamped>(goal_blackboard_id_, goal->pose);
   blackboard->set<std::string>(planner_blackboard_id_, goal->planner_id);
   blackboard->set<std::string>(controller_blackboard_id_, goal->controller_id);
+  blackboard->set<float>(precise_distance_blackboard_id_, goal->precise_goal[0]);
+  blackboard->set<float>(precise_yaw_blackboard_id_, goal->precise_goal[1]);
   blackboard->set<bool>(is_reverse_blackboard_id_, goal->is_reverse);
 }
 

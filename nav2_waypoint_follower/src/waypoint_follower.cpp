@@ -231,7 +231,7 @@ WaypointFollower::followWaypoints()
         client_goal.is_reverse = goal->waypoints[goal_index].is_reverse; 
         client_goal.goal_checker_id = "goal_checker_id";
         // std::vector<float> my_vector = {1.2f, 3.4f, 5.6f, 7.8f};
-        // client_goal.precise_goal = my_vector;
+        client_goal.precise_goal = goal->waypoints[goal_index].precise_goal;
 
           auto send_goal_options = rclcpp_action::Client<ClientT>::SendGoalOptions();
         send_goal_options.result_callback =
