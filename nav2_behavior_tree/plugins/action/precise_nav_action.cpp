@@ -38,10 +38,10 @@ void PreciseNavAction::on_tick()
   if (!getInput("is_reverse", goal_.is_reverse)) {
     goal_.is_reverse = false;
   }
-  if (getInput("distance_goal_tolerance", goal_.distance_goal_tolerance)) {
+  if (!getInput("distance_goal_tolerance", goal_.distance_goal_tolerance)) {
     goal_.distance_goal_tolerance = 0.03;
   }
-  if (getInput("yaw_goal_tolerance", goal_.yaw_goal_tolerance)) {
+  if (!getInput("yaw_goal_tolerance", goal_.yaw_goal_tolerance)) {
     goal_.yaw_goal_tolerance = 0.05;
   }
 }
