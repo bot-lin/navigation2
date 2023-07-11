@@ -34,10 +34,16 @@ void PreciseNavAction::on_tick()
       "NavigateToPoseAction: goal not provided");
     return;
   }
-  getInput("goal", goal_.pose);
-  getInput("is_reverse", goal_.is_reverse);
-  getInput("distance_goal_tolerance", goal_.distance_goal_tolerance);
-  getInput("yaw_goal_tolerance", goal_.yaw_goal_tolerance);
+  //getInput("goal", goal_.pose);
+  if (!getInput("is_reverse", goal_.is_reverse)) {
+    goal_.is_reverse = false;
+  }
+  if (getInput("distance_goal_tolerance", goal_.distance_goal_tolerance)) {
+    goal_.distance_goal_tolerance = 0.03;
+  }
+  if (getInput("yaw_goal_tolerance", goal_.yaw_goal_tolerance)) {
+    goal_.yaw_goal_tolerance = 0.05;
+  }
 }
 
 void PreciseNavAction::on_wait_for_result(
