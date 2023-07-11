@@ -73,7 +73,10 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     is_reverse_ = command->is_reverse;
     yaw_goal_tolerance_ = command->yaw_goal_tolerance;
     distance_goal_tolerance_ = command->distance_goal_tolerance;
+    RCLCPP_INFO(this->logger_, "From precise nav");
     RCLCPP_INFO(this->logger_, "Is reverse %d", is_reverse_);
+    RCLCPP_INFO(this->logger_, "distance_goal_tolerance %f", distance_goal_tolerance_);
+    RCLCPP_INFO(this->logger_, "yaw_goal_tolerance %f", yaw_goal_tolerance_);
 
     if (command->pose.header.frame_id != "odom")
     {
@@ -86,6 +89,8 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
         RCLCPP_INFO(this->logger_, "Converting goal pose in odom frame from %s", command->pose.header.frame_id.c_str());
         RCLCPP_INFO(this->logger_, "Converted pose x: %f, y: %f", pose_tmp.pose.position.x, pose_tmp.pose.position.y);
     }
+    RCLCPP_INFO(this->logger_, "target pose in Odom x: %f, y: %f", pose_tmp.pose.position.x, pose_tmp.pose.position.y);
+
     // else{
     //     pose_tmp = command->pose;
     // }
