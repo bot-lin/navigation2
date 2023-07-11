@@ -244,8 +244,6 @@ WaypointFollower::followWaypoints()
           nav_to_pose_client_->async_send_goal(client_goal, send_goal_options);
         current_goal_status_ = ActionStatus::PROCESSING;
 
-      }
-
     }
 
     feedback->current_waypoint = goal_index;
