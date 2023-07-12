@@ -245,6 +245,7 @@ WaypointFollower::followWaypoints()
         current_goal_status_ = ActionStatus::PROCESSING;
 
     }
+    }
 
     feedback->current_waypoint = goal_index;
     action_server_->publish_feedback(feedback);
