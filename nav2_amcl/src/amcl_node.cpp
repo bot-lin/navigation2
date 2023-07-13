@@ -910,7 +910,7 @@ AmclNode::getMaxWeightHyp(
     effective_sample_size = sum_weights * sum_weights / sum_weights_squared;
   }
   auto message = std_msgs::msg::Float32();
-  message.data = effective_sample_size;
+  message.data = max_weight;
   pose_ess_pub_->publish(message);
   if (max_weight > 0.0) {
     RCLCPP_DEBUG(
