@@ -876,9 +876,9 @@ AmclNode::getMaxWeightHyp(
   std::vector<amcl_hyp_t> & hyps, amcl_hyp_t & max_weight_hyps,
   int & max_weight_hyp)
 {
-  double sum_weights = 0.0;
-  double sum_weights_squared = 0.0;
-  double effective_sample_size;
+  // double sum_weights = 0.0;
+  // double sum_weights_squared = 0.0;
+  // double effective_sample_size;
   // Read out the current hypotheses
   double max_weight = 0.0;
   hyps.resize(pf_->sets[pf_->current_set].cluster_count);
@@ -892,8 +892,8 @@ AmclNode::getMaxWeightHyp(
       RCLCPP_ERROR(get_logger(), "Couldn't get stats on cluster %d", hyp_count);
       return false;
     }
-    sum_weights += weight;
-    sum_weights_squared += weight * weight;
+    // sum_weights += weight;
+    // sum_weights_squared += weight * weight;
     hyps[hyp_count].weight = weight;
     hyps[hyp_count].pf_pose_mean = pose_mean;
     hyps[hyp_count].pf_pose_cov = pose_cov;
@@ -903,12 +903,12 @@ AmclNode::getMaxWeightHyp(
       max_weight_hyp = hyp_count;
     }
   }
-  if (sum_weights_squared == 0.0) {
-    effective_sample_size = 0.0;
-  }
-  else{
-    effective_sample_size = sum_weights * sum_weights / sum_weights_squared;
-  }
+  // if (sum_weights_squared == 0.0) {
+  //   effective_sample_size = 0.0;
+  // }
+  // else{
+  //   effective_sample_size = sum_weights * sum_weights / sum_weights_squared;
+  // }
   auto message = std_msgs::msg::Float32();
   message.data = max_weight;
   pose_ess_pub_->publish(message);
