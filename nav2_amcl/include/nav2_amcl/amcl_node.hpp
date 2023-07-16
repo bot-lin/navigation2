@@ -187,7 +187,10 @@ protected:
   rclcpp_lifecycle::LifecyclePublisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr
     pose_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>::SharedPtr
-    pose_ess_pub_;
+    pose_max_weight_pub_;
+  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>::SharedPtr
+    pose_entropy_weight_pub_;
+
   rclcpp_lifecycle::LifecyclePublisher<nav2_msgs::msg::ParticleCloud>::SharedPtr
     particle_cloud_pub_;
   /*
@@ -311,6 +314,7 @@ protected:
   bool getMaxWeightHyp(
     std::vector<amcl_hyp_t> & hyps, amcl_hyp_t & max_weight_hyps,
     int & max_weight_hyp);
+  double calculateShannonEntropy(const std::vector<double>& weights, double sum);
   /*
    * @brief Publish robot pose in map frame from AMCL
    */

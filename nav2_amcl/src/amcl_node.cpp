@@ -259,7 +259,9 @@ AmclNode::on_activate(const rclcpp_lifecycle::State & /*state*/)
 
   // Lifecycle publishers must be explicitly activated
   pose_pub_->on_activate();
-  pose_ess_pub_->on_activate();
+  pose_max_weight_pub_->on_activate();
+  pose_entropy_weight_pub_->on_activate();
+  
   particle_cloud_pub_->on_activate();
 
   first_pose_sent_ = false;
@@ -305,7 +307,8 @@ AmclNode::on_deactivate(const rclcpp_lifecycle::State & /*state*/)
 
   // Lifecycle publishers must be explicitly deactivated
   pose_pub_->on_deactivate();
-  pose_ess_pub_->on_deactivate();
+  pose_max_weight_pub_->on_deactivate();
+  pose_entropy_weight_pub_->on_deactivate();
   particle_cloud_pub_->on_deactivate();
 
   // reset dynamic parameter handler
@@ -348,7 +351,8 @@ AmclNode::on_cleanup(const rclcpp_lifecycle::State & /*state*/)
 
   // PubSub
   pose_pub_.reset();
-  pose_ess_pub_.reset();
+  pose_max_weight_pub_.reset();
+  pose_entropy_weight_pub_.reset();
   particle_cloud_pub_.reset();
 
   // Odometry
@@ -689,9 +693,9 @@ AmclNode::laserReceived(sensor_msgs::msg::LaserScan::ConstSharedPtr laser_scan)
     pf_sample_set_t * set = pf_->sets + pf_->current_set;
     RCLCPP_DEBUG(get_logger(), "Num samples: %d\n", set->sample_count);
 
-    if (!force_update_) {
-      publishParticleCloud(set);
-    }
+    // if (!force_update_) {
+    //   publishParticleCloud(set);
+    // }
   }
   if (resampled || force_publication || !first_pose_sent_) {
     amcl_hyp_t max_weight_hyps;
@@ -876,12 +880,11 @@ AmclNode::getMaxWeightHyp(
   std::vector<amcl_hyp_t> & hyps, amcl_hyp_t & max_weight_hyps,
   int & max_weight_hyp)
 {
-  // double sum_weights = 0.0;
-  // double sum_weights_squared = 0.0;
-  // double effective_sample_size;
   // Read out the current hypotheses
   double max_weight = 0.0;
   hyps.resize(pf_->sets[pf_->current_set].cluster_count);
+  std::vector<double> weights;
+  double weight_sum = 0.0;
   for (int hyp_count = 0;
     hyp_count < pf_->sets[pf_->current_set].cluster_count; hyp_count++)
   {
@@ -892,8 +895,8 @@ AmclNode::getMaxWeightHyp(
       RCLCPP_ERROR(get_logger(), "Couldn't get stats on cluster %d", hyp_count);
       return false;
     }
-    // sum_weights += weight;
-    // sum_weights_squared += weight * weight;
+    weights.push_back(weight);
+    weight_sum += weight;
     hyps[hyp_count].weight = weight;
     hyps[hyp_count].pf_pose_mean = pose_mean;
     hyps[hyp_count].pf_pose_cov = pose_cov;
@@ -903,15 +906,12 @@ AmclNode::getMaxWeightHyp(
       max_weight_hyp = hyp_count;
     }
   }
-  // if (sum_weights_squared == 0.0) {
-  //   effective_sample_size = 0.0;
-  // }
-  // else{
-  //   effective_sample_size = sum_weights * sum_weights / sum_weights_squared;
-  // }
+  auto shannon_message = std_msgs::msg::Float32();
+  shannon_message.data =  calculateShannonEntropy(weights, weight_sum);
+  pose_entropy_weight_pub_->publish(shannon_message);
   auto message = std_msgs::msg::Float32();
   message.data = max_weight;
-  pose_ess_pub_->publish(message);
+  pose_max_weight_pub_->publish(message);
   if (max_weight > 0.0) {
     RCLCPP_DEBUG(
       get_logger(), "Max weight pose: %.3f %.3f %.3f",
@@ -923,6 +923,23 @@ AmclNode::getMaxWeightHyp(
     return true;
   }
   return false;
+}
+
+
+double 
+AmclNode::calculateShannonEntropy(
+  const std::vector<double>& weights, double sum) 
+{
+    // Calculate the Shannon entropy
+    double entropy = 0.0;
+    for (const double& weight : weights) {
+        if (weight > 0.0) {
+            double probability = weight / sum;
+            entropy -= probability * std::log2(probability);
+        }
+    }
+
+    return entropy;
 }
 
 void
@@ -1535,8 +1552,12 @@ AmclNode::initPubSub()
     "amcl_pose",
     rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
   
-  pose_ess_pub_ = create_publisher<std_msgs::msg::Float32>(
-    "amcl_pose_ess",
+  pose_max_weight_pub_ = create_publisher<std_msgs::msg::Float32>(
+    "amcl/max_weight",
+    rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
+
+  pose_entropy_weight_pub_ = create_publisher<std_msgs::msg::Float32>(
+    "amcl/entropy_weight",
     rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
 
   initial_pose_sub_ = create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
