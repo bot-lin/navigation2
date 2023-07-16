@@ -35,6 +35,7 @@
 #include "nav2_amcl/sensors/laser/laser.hpp"
 #include "nav2_msgs/msg/particle.hpp"
 #include "std_msgs/msg/float32.hpp"
+#include "std_msgs/msg/bool.hpp"
 #include "nav2_msgs/msg/particle_cloud.hpp"
 #include "nav_msgs/srv/set_map.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
