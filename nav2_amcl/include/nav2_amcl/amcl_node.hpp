@@ -190,6 +190,8 @@ protected:
     pose_max_weight_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>::SharedPtr
     pose_entropy_weight_pub_;
+  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Bool>::SharedPtr
+    sensor_error_pub_;
 
   rclcpp_lifecycle::LifecyclePublisher<nav2_msgs::msg::ParticleCloud>::SharedPtr
     particle_cloud_pub_;
@@ -318,6 +320,7 @@ protected:
   /*
    * @brief Publish robot pose in map frame from AMCL
    */
+  void publishSensorError();
   void publishAmclPose(
     const sensor_msgs::msg::LaserScan::ConstSharedPtr & laser_scan,
     const std::vector<amcl_hyp_t> & hyps, const int & max_weight_hyp);

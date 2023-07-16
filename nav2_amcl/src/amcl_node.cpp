@@ -42,6 +42,8 @@
 #include "tf2_ros/transform_broadcaster.h"
 #include "tf2_ros/transform_listener.h"
 #include "tf2_ros/create_timer_ros.h"
+#include <fstream>
+#include <string>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
@@ -261,6 +263,7 @@ AmclNode::on_activate(const rclcpp_lifecycle::State & /*state*/)
   pose_pub_->on_activate();
   pose_max_weight_pub_->on_activate();
   pose_entropy_weight_pub_->on_activate();
+  sensor_error_pub_->on_activate();
   
   particle_cloud_pub_->on_activate();
 
@@ -310,6 +313,7 @@ AmclNode::on_deactivate(const rclcpp_lifecycle::State & /*state*/)
   pose_max_weight_pub_->on_deactivate();
   pose_entropy_weight_pub_->on_deactivate();
   particle_cloud_pub_->on_deactivate();
+  sensor_error_pub_->on_deactivate();
 
   // reset dynamic parameter handler
   dyn_params_handler_.reset();
@@ -353,6 +357,7 @@ AmclNode::on_cleanup(const rclcpp_lifecycle::State & /*state*/)
   pose_pub_.reset();
   pose_max_weight_pub_.reset();
   pose_entropy_weight_pub_.reset();
+  sensor_error_pub_.reset();
   particle_cloud_pub_.reset();
 
   // Odometry
@@ -703,6 +708,7 @@ AmclNode::laserReceived(sensor_msgs::msg::LaserScan::ConstSharedPtr laser_scan)
     int max_weight_hyp = -1;
     if (getMaxWeightHyp(hyps, max_weight_hyps, max_weight_hyp)) {
       publishAmclPose(laser_scan, hyps, max_weight_hyp);
+      publishSensorError();
       calculateMaptoOdomTransform(laser_scan, hyps, max_weight_hyp);
 
       if (tf_broadcast_ == true) {
@@ -942,6 +948,25 @@ AmclNode::calculateShannonEntropy(
     return entropy;
 }
 
+void
+AmclNode::publishSensorError()
+{
+  std::ifstream inputFile("/data/amcl.txt"); // Open the file in input mode
+  if (inputFile.is_open()) {
+      std::string inputString;
+
+      // Read the value from the file
+      inputFile >> inputString;
+
+      // Convert the string to a boolean value
+      auto sensor_error_message = std_msgs::msg::Bool();
+      sensor_error_message.data = (inputString == "1");
+      sensor_error_pub_->publish(sensor_error_message);
+
+      // Close the file
+      inputFile.close();
+  }
+}
 void
 AmclNode::publishAmclPose(
   const sensor_msgs::msg::LaserScan::ConstSharedPtr & laser_scan,
@@ -1558,6 +1583,10 @@ AmclNode::initPubSub()
 
   pose_entropy_weight_pub_ = create_publisher<std_msgs::msg::Float32>(
     "amcl/entropy_weight",
+    rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
+  
+  sensor_error_pub_ = create_publisher<std_msgs::msg::Bool>(
+    "amcl/sensor_error",
     rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
 
   initial_pose_sub_ = create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
