@@ -22,6 +22,7 @@
 
 #include <math.h>
 #include <assert.h>
+#include <fstream>
 
 #include "nav2_amcl/sensors/laser/laser.hpp"
 
@@ -215,6 +216,14 @@ LikelihoodFieldModelProb::sensorFunction(LaserData * data, pf_sample_set_t * set
         " integrating all observations\n",
         (100 * self->beam_skip_error_threshold_));
       error = true;
+
+    }
+    std::ofstream outputFile("/data/amcl.txt");
+    if (outputFile.is_open()) {
+      // Write the value to the file
+      outputFile << error;
+      // Close the file
+      outputFile.close();
     }
 
     for (j = 0; j < set->sample_count; j++) {
@@ -237,7 +246,7 @@ LikelihoodFieldModelProb::sensorFunction(LaserData * data, pf_sample_set_t * set
 
   delete[] obs_count;
   delete[] obs_mask;
-  return total_weight;
+  return total_weight; 
 }
 
 bool
