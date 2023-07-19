@@ -120,7 +120,7 @@ bool
 NavigateToPoseNavigator::goalReceived(ActionT::Goal::ConstSharedPtr goal)
 {
   auto bt_xml_filename = goal->behavior_tree;
-  bt_action_server_.current_bt_xml_filename_  = "";
+  bt_action_server_->current_bt_xml_filename_  = "";
   if (!bt_action_server_->loadBehaviorTree(bt_xml_filename)) {
     RCLCPP_ERROR(
       logger_, "BT file not found: %s. Navigation canceled.",
