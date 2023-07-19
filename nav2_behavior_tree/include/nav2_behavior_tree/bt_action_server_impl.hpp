@@ -148,6 +148,12 @@ bool BtActionServer<ActionT>::on_cleanup()
 }
 
 template<class ActionT>
+bool BtActionServer<ActionT>::clearCurrentBehaviorTree()
+{
+  current_bt_xml_filename_.clear();
+}
+
+template<class ActionT>
 bool BtActionServer<ActionT>::loadBehaviorTree(const std::string & bt_xml_filename)
 {
   // Empty filename is default for backward compatibility
