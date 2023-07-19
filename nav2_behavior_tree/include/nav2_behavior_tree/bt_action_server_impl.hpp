@@ -148,7 +148,7 @@ bool BtActionServer<ActionT>::on_cleanup()
 }
 
 template<class ActionT>
-bool BtActionServer<ActionT>::clearCurrentBehaviorTree()
+void BtActionServer<ActionT>::clearCurrentBehaviorTree()
 {
   current_bt_xml_filename_.clear();
 }

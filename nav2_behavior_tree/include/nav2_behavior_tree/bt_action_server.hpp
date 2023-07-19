@@ -94,7 +94,7 @@ public:
    * if something went wrong, and previous BT is maintained
    */
   bool loadBehaviorTree(const std::string & bt_xml_filename = "");
-
+  void clearCurrentBehaviorTree();
   /**
    * @brief Getter function for BT Blackboard
    * @return BT::Blackboard::Ptr Shared pointer to current BT blackboard
