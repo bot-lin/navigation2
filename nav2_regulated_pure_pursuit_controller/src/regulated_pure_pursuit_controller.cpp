@@ -437,17 +437,17 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
     RCLCPP_INFO(logger_, "y %f", y);
     RCLCPP_INFO(logger_, "half_width %f", half_width);
     if (x > 0){//front
-      if (abs(y)>half_width){
+      if (abs(y)>half_width+0.05){
         linear_vel = 0.05;
         angular_vel = 0.0;
       }
       else if (y > 0)
       {
-        linear_vel = 0.05;
+        linear_vel = 0.01;
         angular_vel = -0.1;
       }
       else if (y < 0){
-        linear_vel = 0.05;
+        linear_vel = 0.01;
         angular_vel = 0.1;
       }
       else
@@ -457,17 +457,17 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
       }
       
     }else{//back
-      if (abs(y)>half_width){
+      if (abs(y)>half_width+0.05){
         linear_vel = 0.05;
         angular_vel = 0.0;
       }
       else if (y > 0)
       {
-        linear_vel = 0.05;
+        linear_vel = 0.01;
         angular_vel = 0.1;
       }
       else if (y < 0){
-        linear_vel = 0.05;
+        linear_vel = 0.01;
         angular_vel = -0.1;
       }
       else
