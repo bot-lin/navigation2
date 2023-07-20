@@ -433,11 +433,15 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
     double y = transformed_pose.pose.position.y;
     std::vector<geometry_msgs::msg::Point> footprint = costmap_ros_->getRobotFootprint();
     double half_width = footprint[0].y;
+    double half_length = footprint[0].x;
     RCLCPP_INFO(logger_, "x %f", x);
     RCLCPP_INFO(logger_, "y %f", y);
     RCLCPP_INFO(logger_, "half_width %f", half_width);
+    RCLCPP_INFO(logger_, "half_length %f", half_length);
     if (x > 0){//front
-      if (abs(y)>half_width+0.02){
+      RCLCPP_INFO(logger_, "x %f", x);
+      RCLCPP_INFO(logger_, "y %f", y);
+      if (abs(y)>half_width+0.01){
         linear_vel = 0.05;
         angular_vel = 0.0;
       }
@@ -457,7 +461,7 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
       }
       
     }else{//back
-      if (abs(y)>half_width+0.02){
+      if (abs(y)>half_width+0.01){
         linear_vel = 0.05;
         angular_vel = 0.0;
       }
