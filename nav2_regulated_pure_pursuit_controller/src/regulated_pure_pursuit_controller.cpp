@@ -457,7 +457,11 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
       }
       
     }else{//back
-      if (y > 0)
+      if (abs(y)>half_width){
+        linear_vel = 0.05;
+        angular_vel = 0.0;
+      }
+      else if (y > 0)
       {
         linear_vel = 0.05;
         angular_vel = 0.1;
