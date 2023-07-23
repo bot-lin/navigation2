@@ -105,6 +105,14 @@ ament_target_dependencies(nav2_assisted_teleop_behavior
   ${dependencies}
 )
 
+add_library(nav2_wait_command_behavior SHARED
+  plugins/wait_command.cpp
+)
+
+ament_target_dependencies(nav2_wait_command_behavior
+  ${dependencies}
+)
+
 pluginlib_export_plugin_description_file(nav2_core behavior_plugin.xml)
 
 # Library
@@ -137,6 +145,7 @@ install(TARGETS ${library_name}
                 nav2_assisted_teleop_behavior
                 nav2_drive_on_heading_behavior
                 nav2_back_up_behavior
+                nav2_wait_command_behavior
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -172,6 +181,7 @@ ament_export_libraries(${library_name}
   nav2_find_docking_point_behavior
   nav2_wait_behavior
   nav2_assisted_teleop_behavior
+  nav2_wait_command_behavior
   nav2_drive_on_heading_behavior
   nav2_back_up_behavior
 )

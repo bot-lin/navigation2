@@ -1,0 +1,9 @@
+#goal definition
+builtin_interfaces/Duration time_allowance
+---
+#result definition
+geometry_msgs/PoseStamped docking_point
+builtin_interfaces/Duration total_elapsed_time
+---
+#feedback definition
+builtin_interfaces/Duration time_left

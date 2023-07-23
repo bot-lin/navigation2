@@ -29,6 +29,12 @@
 	  </class>
 	</library>
 
+	<library path="nav2_wait_command_behavior">
+	  <class name="nav2_behaviors/WaitCommand" type="nav2_behaviors::WaitCommand" base_class_type="nav2_core::Behavior">
+	    <description></description>
+	  </class>
+	</library>
+
 	<library path="nav2_precise_nav_behavior">
 	  <class name="nav2_behaviors/PreciseNav" type="nav2_behaviors::PreciseNav" base_class_type="nav2_core::Behavior">
 	    <description></description>
