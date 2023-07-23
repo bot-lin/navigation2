@@ -48,6 +48,12 @@
       <input_port name="server_timeout">Server timeout</input_port>
     </Action>
 
+    <Action ID="CancelWaitCommand">
+      <input_port name="service_name">Service name to cancel the assisted teleop behavior</input_port>
+      <input_port name="server_timeout">Server timeout</input_port>
+    </Action>
+
+
     <Action ID="CancelWait">
       <input_port name="service_name">Service name to cancel the wait behavior</input_port>
       <input_port name="server_timeout">Server timeout</input_port>
@@ -176,6 +182,12 @@
     </Action>
 
     <Action ID="Wait">
+      <input_port name="wait_duration">Wait time</input_port>
+      <input_port name="server_name">Service name</input_port>
+      <input_port name="server_timeout">Server timeout</input_port>
+    </Action>
+
+    <Action ID="WaitCommand">
       <input_port name="wait_duration">Wait time</input_port>
       <input_port name="server_name">Service name</input_port>
       <input_port name="server_timeout">Server timeout</input_port>
