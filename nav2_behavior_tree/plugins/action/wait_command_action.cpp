@@ -28,7 +28,6 @@ WaitCommandAction::WaitCommandAction(
 {
   double time_allowance;
   getInput("time_allowance", time_allowance);
-  getInput("is_recovery", is_recovery_);
 
   // Populate the input message
   goal_.time_allowance = rclcpp::Duration::from_seconds(time_allowance);
