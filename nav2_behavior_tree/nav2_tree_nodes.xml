@@ -188,7 +188,7 @@
     </Action>
 
     <Action ID="WaitCommand">
-      <input_port name="wait_duration">Wait time</input_port>
+      <input_port name="time_allowance">Wait time</input_port>
       <input_port name="server_name">Service name</input_port>
       <input_port name="server_timeout">Server timeout</input_port>
     </Action>
