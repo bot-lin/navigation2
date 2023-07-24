@@ -11,4 +11,4 @@ geometry_msgs/PoseStamped docking_point
 
 ---
 #feedback
-string actuator_status
+int32 actuator_status
