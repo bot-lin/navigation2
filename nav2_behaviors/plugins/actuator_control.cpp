@@ -123,7 +123,7 @@ void ActuatorControl::preemptActuatorCallback(const std_msgs::msg::Empty::Shared
 
 void ActuatorControl::actuatorStatusCallback(const std_msgs::msg::Int32::SharedPtr msg)
 {
-  if (msg.data == 0){
+  if (msg->data == 0){
     preempt_teleop_ = true;
       RCLCPP_WARN_STREAM(
       logger_,

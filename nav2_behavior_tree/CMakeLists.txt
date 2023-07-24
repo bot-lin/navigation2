@@ -78,6 +78,9 @@ list(APPEND plugin_libs nav2_find_docking_point_cancel_bt_node)
 add_library(nav2_assisted_teleop_cancel_bt_node SHARED plugins/action/assisted_teleop_cancel_node.cpp)
 list(APPEND plugin_libs nav2_assisted_teleop_cancel_bt_node)
 
+add_library(nav2_actuator_control_cancel_bt_node SHARED plugins/action/actuator_control_cancel_node.cpp)
+list(APPEND plugin_libs nav2_actuator_control_cancel_bt_node)
+
 add_library(nav2_wait_command_cancel_bt_node SHARED plugins/action/wait_command_cancel_node.cpp)
 list(APPEND plugin_libs nav2_wait_command_cancel_bt_node)
 
@@ -110,6 +113,9 @@ list(APPEND plugin_libs nav2_wait_action_bt_node)
 
 add_library(nav2_assisted_teleop_action_bt_node SHARED plugins/action/assisted_teleop_action.cpp)
 list(APPEND plugin_libs nav2_assisted_teleop_action_bt_node)
+
+add_library(nav2_actuator_control_action_bt_node SHARED plugins/action/actuator_control_action.cpp)
+list(APPEND plugin_libs nav2_actuator_control_action_bt_node)
 
 add_library(nav2_wait_command_action_bt_node SHARED plugins/action/wait_command_action.cpp)
 list(APPEND plugin_libs nav2_wait_command_action_bt_node)
