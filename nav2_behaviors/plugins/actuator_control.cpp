@@ -63,11 +63,11 @@ Status ActuatorControl::onRun(const std::shared_ptr<const ActuatorControlAction:
 {
   auto node = node_.lock();
   std::string actuator_index = command->actuator_index;
+  actuator_command_pub_.reset();
   actuator_command_pub_ = node->create_publisher<std_msgs::msg::Int32>("actuator_command/" + actuator_index, 10);
   auto message = std_msgs::msg::Int32();
       message.data = command->task_index;
   actuator_command_pub_->publish(message);
-  actuator_command_pub_.reset();
   command_time_allowance_ = command->time_allowance;
   end_time_ = steady_clock_.now() + command_time_allowance_;
   return Status::SUCCEEDED;
