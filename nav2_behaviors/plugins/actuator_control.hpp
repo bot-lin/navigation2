@@ -22,6 +22,7 @@
 #include "geometry_msgs/msg/twist.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "std_msgs/msg/int32.hpp"
+#include "std_msgs/msg/empty.hpp"
 #include "nav2_behaviors/timed_behavior.hpp"
 #include "nav2_msgs/action/actuator_control.hpp"
 
