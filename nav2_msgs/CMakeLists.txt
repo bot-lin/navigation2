@@ -33,6 +33,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/LoadMap.srv"
   "srv/SaveMap.srv"
   "action/AssistedTeleop.action"
+  "action/ActuatorControl.action"
   "action/WaitCommand.action"
   "action/BackUp.action"
   "action/ComputePathToPose.action"
