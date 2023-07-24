@@ -79,6 +79,7 @@ protected:
   double simulation_time_step_;
 
   bool preempt_teleop_{false};
+  int actuator_status_;
 
   //publishers
   rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr actuator_command_pub_;

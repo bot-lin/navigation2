@@ -30,19 +30,7 @@ void ActuatorControl::onConfigure()
   if (!node) {
     throw std::runtime_error{"Failed to lock node"};
   }
-
-
-  // preempt_actuator_sub_ = node->create_subscription<std_msgs::msg::Empty>(
-  //   "stop_actuator_command", rclcpp::SystemDefaultsQoS(),
-  //   std::bind(
-  //     &ActuatorControl::preemptActuatorCallback,
-  //     this, std::placeholders::_1));
-
-  // preempt_actuator_sub_ = node->create_subscription<std_msgs::msg::Empty>(
-  //   "stop_actuator_command", rclcpp::SystemDefaultsQoS(),
-  //   std::bind(
-  //     &ActuatorControl::preemptActuatorCallback,
-  //     this, std::placeholders::_1));
+  actuator_status_ = 0;
 }
 
 Status ActuatorControl::change_goal(const std::shared_ptr<const ActuatorControlAction::Goal> command)
@@ -86,11 +74,12 @@ void ActuatorControl::onActionCompletion()
 {
   preempt_teleop_ = false;
   actuator_status_sub_.reset();
+  actuator_status_ = 0;
 }
 
 Status ActuatorControl::onCycleUpdate()
 {
-  feedback_->actuator_status = 1;
+  feedback_->actuator_status = actuator_status_;
   action_server_->publish_feedback(feedback_);
 
   rclcpp::Duration time_remaining = end_time_ - steady_clock_.now();
@@ -123,7 +112,8 @@ void ActuatorControl::preemptActuatorCallback(const std_msgs::msg::Empty::Shared
 
 void ActuatorControl::actuatorStatusCallback(const std_msgs::msg::Int32::SharedPtr msg)
 {
-  if (msg->data == 0 && elasped_time_.seconds() > 2.0){
+  actuator_status_ = msg->data;
+  if (actuator_status_ == 0 && elasped_time_.seconds() > 2.0){
     preempt_teleop_ = true;
       RCLCPP_WARN_STREAM(
       logger_,
