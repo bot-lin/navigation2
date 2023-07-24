@@ -21,7 +21,7 @@
 
 #include "geometry_msgs/msg/twist.hpp"
 #include "std_msgs/msg/string.hpp"
-#include "std_msgs/msg/int16.hpp"
+#include "std_msgs/msg/int32.hpp"
 #include "nav2_behaviors/timed_behavior.hpp"
 #include "nav2_msgs/action/actuator_control.hpp"
 
@@ -63,17 +63,13 @@ protected:
    */
   void onConfigure() override;
 
-  /**
-   * @brief Callback function for velocity subscriber
-   * @param msg received Twist message
-   */
-  void teleopVelocityCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
 
   /**
    * @brief Callback function to preempt actuator control
    * @param msg empty message
    */
-  void preemptTeleopCallback(const std_msgs::msg::Empty::SharedPtr msg);
+  void preemptActuatorCallback(const std_msgs::msg::Empty::SharedPtr msg);
+  void actuatorStatusCallback(const std_msgs::msg::Int32::SharedPtr msg);
 
   ActuatorControlAction::Feedback::SharedPtr feedback_;
 
@@ -84,9 +80,10 @@ protected:
   bool preempt_teleop_{false};
 
   //publishers
-  rclcpp::Publisher<std_msgs::msg::Int16>::SharedPtr actuator_command_pub_;
+  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr actuator_command_pub_;
   // subscribers
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr actuator_status_sub_;
+  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr actuator_status_sub_;
+  rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_actuator_sub_;
   
 
   rclcpp::Duration command_time_allowance_{0, 0};
