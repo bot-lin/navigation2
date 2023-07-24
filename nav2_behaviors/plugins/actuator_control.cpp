@@ -47,13 +47,14 @@ void ActuatorControl::onConfigure()
 
 Status ActuatorControl::change_goal(const std::shared_ptr<const ActuatorControlAction::Goal> command)
 {
+    preempt_teleop_ = false;
     auto node = node_.lock();
     std::string actuator_index = command->actuator_index;
-    actuator_command_pub_ = node->create_publisher<std_msgs::msg::Int32>("actuator_command" + actuator_index, 10);
+    actuator_command_pub_.reset();
+    actuator_command_pub_ = node->create_publisher<std_msgs::msg::Int32>("actuator_command/" + actuator_index, 10);
     auto message = std_msgs::msg::Int32();
         message.data = command->task_index;
     actuator_command_pub_->publish(message);
-    actuator_command_pub_.reset();
   command_time_allowance_ = command->time_allowance;
   end_time_ = steady_clock_.now() + command_time_allowance_;
   return Status::SUCCEEDED;
@@ -61,8 +62,16 @@ Status ActuatorControl::change_goal(const std::shared_ptr<const ActuatorControlA
 
 Status ActuatorControl::onRun(const std::shared_ptr<const ActuatorControlAction::Goal> command)
 {
+  preempt_teleop_ = false;
   auto node = node_.lock();
   std::string actuator_index = command->actuator_index;
+  actuator_status_sub_.reset();
+  actuator_status_sub_ = node->create_subscription<std_msgs::msg::Int32>(
+  "actuator_status/"+actuator_index, rclcpp::SystemDefaultsQoS(),
+  std::bind(
+    &ActuatorControl::actuatorStatusCallback,
+    this, std::placeholders::_1));
+  
   actuator_command_pub_.reset();
   actuator_command_pub_ = node->create_publisher<std_msgs::msg::Int32>("actuator_command/" + actuator_index, 10);
   auto message = std_msgs::msg::Int32();
@@ -75,6 +84,8 @@ Status ActuatorControl::onRun(const std::shared_ptr<const ActuatorControlAction:
 
 void ActuatorControl::onActionCompletion()
 {
+  preempt_teleop_ = false;
+  actuator_status_sub_.reset();
 }
 
 Status ActuatorControl::onCycleUpdate()
@@ -108,6 +119,16 @@ Status ActuatorControl::onCycleUpdate()
 void ActuatorControl::preemptActuatorCallback(const std_msgs::msg::Empty::SharedPtr)
 {
   preempt_teleop_ = true;
+}
+
+void ActuatorControl::actuatorStatusCallback(const std_msgs::msg::Int32::SharedPtr msg)
+{
+  if (msg.data == 0){
+    preempt_teleop_ = true;
+      RCLCPP_WARN_STREAM(
+      logger_,
+      "actuator is idle");
+  }
 }
 
 }  // namespace nav2_behaviors
