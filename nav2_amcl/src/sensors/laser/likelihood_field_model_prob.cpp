@@ -226,6 +226,15 @@ LikelihoodFieldModelProb::sensorFunction(LaserData * data, pf_sample_set_t * set
       outputFile.close();
     }
 
+    std::ofstream outputFile("/data/amcl_skip_beam.txt");
+    if (outputFile.is_open()) {
+      // Write the value to the file
+      double amcl_skip_beam = skipped_beam_count / beam_ind;
+      outputFile << amcl_skip_beam;
+      // Close the file
+      outputFile.close();
+    }
+
     for (j = 0; j < set->sample_count; j++) {
       sample = set->samples + j;
       pose = sample->pose;

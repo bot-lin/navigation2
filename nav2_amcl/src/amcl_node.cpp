@@ -917,7 +917,7 @@ AmclNode::getMaxWeightHyp(
   pose_entropy_weight_pub_->publish(shannon_message);
   auto message = std_msgs::msg::Float32();
   message.data = max_weight;
-  pose_max_weight_pub_->publish(message);
+  // pose_max_weight_pub_->publish(message);
   if (max_weight > 0.0) {
     RCLCPP_DEBUG(
       get_logger(), "Max weight pose: %.3f %.3f %.3f",
@@ -963,6 +963,21 @@ AmclNode::publishSensorError()
       sensor_error_message.data = (inputString == "1");
       sensor_error_pub_->publish(sensor_error_message);
 
+      // Close the file
+      inputFile.close();
+  }
+  std::ifstream inputFile("/data/amcl_skip_beam.txt"); // Open the file in input mode
+  if (inputFile.is_open()) {
+      float inputFloat;
+
+      // Read the value from the file
+      inputFile >> inputFloat;
+
+      // Convert the string to a boolean value
+      auto  message = std_msgs::msg::Float32();
+      message.data = inputFloat;
+      pose_max_weight_pub_->publish(message);
+    
       // Close the file
       inputFile.close();
   }
