@@ -383,17 +383,19 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
   }
 
   linear_vel = desired_linear_vel_;
-
+  bool is_rotating = false;
   // Make sure we're in compliance with basic constraints
   double angle_to_heading;
   if (shouldRotateToGoalHeading(carrot_pose)) {
     double angle_to_goal = tf2::getYaw(transformed_plan.poses.back().pose.orientation);
     rotateToHeading(linear_vel, angular_vel, angle_to_goal);
+    is_rotating = true;
   } else if (shouldRotateToPath(rotate_pose, angle_to_heading)) {
     RCLCPP_INFO(
     logger_,
     "Rotating");
     rotateToHeading(linear_vel, angular_vel, angle_to_heading);
+    is_rotating = true;
   } else {
     applyConstraints(
       curvature, speed,
@@ -408,7 +410,7 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
   // Collision checking on this velocity heading
   // bool first_collision = true;
   const double & carrot_dist = hypot(carrot_pose.pose.position.x, carrot_pose.pose.position.y);
-  if (use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
+  if (!is_rotating && use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
     msg.data = true;
     collision_pub_->publish(msg);
     // Current pose and Collision pose
