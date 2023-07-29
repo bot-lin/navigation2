@@ -262,6 +262,7 @@ AmclNode::on_activate(const rclcpp_lifecycle::State & /*state*/)
   // Lifecycle publishers must be explicitly activated
   pose_pub_->on_activate();
   pose_max_weight_pub_->on_activate();
+  beam_skip_pub_->on_activate();
   pose_entropy_weight_pub_->on_activate();
   sensor_error_pub_->on_activate();
   
@@ -311,6 +312,7 @@ AmclNode::on_deactivate(const rclcpp_lifecycle::State & /*state*/)
   // Lifecycle publishers must be explicitly deactivated
   pose_pub_->on_deactivate();
   pose_max_weight_pub_->on_deactivate();
+  beam_skip_pub_->on_deactivate();
   pose_entropy_weight_pub_->on_deactivate();
   particle_cloud_pub_->on_deactivate();
   sensor_error_pub_->on_deactivate();
@@ -356,6 +358,7 @@ AmclNode::on_cleanup(const rclcpp_lifecycle::State & /*state*/)
   // PubSub
   pose_pub_.reset();
   pose_max_weight_pub_.reset();
+  beam_skip_pub_.reset();
   pose_entropy_weight_pub_.reset();
   sensor_error_pub_.reset();
   particle_cloud_pub_.reset();
@@ -915,8 +918,8 @@ AmclNode::getMaxWeightHyp(
   auto shannon_message = std_msgs::msg::Float32();
   shannon_message.data =  calculateShannonEntropy(weights, weight_sum);
   pose_entropy_weight_pub_->publish(shannon_message);
-  auto message = std_msgs::msg::Float32();
-  message.data = max_weight;
+  // auto message = std_msgs::msg::Float32();
+  // message.data = max_weight;
   // pose_max_weight_pub_->publish(message);
   if (max_weight > 0.0) {
     RCLCPP_DEBUG(
@@ -966,20 +969,20 @@ AmclNode::publishSensorError()
       // Close the file
       inputFile.close();
   }
-  std::ifstream inputFile("/data/amcl_skip_beam.txt"); // Open the file in input mode
-  if (inputFile.is_open()) {
-      float inputFloat;
+  std::ifstream inputFile1("/data/amcl_skip_beam.txt"); // Open the file in input mode
+  if (inputFile1.is_open()) {
+      int inputInt;
 
       // Read the value from the file
-      inputFile >> inputFloat;
+      inputFile1 >> inputInt;
 
       // Convert the string to a boolean value
-      auto  message = std_msgs::msg::Float32();
-      message.data = inputFloat;
-      pose_max_weight_pub_->publish(message);
+      auto  message = std_msgs::msg::Int8();
+      message.data = inputInt;
+      beam_skip_pub_->publish(message);
     
       // Close the file
-      inputFile.close();
+      inputFile1.close();
   }
 }
 void
@@ -1594,6 +1597,10 @@ AmclNode::initPubSub()
   
   pose_max_weight_pub_ = create_publisher<std_msgs::msg::Float32>(
     "amcl/max_weight",
+    rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
+  
+  beam_skip_pub_ = create_publisher<std_msgs::msg::Int8>(
+    "amcl/beam_skip",
     rclcpp::QoS(rclcpp::KeepLast(1)).transient_local().reliable());
 
   pose_entropy_weight_pub_ = create_publisher<std_msgs::msg::Float32>(

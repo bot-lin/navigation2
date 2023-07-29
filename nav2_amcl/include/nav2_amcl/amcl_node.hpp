@@ -35,6 +35,7 @@
 #include "nav2_amcl/sensors/laser/laser.hpp"
 #include "nav2_msgs/msg/particle.hpp"
 #include "std_msgs/msg/float32.hpp"
+#include "std_msgs/msg/int8.hpp"
 #include "std_msgs/msg/bool.hpp"
 #include "nav2_msgs/msg/particle_cloud.hpp"
 #include "nav_msgs/srv/set_map.hpp"
@@ -189,6 +190,9 @@ protected:
     pose_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>::SharedPtr
     pose_max_weight_pub_;
+  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Int8>::SharedPtr
+    beam_skip_pub_;
+
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>::SharedPtr
     pose_entropy_weight_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Bool>::SharedPtr
