@@ -222,7 +222,7 @@ WaypointFollower::followWaypoints()
         goal_poses.push_back(goal->waypoints[goal_index].pose);
         ClientT::Goal client_goal;
         client_goal.poses = goal_poses;
-        goal_poses.clear();
+        
         client_goal.behavior_tree = goal->waypoints[goal_index].behavior_tree;
 
         client_goal.planner_id = goal->waypoints[goal_index].planner_id;
@@ -241,11 +241,12 @@ WaypointFollower::followWaypoints()
           std::bind(&WaypointFollower::resultCallback, this, std::placeholders::_1);
         send_goal_options.goal_response_callback =
           std::bind(&WaypointFollower::goalResponseCallback, this, std::placeholders::_1);
-
+        RCLCPP_INFO(
+          get_logger(), "Waypoint follower sends pose to server");
         future_goal_handle_ =
           nav_through_poses_client_->async_send_goal(client_goal, send_goal_options);
         current_goal_status_ = ActionStatus::PROCESSING;
-
+        goal_poses.clear();
       }
     }
 
