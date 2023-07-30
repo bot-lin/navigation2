@@ -205,14 +205,16 @@ WaypointFollower::followWaypoints()
     if (new_goal) {
       new_goal = false;
       bool is_dest = goal->waypoints[goal_index].is_dest;
+      RCLCPP_INFO(
+          get_logger(), "Waypoint %i is a %d", goal_index, is_dest);
       if (!is_dest)
       {
         goal_poses.push_back(goal->waypoints[goal_index].pose);
         new_goal = true;
-        goal_index++;
         RCLCPP_INFO(
           get_logger(), "Waypoint %i is a passthrough", goal_index);
-
+        goal_index++;
+        continue;
       }
       else
       {
