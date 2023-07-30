@@ -223,15 +223,15 @@ WaypointFollower::followWaypoints()
         ClientT::Goal client_goal;
         client_goal.poses = goal_poses;
         
-        client_goal.behavior_tree = goal->waypoints[goal_index].behavior_tree;
+        // client_goal.behavior_tree = goal->waypoints[goal_index].behavior_tree;
 
-        client_goal.planner_id = goal->waypoints[goal_index].planner_id;
-        client_goal.controller_id = goal->waypoints[goal_index].controller_id; 
-        client_goal.is_reverse = goal->waypoints[goal_index].is_reverse; 
-        client_goal.goal_checker_id = "goal_checker_id";
-        // std::vector<float> my_vector = {1.2f, 3.4f, 5.6f, 7.8f};
-        client_goal.distance_goal_tolerance = goal->waypoints[goal_index].distance_goal_tolerance;
-        client_goal.yaw_goal_tolerance = goal->waypoints[goal_index].yaw_goal_tolerance;
+        // client_goal.planner_id = goal->waypoints[goal_index].planner_id;
+        // client_goal.controller_id = goal->waypoints[goal_index].controller_id; 
+        // client_goal.is_reverse = goal->waypoints[goal_index].is_reverse; 
+        // client_goal.goal_checker_id = "goal_checker_id";
+        // // std::vector<float> my_vector = {1.2f, 3.4f, 5.6f, 7.8f};
+        // client_goal.distance_goal_tolerance = goal->waypoints[goal_index].distance_goal_tolerance;
+        // client_goal.yaw_goal_tolerance = goal->waypoints[goal_index].yaw_goal_tolerance;
         RCLCPP_INFO(
           get_logger(), "Waypoint %i controller id: %s", goal_index,
           client_goal.controller_id.c_str());
