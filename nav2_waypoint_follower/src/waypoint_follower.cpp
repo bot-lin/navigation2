@@ -219,9 +219,9 @@ WaypointFollower::followWaypoints()
       else
       {
         //navigate throught poses
-        goal_poses.push_back(goal->waypoints[goal_index].pose);
-        ClientT::Goal client_goal;
-        client_goal.poses = goal_poses;
+        // goal_poses.push_back(goal->waypoints[goal_index].pose);
+        // ClientT::Goal client_goal;
+        // client_goal.poses = goal_poses;
         
         // client_goal.behavior_tree = goal->waypoints[goal_index].behavior_tree;
 
