@@ -21,7 +21,6 @@
 #include <mutex>
 
 #include "nav2_util/lifecycle_node.hpp"
-#include "nav2_msgs/action/navigate_to_pose.hpp"
 #include "nav2_msgs/action/navigate_through_poses.hpp"
 #include "nav2_msgs/action/follow_waypoints.hpp"
 #include "nav_msgs/msg/path.hpp"
