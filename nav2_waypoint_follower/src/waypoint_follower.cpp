@@ -239,8 +239,8 @@ WaypointFollower::followWaypoints()
           auto send_goal_options = rclcpp_action::Client<ClientT>::SendGoalOptions();
         send_goal_options.result_callback =
           std::bind(&WaypointFollower::resultCallback, this, std::placeholders::_1);
-        send_goal_options.goal_response_callback =
-          std::bind(&WaypointFollower::goalResponseCallback, this, std::placeholders::_1);
+        // send_goal_options.goal_response_callback =
+        //   std::bind(&WaypointFollower::goalResponseCallback, this, std::placeholders::_1);
         RCLCPP_INFO(
           get_logger(), "Waypoint follower sends %li poses to server", client_goal.poses.size());
         future_goal_handle_ =
