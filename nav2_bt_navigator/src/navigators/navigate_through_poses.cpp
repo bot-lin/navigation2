@@ -106,6 +106,8 @@ NavigateThroughPosesNavigator::getDefaultBTFilepath(
 bool
 NavigateThroughPosesNavigator::goalReceived(ActionT::Goal::ConstSharedPtr goal)
 {
+  RCLCPP_INFO(
+      logger_, "Go through poses received %zu poses", goal->poses.size());
   auto bt_xml_filename = goal->behavior_tree;
 
   if (!bt_action_server_->loadBehaviorTree(bt_xml_filename)) {
