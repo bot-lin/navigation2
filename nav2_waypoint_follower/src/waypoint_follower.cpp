@@ -242,7 +242,7 @@ WaypointFollower::followWaypoints()
         send_goal_options.goal_response_callback =
           std::bind(&WaypointFollower::goalResponseCallback, this, std::placeholders::_1);
         RCLCPP_INFO(
-          get_logger(), "Waypoint follower sends pose to server");
+          get_logger(), "Waypoint follower sends %i poses to server", client_goal.poses.size());
         future_goal_handle_ =
           nav_through_poses_client_->async_send_goal(client_goal, send_goal_options);
         current_goal_status_ = ActionStatus::PROCESSING;
