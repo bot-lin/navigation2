@@ -53,7 +53,7 @@ class WaypointFollower : public nav2_util::LifecycleNode
 {
 public:
   using ActionT = nav2_msgs::action::FollowWaypoints;
-  using ClientT = nav2_msgs::action::NavigateToPose;
+  using ClientT = nav2_msgs::action::NavigateThroughPoses;
   using ActionServer = nav2_util::SimpleActionServer<ActionT>;
   using ActionClient = rclcpp_action::Client<ClientT>;
 
@@ -130,12 +130,11 @@ protected:
 
   // Our action server
   std::unique_ptr<ActionServer> action_server_;
-  ActionClient::SharedPtr nav_to_pose_client_;
+  ActionClient::SharedPtr nav_through_poses_client_;
   rclcpp::CallbackGroup::SharedPtr callback_group_;
   rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
   std::shared_future<rclcpp_action::ClientGoalHandle<ClientT>::SharedPtr> future_goal_handle_;
   bool stop_on_failure_;
-  bool current_nav_type_;
   ActionStatus current_goal_status_;
   int loop_rate_;
   std::vector<int> failed_ids_;

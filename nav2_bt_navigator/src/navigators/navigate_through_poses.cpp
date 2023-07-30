@@ -41,6 +41,41 @@ NavigateThroughPosesNavigator::configure(
 
   path_blackboard_id_ = node->get_parameter("path_blackboard_id").as_string();
 
+  //planner id
+  if (!node->has_parameter("planner_blackboard_id")) {
+    node->declare_parameter("planner_blackboard_id", std::string("planner_id"));
+  }
+  planner_blackboard_id_ = node->get_parameter("planner_blackboard_id").as_string();
+
+  //controller id
+  if (!node->has_parameter("controller_blackboard_id")) {
+    node->declare_parameter("controller_blackboard_id", std::string("controller_id"));
+  }
+  controller_blackboard_id_ = node->get_parameter("controller_blackboard_id").as_string();
+
+  //goal checker id
+  if (!node->has_parameter("checker_blackboard_id")) {
+    node->declare_parameter("checker_blackboard_id", std::string("goal_checker_id"));
+  }
+  checker_blackboard_id_ = node->get_parameter("checker_blackboard_id").as_string();
+
+  //is reverse
+  if (!node->has_parameter("is_reverse_blackboard_id")) {
+    node->declare_parameter("is_reverse_blackboard_id", std::string("is_reverse"));
+  }
+  is_reverse_blackboard_id_ = node->get_parameter("is_reverse_blackboard_id").as_string();
+
+  //precise goal
+  if (!node->has_parameter("precise_distance_blackboard_id")) {
+    node->declare_parameter("precise_distance_blackboard_id", std::string("distance_goal_tolerance"));
+  }
+  precise_distance_blackboard_id_ = node->get_parameter("precise_distance_blackboard_id").as_string();
+  //
+  if (!node->has_parameter("precise_yaw_blackboard_id")) {
+    node->declare_parameter("precise_yaw_blackboard_id", std::string("yaw_goal_tolerance"));
+  }
+  precise_yaw_blackboard_id_ = node->get_parameter("precise_yaw_blackboard_id").as_string();
+
   // Odometry smoother object for getting current speed
   odom_smoother_ = odom_smoother;
 
@@ -213,6 +248,11 @@ NavigateThroughPosesNavigator::initializeGoalPoses(ActionT::Goal::ConstSharedPtr
 
   // Update the goal pose on the blackboard
   blackboard->set<Goals>(goals_blackboard_id_, goal->poses);
+  blackboard->set<std::string>(planner_blackboard_id_, goal->planner_id);
+  blackboard->set<std::string>(controller_blackboard_id_, goal->controller_id);
+  blackboard->set<float>(precise_distance_blackboard_id_, goal->distance_goal_tolerance);
+  blackboard->set<float>(precise_yaw_blackboard_id_, goal->yaw_goal_tolerance);
+  blackboard->set<bool>(is_reverse_blackboard_id_, goal->is_reverse);
 }
 
 }  // namespace nav2_bt_navigator

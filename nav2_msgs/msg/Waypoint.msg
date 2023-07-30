@@ -11,3 +11,4 @@ string task_name
 string task_params
 string task_name_and_params
 bool is_reverse
+bool is_dest

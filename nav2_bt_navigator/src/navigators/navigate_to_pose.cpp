@@ -34,7 +34,13 @@ NavigateToPoseNavigator::configure(
     node->declare_parameter("goal_blackboard_id", std::string("goal"));
   }
   goal_blackboard_id_ = node->get_parameter("goal_blackboard_id").as_string();
-  
+
+  //path
+  if (!node->has_parameter("path_blackboard_id")) {
+    node->declare_parameter("path_blackboard_id", std::string("path"));
+  }
+  path_blackboard_id_ = node->get_parameter("path_blackboard_id").as_string();
+
   //planner id
   if (!node->has_parameter("planner_blackboard_id")) {
     node->declare_parameter("planner_blackboard_id", std::string("planner_id"));
@@ -58,12 +64,6 @@ NavigateToPoseNavigator::configure(
     node->declare_parameter("is_reverse_blackboard_id", std::string("is_reverse"));
   }
   is_reverse_blackboard_id_ = node->get_parameter("is_reverse_blackboard_id").as_string();
-
-  //path
-  if (!node->has_parameter("path_blackboard_id")) {
-    node->declare_parameter("path_blackboard_id", std::string("path"));
-  }
-  path_blackboard_id_ = node->get_parameter("path_blackboard_id").as_string();
 
   //precise goal
   if (!node->has_parameter("precise_distance_blackboard_id")) {

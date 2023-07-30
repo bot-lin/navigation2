@@ -67,12 +67,13 @@ WaypointFollower::on_configure(const rclcpp_lifecycle::State & /*state*/)
     false);
   callback_group_executor_.add_callback_group(callback_group_, get_node_base_interface());
 
-  nav_through_poses_client_ = rclcpp_action::create_client<ClientT>(
+  current_nav_type_ = false;
+  nav_to_pose_client_ = rclcpp_action::create_client<ClientT>(
     get_node_base_interface(),
     get_node_graph_interface(),
     get_node_logging_interface(),
     get_node_waitables_interface(),
-    "navigate_through_poses", callback_group_);
+    "navigate_to_pose", callback_group_);
 
   action_server_ = std::make_unique<ActionServer>(
     get_node_base_interface(),
@@ -122,7 +123,7 @@ WaypointFollower::on_cleanup(const rclcpp_lifecycle::State & /*state*/)
   RCLCPP_INFO(get_logger(), "Cleaning up");
 
   action_server_.reset();
-  nav_through_poses_client_.reset();
+  nav_to_pose_client_.reset();
 
   return nav2_util::CallbackReturn::SUCCESS;
 }
@@ -181,12 +182,17 @@ WaypointFollower::followWaypoints()
   rclcpp::WallRate r(loop_rate_);
   uint32_t goal_index = 0;
   bool new_goal = true;
-  std::vector<geometry_msgs::msg::PoseStamped> goal_poses;
+
   while (rclcpp::ok()) {
     // Check if asked to stop processing action
     if (action_server_->is_cancel_requested()) {
-      auto cancel_future = nav_through_poses_client_->async_cancel_all_goals();
-      callback_group_executor_.spin_until_future_complete(cancel_future);
+      if (current_nav_type_){
+        
+      }
+      else{
+        auto cancel_future = nav_to_pose_client_->async_cancel_all_goals();
+        callback_group_executor_.spin_until_future_complete(cancel_future);
+      }
       // for result callback processing
       callback_group_executor_.spin_some();
       action_server_->terminate_all();
@@ -204,18 +210,20 @@ WaypointFollower::followWaypoints()
     // Check if we need to send a new goal
     if (new_goal) {
       new_goal = false;
-      bool is_dest = goal->waypoints[goal_index].is_dest;
-      if (!is_dest)
+      bool nav_type = goal->waypoints[goal_index].nav_type;
+      if (nav_type)
       {
-        goal_poses.push_back(goal->waypoints[goal_index].pose);
-        new_goal = true;
+        //follow path
+        std::string controller_id = goal->waypoints[goal_index].controller_id;
+        std::string goal_checker_id = goal->waypoints[goal_index].goal_checker_id;
+        current_nav_type_ = true;
       }
       else
       {
         //navigate to pose
-        goal_poses.push_back(goal->waypoints[goal_index].pose);
+        current_nav_type_ = false;
         ClientT::Goal client_goal;
-        client_goal.poses = goal_poses;
+        client_goal.pose = goal->waypoints[goal_index].pose;
         client_goal.behavior_tree = goal->waypoints[goal_index].behavior_tree;
 
         client_goal.planner_id = goal->waypoints[goal_index].planner_id;
@@ -236,10 +244,10 @@ WaypointFollower::followWaypoints()
           std::bind(&WaypointFollower::goalResponseCallback, this, std::placeholders::_1);
 
         future_goal_handle_ =
-          nav_through_poses_client_->async_send_goal(client_goal, send_goal_options);
+          nav_to_pose_client_->async_send_goal(client_goal, send_goal_options);
         current_goal_status_ = ActionStatus::PROCESSING;
 
-      }
+    }
     }
 
     feedback->current_waypoint = goal_index;
