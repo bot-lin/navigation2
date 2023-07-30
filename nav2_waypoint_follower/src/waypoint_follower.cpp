@@ -206,7 +206,7 @@ WaypointFollower::followWaypoints()
       new_goal = false;
       bool is_dest = goal->waypoints[goal_index].is_dest;
       RCLCPP_INFO(
-          get_logger(), "Waypoint %i is a %d", goal_index, is_dest);
+          get_logger(), "Waypoint %i is %d", goal_index, is_dest);
       if (!is_dest)
       {
         goal_poses.push_back(goal->waypoints[goal_index].pose);
@@ -222,6 +222,7 @@ WaypointFollower::followWaypoints()
         goal_poses.push_back(goal->waypoints[goal_index].pose);
         ClientT::Goal client_goal;
         client_goal.poses = goal_poses;
+        goal_poses.clear();
         client_goal.behavior_tree = goal->waypoints[goal_index].behavior_tree;
 
         client_goal.planner_id = goal->waypoints[goal_index].planner_id;
