@@ -233,6 +233,9 @@ WaypointFollower::followWaypoints()
         // std::vector<float> my_vector = {1.2f, 3.4f, 5.6f, 7.8f};
         client_goal.distance_goal_tolerance = goal->waypoints[goal_index].distance_goal_tolerance;
         client_goal.yaw_goal_tolerance = goal->waypoints[goal_index].yaw_goal_tolerance;
+        RCLCPP_INFO(
+          get_logger(), "Waypoint %i controller id: %s", goal_index
+          client_goal.controller_id.c_str());
 
           auto send_goal_options = rclcpp_action::Client<ClientT>::SendGoalOptions();
         send_goal_options.result_callback =
