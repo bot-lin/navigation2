@@ -247,6 +247,8 @@ protected:
    */
   bool onGoalReceived(typename ActionT::Goal::ConstSharedPtr goal)
   {
+    RCLCPP_INFO(
+      logger_, "Navigator received goal");
     if (plugin_muxer_->isNavigating()) {
       RCLCPP_ERROR(
         logger_,
