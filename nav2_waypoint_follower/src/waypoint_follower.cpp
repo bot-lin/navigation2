@@ -209,6 +209,10 @@ WaypointFollower::followWaypoints()
       {
         goal_poses.push_back(goal->waypoints[goal_index].pose);
         new_goal = true;
+        goal_index++;
+        RCLCPP_INFO(
+          get_logger(), "Waypoint %i is a passthrough", goal_index);
+
       }
       else
       {
