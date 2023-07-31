@@ -248,6 +248,10 @@ NavigateThroughPosesNavigator::initializeGoalPoses(ActionT::Goal::ConstSharedPtr
   auto blackboard = bt_action_server_->getBlackboard();
   blackboard->set<int>("number_recoveries", 0);  // NOLINT
 
+  RCLCPP_INFO(
+      logger_, "distance_goal_tolerance:  %.2f; yaw_goal_tolerance: %.2f",
+      goal->distance_goal_tolerance, goal->distance_goal_tolerance);
+
   // Update the goal pose on the blackboard
   blackboard->set<Goals>(goals_blackboard_id_, goal->poses);
   blackboard->set<std::string>(planner_blackboard_id_, goal->planner_id);
