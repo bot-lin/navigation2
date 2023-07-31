@@ -204,7 +204,7 @@ bool CollisionMonitor::getParameters(
     node, "cmd_vel_out_topic", rclcpp::ParameterValue("cmd_vel"));
   cmd_vel_out_topic = get_parameter("cmd_vel_out_topic").as_string();
   nav2_util::declare_parameter_if_not_declared(
-    node, "state_topic", rclcpp::ParameterValue(""));
+    node, "state_topic", rclcpp::ParameterValue("collision_monitor/state"));
   state_topic = get_parameter("state_topic").as_string();
 
   nav2_util::declare_parameter_if_not_declared(
