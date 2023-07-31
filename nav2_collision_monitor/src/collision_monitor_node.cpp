@@ -423,7 +423,7 @@ bool CollisionMonitor::processStopSlowdownLimit(
   if (polygon->getPointsInside(collision_points) >= polygon->getMinPoints()) {
     if (polygon->getActionType() == STOP) {
       // Setting up zero velocity for STOP model
-      if (!polygon->getStopPureRotation && velocity.x == 0.0){
+      if (!polygon->getStopPureRotation() && (velocity.x == 0.0 || abs(velocity.x) == 0.042 || abs(velocity.x) == 0.008)){
         return false;
       }
       robot_action.polygon_name = polygon->getName();

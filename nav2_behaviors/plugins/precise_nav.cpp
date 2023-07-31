@@ -53,7 +53,7 @@ void PreciseNav::onConfigure()
 
     nav2_util::declare_parameter_if_not_declared(
         node,
-        "linear_velocity", rclcpp::ParameterValue(0.04));
+        "linear_velocity", rclcpp::ParameterValue(0.042));
     node->get_parameter("linear_velocity", linear_velocity_);
     RCLCPP_INFO(this->logger_, "******************* %f", yaw_goal_tolerance_);
 
@@ -165,8 +165,8 @@ Status PreciseNav::onCycleUpdate()
     if (distance_to_goal > distance_goal_tolerance_ && !reached_distance_goal_)
     {
         if (std::fabs(heading_error) > heading_tolerance_){
-            if (is_reverse_) cmd_vel->linear.x = -0.005;
-            else cmd_vel->linear.x = 0.005;
+            if (is_reverse_) cmd_vel->linear.x = -0.008;
+            else cmd_vel->linear.x = 0.008;
             if (heading_error > 0) cmd_vel->angular.z = angular_velocity_;
             else cmd_vel->angular.z = -angular_velocity_;
         }
