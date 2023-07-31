@@ -144,6 +144,10 @@ double Polygon::getLinearLimit() const
   return linear_limit_;
 }
 
+bool Polygon::getStopPureRotation() const
+{
+  return stop_pure_rotation_;
+}
 double Polygon::getAngularLimit() const
 {
   return angular_limit_;
@@ -341,6 +345,13 @@ bool Polygon::getCommonParameters(std::string & polygon_pub_topic)
         node, polygon_name_ + ".simulation_time_step", rclcpp::ParameterValue(0.1));
       simulation_time_step_ =
         node->get_parameter(polygon_name_ + ".simulation_time_step").as_double();
+    }
+
+    if (action_type_ == STOP) {
+      nav2_util::declare_parameter_if_not_declared(
+        node, polygon_name_ + ".stop_pure_rotation", rclcpp::ParameterValue(false));
+      stop_pure_rotation_ =
+        node->get_parameter(polygon_name_ + ".stop_pure_rotation").as_bool();
     }
 
     nav2_util::declare_parameter_if_not_declared(

@@ -102,6 +102,7 @@ public:
    * @return Speed linear limit
    */
   double getLinearLimit() const;
+  bool getStopPureRotation() const;
   /**
    * @brief Obtains speed angular z limit for current polygon.
    * Applicable for LIMIT model.
@@ -238,6 +239,7 @@ protected:
   // Visualization
   /// @brief Whether to publish the polygon
   bool visualize_;
+  bool stop_pure_rotation_;
   /// @brief Polygon, used for: 1. visualization; 2. storing latest dynamic polygon message
   geometry_msgs::msg::PolygonStamped polygon_;
   /// @brief Polygon publisher for visualization purposes
