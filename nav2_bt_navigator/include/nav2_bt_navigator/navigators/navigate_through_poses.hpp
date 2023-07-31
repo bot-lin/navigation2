@@ -109,6 +109,7 @@ protected:
 
   rclcpp::Time start_time_;
   std::string goals_blackboard_id_;
+  std::string goal_blackboard_id_;
   std::string path_blackboard_id_;
   std::string planner_blackboard_id_;
   std::string controller_blackboard_id_;
