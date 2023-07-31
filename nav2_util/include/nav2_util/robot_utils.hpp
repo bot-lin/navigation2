@@ -75,6 +75,15 @@ bool getTransform(
   const std::shared_ptr<tf2_ros::Buffer> tf_buffer,
   tf2::Transform & tf2_transform);
 
+
+/**
+ * @brief Validates a twist message contains no nans or infs
+ * @param msg Twist message to validate
+ * @return True if valid, false if contains unactionable values
+ */
+bool validateTwist(const geometry_msgs::msg::Twist & msg);
+
+
 }  // end namespace nav2_util
 
 #endif  // NAV2_UTIL__ROBOT_UTILS_HPP_

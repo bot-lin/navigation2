@@ -142,4 +142,11 @@ bool getTransform(
   return true;
 }
 
+/**
+ * @brief Validates a twist message contains no nans or infs
+ * @param msg Twist message to validate
+ * @return True if valid, false if contains unactionable values
+ */
+bool validateTwist(const geometry_msgs::msg::Twist & msg);
+
 }  // end namespace nav2_util
