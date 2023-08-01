@@ -1,4 +1,4 @@
-float32[] max_accel
-float32[] max_decel
-float32[] max_velocity
-float32[] min_velocity
+float64[] max_accel
+float64[] max_decel
+float64[] max_velocity
+float64[] min_velocity
