@@ -142,11 +142,33 @@ bool getTransform(
   return true;
 }
 
-/**
- * @brief Validates a twist message contains no nans or infs
- * @param msg Twist message to validate
- * @return True if valid, false if contains unactionable values
- */
-bool validateTwist(const geometry_msgs::msg::Twist & msg);
 
+bool validateTwist(const geometry_msgs::msg::Twist & msg)
+{
+  if (std::isinf(msg.linear.x) || std::isnan(msg.linear.x)) {
+    return false;
+  }
+
+  if (std::isinf(msg.linear.y) || std::isnan(msg.linear.y)) {
+    return false;
+  }
+
+  if (std::isinf(msg.linear.z) || std::isnan(msg.linear.z)) {
+    return false;
+  }
+
+  if (std::isinf(msg.angular.x) || std::isnan(msg.angular.x)) {
+    return false;
+  }
+
+  if (std::isinf(msg.angular.y) || std::isnan(msg.angular.y)) {
+    return false;
+  }
+
+  if (std::isinf(msg.angular.z) || std::isnan(msg.angular.z)) {
+    return false;
+  }
+
+  return true;
+}
 }  // end namespace nav2_util

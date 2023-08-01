@@ -118,6 +118,10 @@ VelocitySmoother::on_configure(const rclcpp_lifecycle::State &)
     "cmd_vel", rclcpp::QoS(1),
     std::bind(&VelocitySmoother::inputCommandCallback, this, std::placeholders::_1));
 
+  parameter_sub_ = create_subscription<geometry_msgs::msg::Twist>(
+    "cmd_vel", rclcpp::QoS(1),
+    std::bind(&VelocitySmoother::inputCommandCallback, this, std::placeholders::_1));
+
   return nav2_util::CallbackReturn::SUCCESS;
 }
 
@@ -162,6 +166,7 @@ VelocitySmoother::on_cleanup(const rclcpp_lifecycle::State &)
   smoothed_cmd_pub_.reset();
   odom_smoother_.reset();
   cmd_sub_.reset();
+  parameter_sub_.reset();
   return nav2_util::CallbackReturn::SUCCESS;
 }
 

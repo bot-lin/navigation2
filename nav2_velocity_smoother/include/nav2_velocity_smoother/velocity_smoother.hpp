@@ -26,6 +26,7 @@
 #include "nav2_util/node_utils.hpp"
 #include "nav2_util/odometry_utils.hpp"
 #include "nav2_util/robot_utils.hpp"
+#include "nav2_msgs/msg/vel_smoother.hpp"
 
 namespace nav2_velocity_smoother
 {
