@@ -180,6 +180,9 @@ VelocitySmoother::on_shutdown(const rclcpp_lifecycle::State &)
 void VelocitySmoother::VelSmootherParameterCallback(const nav2_msgs::msg::VelSmoother::SharedPtr msg)
 {
   max_velocities_ = msg->max_velocity;
+  min_velocities_ = msg->min_velocity;
+  max_accels_ = msg->max_accel;
+  max_decels_ = msg->max_decel;
 }
 
 void VelocitySmoother::inputCommandCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
