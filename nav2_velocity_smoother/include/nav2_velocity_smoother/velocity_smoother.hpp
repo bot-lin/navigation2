@@ -115,7 +115,7 @@ protected:
    * @param msg Twist message
    */
   void inputCommandCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
-  void VelSmootherParameterCallback(const nav2_util::msg::VelSmoother::SharedPtr msg);
+  void VelSmootherParameterCallback(const nav2_msgs::msg::VelSmoother::SharedPtr msg);
 
   /**
    * @brief Main worker timer function

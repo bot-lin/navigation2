@@ -118,7 +118,7 @@ VelocitySmoother::on_configure(const rclcpp_lifecycle::State &)
     "cmd_vel", rclcpp::QoS(1),
     std::bind(&VelocitySmoother::inputCommandCallback, this, std::placeholders::_1));
 
-  parameter_sub_ = create_subscription<nav2_util::msg::VelSmoother>(
+  parameter_sub_ = create_subscription<nav2_msgs::msg::VelSmoother>(
     "vel_smoother/parameters", rclcpp::QoS(1),
     std::bind(&VelocitySmoother::VelSmootherParameterCallback, this, std::placeholders::_1));
 
@@ -177,7 +177,7 @@ VelocitySmoother::on_shutdown(const rclcpp_lifecycle::State &)
   return nav2_util::CallbackReturn::SUCCESS;
 }
 
-void VelocitySmoother::VelSmootherParameterCallback(const nav2_util::msg::VelSmoother::SharedPtr msg)
+void VelocitySmoother::VelSmootherParameterCallback(const nav2_msgs::msg::VelSmoother::SharedPtr msg)
 {
 
 }
