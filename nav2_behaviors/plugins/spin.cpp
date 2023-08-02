@@ -35,10 +35,10 @@ Spin::Spin()
   max_rotational_vel_(0.0),
   rotational_acc_lim_(0.0),
   cmd_yaw_(0.0),
-  check_collision_(true),
   prev_yaw_(0.0),
   relative_yaw_(0.0),
-  simulate_ahead_time_(0.0)
+  simulate_ahead_time_(0.0),
+  check_collision_(true)
 {
 }
 
