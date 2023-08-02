@@ -114,7 +114,7 @@ NavigateThroughPosesNavigator::goalReceived(ActionT::Goal::ConstSharedPtr goal)
   RCLCPP_INFO(
       logger_, "Go through poses received %zu poses", goal->poses.size());
   auto bt_xml_filename = goal->behavior_tree;
-
+  bt_action_server_->clearCurrentBehaviorTree();
   if (!bt_action_server_->loadBehaviorTree(bt_xml_filename)) {
     RCLCPP_ERROR(
       logger_, "Error loading XML file: %s. Navigation canceled.",
