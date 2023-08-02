@@ -1,5 +1,6 @@
 #goal definition
 float32 target_yaw
+bool check_collision
 builtin_interfaces/Duration time_allowance
 ---
 #result definition

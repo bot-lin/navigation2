@@ -35,6 +35,7 @@ Spin::Spin()
   max_rotational_vel_(0.0),
   rotational_acc_lim_(0.0),
   cmd_yaw_(0.0),
+  check_collision_(true),
   prev_yaw_(0.0),
   relative_yaw_(0.0),
   simulate_ahead_time_(0.0)
@@ -86,6 +87,7 @@ Status Spin::onRun(const std::shared_ptr<const SpinAction::Goal> command)
   relative_yaw_ = 0.0;
 
   cmd_yaw_ = command->target_yaw;
+  check_collision_ = command->check_collision;
   RCLCPP_INFO(
     logger_, "Turning %0.2f for spin behavior.",
     cmd_yaw_);
@@ -111,6 +113,7 @@ Status Spin::change_goal(const std::shared_ptr<const SpinAction::Goal> command)
   relative_yaw_ = 0.0;
 
   cmd_yaw_ = command->target_yaw;
+  check_collision_ = command->check_collision;
   RCLCPP_INFO(
     logger_, "Turning %0.2f for spin behavior.",
     cmd_yaw_);
@@ -171,7 +174,7 @@ Status Spin::onCycleUpdate()
   pose2d.y = current_pose.pose.position.y;
   pose2d.theta = tf2::getYaw(current_pose.pose.orientation);
 
-  if (!isCollisionFree(relative_yaw_, cmd_vel.get(), pose2d)) {
+  if (check_collision_ && !isCollisionFree(relative_yaw_, cmd_vel.get(), pose2d)) {
     stopRobot();
     RCLCPP_WARN(logger_, "Collision Ahead - Exiting Spin");
     return Status::FAILED;
