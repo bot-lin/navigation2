@@ -55,7 +55,7 @@ public:
       {
         BT::InputPort<double>("spin_dist", 1.57, "Spin distance"),
         BT::InputPort<double>("time_allowance", 10.0, "Allowed time for spinning"),
-        BT::InputPort<bool>("is_recovery", true, "True if recovery")
+        BT::InputPort<bool>("is_recovery", true, "True if recovery"),
         BT::InputPort<bool>("check_collision", true, "True if check collision")
       });
   }
