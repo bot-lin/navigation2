@@ -349,15 +349,15 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
       lookahead_dist = dist_to_cusp;
     }
   }
-  if (move_reversing_) {
-    // Cusp check
-    double dist_to_cusp = findVelocitySignChange(transformed_plan);
+  // if (move_reversing_) {
+  //   // Cusp check
+  //   double dist_to_cusp = findVelocitySignChange(transformed_plan);
 
-    // if the lookahead distance is further than the cusp, use the cusp distance instead
-    if (dist_to_cusp < lookahead_dist) {
-      lookahead_dist = dist_to_cusp;
-    }
-  }
+  //   // if the lookahead distance is further than the cusp, use the cusp distance instead
+  //   if (dist_to_cusp < lookahead_dist) {
+  //     lookahead_dist = dist_to_cusp;
+  //   }
+  // }
 
   auto carrot_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
 
