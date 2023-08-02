@@ -118,6 +118,8 @@ void RegulatedPurePursuitController::configure(
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".allow_reversing", rclcpp::ParameterValue(false));
   declare_parameter_if_not_declared(
+    node, plugin_name_ + ".move_reversing", rclcpp::ParameterValue(false));
+  declare_parameter_if_not_declared(
     node, plugin_name_ + ".max_robot_pose_search_dist",
     rclcpp::ParameterValue(getCostmapMaxExtent()));
   declare_parameter_if_not_declared(
@@ -183,6 +185,7 @@ void RegulatedPurePursuitController::configure(
   node->get_parameter(plugin_name_ + ".rotate_to_heading_min_angle", rotate_to_heading_min_angle_);
   node->get_parameter(plugin_name_ + ".max_angular_accel", max_angular_accel_);
   node->get_parameter(plugin_name_ + ".allow_reversing", allow_reversing_);
+  node->get_parameter(plugin_name_ + ".move_reversing", move_reversing_);
   node->get_parameter("controller_frequency", control_frequency);
   node->get_parameter(
     plugin_name_ + ".max_robot_pose_search_dist",
@@ -346,6 +349,15 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
       lookahead_dist = dist_to_cusp;
     }
   }
+  if (move_reversing_) {
+    // Cusp check
+    double dist_to_cusp = findVelocitySignChange(transformed_plan);
+
+    // if the lookahead distance is further than the cusp, use the cusp distance instead
+    if (dist_to_cusp < lookahead_dist) {
+      lookahead_dist = dist_to_cusp;
+    }
+  }
 
   auto carrot_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
 
@@ -380,6 +392,10 @@ auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan
   double sign = 1.0;
   if (allow_reversing_) {
     sign = carrot_pose.pose.position.x >= 0.0 ? 1.0 : -1.0;
+  }
+
+  if (move_reversing_) {
+    sign = -1.0;
   }
 
   linear_vel = desired_linear_vel_;
@@ -521,7 +537,12 @@ bool RegulatedPurePursuitController::shouldRotateToPath(
   const geometry_msgs::msg::PoseStamped & carrot_pose, double & angle_to_path)
 {
   // Whether we should rotate robot to rough path heading
-  angle_to_path = atan2(carrot_pose.pose.position.y, carrot_pose.pose.position.x);
+  if (move_reversing_){
+    angle_to_path = atan2(-carrot_pose.pose.position.y, -carrot_pose.pose.position.x);
+  }
+  else{
+    angle_to_path = atan2(carrot_pose.pose.position.y, carrot_pose.pose.position.x);
+  }
   return use_rotate_to_heading_ && fabs(angle_to_path) > rotate_to_heading_min_angle_;
 }
 
@@ -1062,6 +1083,14 @@ RegulatedPurePursuitController::dynamicParametersCallback(
           continue;
         }
         allow_reversing_ = parameter.as_bool();
+      } else if (name == plugin_name_ + ".move_reversing") {
+        if (allow_reversing_ && parameter.as_bool()) {
+          RCLCPP_WARN(
+            logger_, "Both use_rotate_to_heading and allow_reversing "
+            "parameter cannot be set to true. Rejecting parameter update.");
+          continue;
+        }
+        move_reversing_ = parameter.as_bool();
       }
     }
   }

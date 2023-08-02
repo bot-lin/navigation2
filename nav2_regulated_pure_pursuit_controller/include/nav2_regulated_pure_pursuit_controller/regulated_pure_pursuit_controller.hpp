@@ -311,6 +311,7 @@ protected:
   double rotate_to_heading_min_angle_;
   double goal_dist_tol_;
   bool allow_reversing_;
+  bool move_reversing_;
   double max_robot_pose_search_dist_;
   bool use_interpolation_;
   geometry_msgs::msg::PoseStamped collision_pose_msg_;
