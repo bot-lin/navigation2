@@ -20,7 +20,7 @@
 #include "nav2_util/geometry_utils.hpp"
 
 #include "nav2_behavior_tree/plugins/condition/close_to_pose_condition.hpp"
-
+#include <cstdlib>  
 namespace nav2_behavior_tree
 {
 
@@ -40,6 +40,10 @@ CloseToPoseCondition::CloseToPoseCondition(
   getInput("pose_y", pose_y_);
   getInput("global_frame", global_frame_);
   getInput("robot_base_frame", robot_base_frame_);
+  const char* env_var_x = std::getenv("DOCKER_X");
+  const char* env_var_y = std::getenv("DOCKER_Y");
+  RCLCPP_INFO(node_->get_logger(), "DOCKER_X %s", env_var_x);
+  RCLCPP_INFO(node_->get_logger(), "DOCKER_Y %s", env_var_y);
   node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   tf_ = config().blackboard->get<std::shared_ptr<tf2_ros::Buffer>>("tf_buffer");
   node_->get_parameter("transform_tolerance", transform_tolerance_);
