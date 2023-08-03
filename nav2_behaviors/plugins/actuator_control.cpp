@@ -43,6 +43,9 @@ Status ActuatorControl::change_goal(const std::shared_ptr<const ActuatorControlA
     auto message = std_msgs::msg::Int32();
         message.data = command->task_index;
     actuator_command_pub_->publish(message);
+    RCLCPP_INFO(
+      logger_,
+      "Actuator control change goal send %d to %s", command->task_index, actuator_index);
   command_time_allowance_ = command->time_allowance;
   end_time_ = steady_clock_.now() + command_time_allowance_;
   return Status::SUCCEEDED;
@@ -65,6 +68,9 @@ Status ActuatorControl::onRun(const std::shared_ptr<const ActuatorControlAction:
   auto message = std_msgs::msg::Int32();
       message.data = command->task_index;
   actuator_command_pub_->publish(message);
+  RCLCPP_INFO(
+      logger_,
+      "Actuator control on run send %d to %s", command->task_index, actuator_index);
   command_time_allowance_ = command->time_allowance;
   end_time_ = steady_clock_.now() + command_time_allowance_;
   return Status::SUCCEEDED;
