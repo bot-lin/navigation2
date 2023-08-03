@@ -132,6 +132,7 @@ PlannerServer::on_configure(const rclcpp_lifecycle::State & /*state*/)
 
   // Initialize pubs & subs
   plan_publisher_ = create_publisher<nav_msgs::msg::Path>("plan", 1);
+  failed_create_plan_publisher_ = create_publisher<std_msgs::msg::Bool>("failed_create_plan", 1);
 
   // Create the action servers for path planning to a pose and through poses
   action_server_pose_ = std::make_unique<ActionServerToPose>(
@@ -321,12 +322,14 @@ bool PlannerServer::validatePath(
   const nav_msgs::msg::Path & path,
   const std::string & planner_id)
 {
+  std_msgs::msg:Bool msg;
   if (path.poses.size() == 0) {
     RCLCPP_WARN(
       get_logger(), "Planning algorithm %s failed to generate a valid"
       " path to (%.2f, %.2f)", planner_id.c_str(),
       goal.pose.position.x, goal.pose.position.y);
     action_server->terminate_current();
+    msg.data = true;
     return false;
   }
 
@@ -335,7 +338,9 @@ bool PlannerServer::validatePath(
     "Found valid path of size %zu to (%.2f, %.2f)",
     path.poses.size(), goal.pose.position.x,
     goal.pose.position.y);
-
+    msg.data = false;
+  
+  failed_create_plan_publisher_->publish(msg);
   return true;
 }
 
