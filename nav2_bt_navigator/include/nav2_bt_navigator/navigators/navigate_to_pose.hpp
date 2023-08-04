@@ -132,6 +132,8 @@ protected:
   std::string is_reverse_blackboard_id_;
   std::string precise_distance_blackboard_id_;
   std::string precise_yaw_blackboard_id_;
+  std::string docker_x_id_;
+  std::string docker_y_id_;
 
   // Odometry smoother object
   std::shared_ptr<nav2_util::OdomSmoother> odom_smoother_;
