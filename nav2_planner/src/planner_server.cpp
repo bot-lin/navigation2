@@ -322,7 +322,7 @@ bool PlannerServer::validatePath(
   const nav_msgs::msg::Path & path,
   const std::string & planner_id)
 {
-  std_msgs::msg:Bool msg;
+  std_msgs::msg::Bool msg;
   if (path.poses.size() == 0) {
     RCLCPP_WARN(
       get_logger(), "Planning algorithm %s failed to generate a valid"
