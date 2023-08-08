@@ -387,7 +387,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
     }
   }
   
-auto rotate_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan);
+auto rotate_pose = getLookAheadPoint(lookahead_dist_, transformed_plan);
   // Setting the velocity direction
   double sign = 1.0;
   if (allow_reversing_) {
