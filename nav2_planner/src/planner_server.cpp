@@ -337,7 +337,7 @@ bool PlannerServer::validatePath(
     return false;
   }
 
-  RCLCPP_DEBUG(
+  RCLCPP_INFO(
     get_logger(),
     "Found valid path of size %zu to (%.2f, %.2f)",
     path.poses.size(), goal.pose.position.x,
