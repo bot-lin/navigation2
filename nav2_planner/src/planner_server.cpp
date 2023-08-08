@@ -330,6 +330,7 @@ bool PlannerServer::validatePath(
       goal.pose.position.x, goal.pose.position.y);
     action_server->terminate_current();
     msg.data = true;
+    failed_create_plan_publisher_->publish(msg);
     return false;
   }
 
