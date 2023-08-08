@@ -162,6 +162,7 @@ PlannerServer::on_activate(const rclcpp_lifecycle::State & /*state*/)
   plan_publisher_->on_activate();
   action_server_pose_->activate();
   action_server_poses_->activate();
+  failed_create_plan_publisher_->activate();
   costmap_ros_->activate();
 
   PlannerMap::iterator it;
@@ -195,6 +196,7 @@ PlannerServer::on_deactivate(const rclcpp_lifecycle::State & /*state*/)
   action_server_pose_->deactivate();
   action_server_poses_->deactivate();
   plan_publisher_->on_deactivate();
+  failed_create_plan_publisher_->on_deactivate();
   costmap_ros_->deactivate();
 
   PlannerMap::iterator it;
@@ -218,6 +220,7 @@ PlannerServer::on_cleanup(const rclcpp_lifecycle::State & /*state*/)
   action_server_pose_.reset();
   action_server_poses_.reset();
   plan_publisher_.reset();
+  failed_create_plan_publisher_.reset();
   tf_.reset();
   costmap_ros_->cleanup();
 
