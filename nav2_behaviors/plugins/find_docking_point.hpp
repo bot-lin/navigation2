@@ -14,6 +14,15 @@
 
 namespace nav2_behaviors
 {
+struct Point {
+    double x, y;
+    Point(double x = 0, double y = 0) : x(x), y(y) {}
+};
+
+struct Quaternion {
+    double w, x, y, z;
+    Quaternion(double w, double x, double y, double z) : w(w), x(x), y(y), z(z) {}
+};
 using FindDockingPointAction = nav2_msgs::action::FindDockingPoint;
 
 class FindDockingPoint : public TimedBehavior<FindDockingPointAction>
@@ -26,6 +35,7 @@ public:
     void onConfigure() override;
     Status onCycleUpdate() override;
     bool find_docking_spot();
+    double findPerpendicularAngle(double x1, double y1, double x2, double y2);
 
 protected:
     FindDockingPointAction::Feedback::SharedPtr feedback_;

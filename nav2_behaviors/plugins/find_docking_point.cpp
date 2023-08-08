@@ -14,6 +14,7 @@
 
 
 using namespace std::chrono_literals;
+using namespace std;
 
 namespace nav2_behaviors
 {
@@ -109,6 +110,18 @@ Status FindDockingPoint::onCycleUpdate()
     return Status::FAILED;
 }
 
+Point FindDockingPoint::findClockwisePerpendicularVector(const Point& A, const Point& B) {
+    double x = B.x - A.x;
+    double y = B.y - A.y;
+    return Point(y, -x);
+}
+
+Quaternion FindDockingPoint::vectorToQuaternion(const Point& vec) {
+    double theta = atan2(vec.y, vec.x);  // Angle of the vector
+    double halfTheta = theta / 2.0;
+    return Quaternion(cos(halfTheta), 0, 0, sin(halfTheta));  // Quaternion representation for rotation about z-axis
+}
+
 
 bool FindDockingPoint::find_docking_spot()
 {
@@ -150,18 +163,24 @@ bool FindDockingPoint::find_docking_spot()
         double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
         double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
 
+        Point A, B;
+        A.x = x2;
+        A.y = y2;
+        B.x = x1;
+        B.y = y1;
+        Point perpendicularVector = findClockwisePerpendicularVector(A, B);
+        Quaternion q = vectorToQuaternion(perpendicularVector);
+
         geometry_msgs::msg::PoseStamped pose_laser;
 
         pose_laser.header.frame_id = "laser";
         pose_laser.pose.position.x = x3;
         pose_laser.pose.position.y = y3;
-        pose_laser.pose.orientation.z = 1.0; 
+        pose_laser.pose.orientation.z = q.z; 
+        pose_laser.pose.orientation.w = q.w; 
         nav2_util::transformPoseInTargetFrame(pose_laser, pose_map_,  *this->tf_, "map");
-        pose_map_.pose.orientation.x = 0.0;
-        pose_map_.pose.orientation.y = 0.0;
-        pose_map_.pose.orientation.z = 0.0;
-        pose_map_.pose.orientation.w = 1.0; //converted to  0 rad to the map
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to map x: %f, y:%f, z: %f", pose_map_.pose.position.x, pose_map_.pose.position.y, pose_map_.pose.position.z);
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "orientation to map x: %f, y:%f, z: %f, w: %f", pose_map_.pose.orientation.x, pose_map_.pose.orientation.y, pose_map_.pose.orientation.z,pose_map_.pose.orientation.w);
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to map frame id is %s", pose_map_.header.frame_id.c_str());
         nav2_util::transformPoseInTargetFrame(pose_map_, pose_map_,  *this->tf_, "odom");
 
