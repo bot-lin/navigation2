@@ -383,7 +383,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
     }
   }else{
     if (carrot_dist2 > 0.001) {
-      curvature = 2.0 * carrot_pose.pose.position.y / carrot_dist2;
+      curvature = 4.0 * carrot_pose.pose.position.y / carrot_dist2;
     }
   }
   
@@ -419,7 +419,7 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
       linear_vel, sign);
 
     // Apply curvature to angular velocity after constraining linear velocity
-    angular_vel = linear_vel * curvature / 10.0;
+    angular_vel = linear_vel * curvature;
   }
 
   std_msgs::msg::Bool msg;
