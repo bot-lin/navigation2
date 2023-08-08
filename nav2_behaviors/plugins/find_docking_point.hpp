@@ -35,7 +35,10 @@ public:
     void onConfigure() override;
     Status onCycleUpdate() override;
     bool find_docking_spot();
-    double findPerpendicularAngle(double x1, double y1, double x2, double y2);
+    Point findClockwisePerpendicularVector(const Point& A, const Point& B);
+    Quaternion vectorToQuaternion(const Point& vec);
+
+   
 
 protected:
     FindDockingPointAction::Feedback::SharedPtr feedback_;
