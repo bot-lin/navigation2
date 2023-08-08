@@ -207,7 +207,7 @@ WaypointFollower::followWaypoints()
       bool is_dest = goal->waypoints[goal_index].is_dest;
       RCLCPP_INFO(
           get_logger(), "Waypoint %i is %d", goal_index, is_dest);
-      if (!is_dest)
+      if (!is_dest && !(goal_index == goal->waypoints.size()-1))
       {
         goal_poses.push_back(goal->waypoints[goal_index].pose);
         new_goal = true;
