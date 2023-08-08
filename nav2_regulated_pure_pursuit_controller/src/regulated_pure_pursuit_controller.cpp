@@ -374,7 +374,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   // Find curvature of circle (k = 1 / R)
   double curvature = 0.0;
   if (use_fixed_curvature_lookahead_){
-    auto curvature_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan);
+    auto curvature_pose = getLookAheadPoint(lookahead_dist * 2, transformed_plan);
     const double curvature_dist2 =
     (curvature_pose.pose.position.x * curvature_pose.pose.position.x) +
     (curvature_pose.pose.position.y * curvature_pose.pose.position.y);
@@ -383,7 +383,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
     }
   }else{
     if (carrot_dist2 > 0.001) {
-      curvature = 4.0 * carrot_pose.pose.position.y / carrot_dist2;
+      curvature = 2.0 * carrot_pose.pose.position.y / carrot_dist2;
     }
   }
   
