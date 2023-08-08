@@ -162,7 +162,7 @@ PlannerServer::on_activate(const rclcpp_lifecycle::State & /*state*/)
   plan_publisher_->on_activate();
   action_server_pose_->activate();
   action_server_poses_->activate();
-  failed_create_plan_publisher_->activate();
+  failed_create_plan_publisher_->on_activate();
   costmap_ros_->activate();
 
   PlannerMap::iterator it;
