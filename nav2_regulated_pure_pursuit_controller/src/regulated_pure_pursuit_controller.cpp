@@ -419,7 +419,7 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
       linear_vel, sign);
 
     // Apply curvature to angular velocity after constraining linear velocity
-    angular_vel = linear_vel * curvature;
+    angular_vel = linear_vel * curvature / 10.0;
   }
 
   std_msgs::msg::Bool msg;
