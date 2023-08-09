@@ -251,6 +251,10 @@ NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr goal)
     logger_, "Begin navigating from current location to (%.2f, %.2f)",
     goal->pose.pose.position.x, goal->pose.pose.position.y);
 
+  RCLCPP_INFO(
+    logger_, "Begin navigating from current location to (%.2f, %.2f): %f, %f",
+    goal->pose.pose.position.x, goal->pose.pose.position.y, goal->docker_x, goal->docker_y);
+
   // Reset state for new action feedback
   start_time_ = clock_->now();
   auto blackboard = bt_action_server_->getBlackboard();
