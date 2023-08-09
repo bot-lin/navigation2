@@ -39,12 +39,13 @@ CloseToPoseCondition::CloseToPoseCondition(
   getInput("pose_y", pose_y_);
   getInput("global_frame", global_frame_);
   getInput("robot_base_frame", robot_base_frame_);
-  RCLCPP_INFO(node_->get_logger(), "config: docker_x: %f", pose_x_);
-  RCLCPP_INFO(node_->get_logger(), "config: docker_x: %f", pose_x_);
+  
 
   node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   tf_ = config().blackboard->get<std::shared_ptr<tf2_ros::Buffer>>("tf_buffer");
   node_->get_parameter("transform_tolerance", transform_tolerance_);
+  RCLCPP_INFO(node_->get_logger(), "config: docker_x: %f", pose_x_);
+  RCLCPP_INFO(node_->get_logger(), "config: docker_y: %f", pose_y_);
 }
 
 BT::NodeStatus CloseToPoseCondition::tick()
