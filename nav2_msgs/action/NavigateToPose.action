@@ -7,8 +7,8 @@ string goal_checker_id
 float32 distance_goal_tolerance
 float32 yaw_goal_tolerance
 bool is_reverse
-float32 docker_x
-float32 docker_y
+float64 docker_x
+float64 docker_y
 ---
 #result definition
 std_msgs/Empty result
