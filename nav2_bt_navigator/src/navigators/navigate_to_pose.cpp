@@ -251,9 +251,11 @@ NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr goal)
     logger_, "Begin navigating from current location to (%.2f, %.2f)",
     goal->pose.pose.position.x, goal->pose.pose.position.y);
 
+  double test_x = goal->docker_x;
+  double test_y = goal->docker_y;
   RCLCPP_INFO(
     logger_, "Begin navigating from current location to (%.2f, %.2f): %f, %f",
-    goal->pose.pose.position.x, goal->pose.pose.position.y, goal->docker_x, goal->docker_y);
+    goal->pose.pose.position.x, goal->pose.pose.position.y, test_x, test_y);
 
   // Reset state for new action feedback
   start_time_ = clock_->now();
