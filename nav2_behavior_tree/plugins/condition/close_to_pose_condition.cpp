@@ -57,6 +57,10 @@ BT::NodeStatus CloseToPoseCondition::tick()
     RCLCPP_DEBUG(node_->get_logger(), "Current robot pose is not available.");
     return BT::NodeStatus::FAILURE;
   }
+  RCLCPP_INFO(node_->get_logger(), "docker_x: ", pose_x_);
+  RCLCPP_INFO(node_->get_logger(), "docker_y: ", pose_y_);
+  RCLCPP_INFO(node_->get_logger(), "current_pose_x: ", current_pose.pose.position.x);
+  RCLCPP_INFO(node_->get_logger(), "current_pose_y: ", current_pose.pose.position.y);
   geometry_msgs::msg::PoseStamped target_pose;
   target_pose.pose.position.x = pose_x_;
   target_pose.pose.position.y = pose_y_;
