@@ -85,6 +85,16 @@ NavigateToPoseNavigator::configure(
     node->declare_parameter("docker_y_id", std::string("docker_y"));
   }
   docker_y_id_ = node->get_parameter("docker_y_id").as_string();
+
+  if (!node->has_parameter("precise_xy_id")) {
+    node->declare_parameter("precise_xy_id", std::string("precise_xy"));
+  }
+  precise_xy_id_ = node->get_parameter("precise_xy_id").as_string();
+
+  if (!node->has_parameter("precise_yaw_id")) {
+    node->declare_parameter("precise_yaw_id", std::string("precise_yaw"));
+  }
+  precise_yaw_id_ = node->get_parameter("precise_yaw_id").as_string();
   // Odometry smoother object for getting current speed
   odom_smoother_ = odom_smoother;
 
@@ -271,6 +281,8 @@ NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr goal)
   blackboard->set<bool>(is_reverse_blackboard_id_, goal->is_reverse);
   blackboard->set<double>(docker_x_id_, goal->docker_x);
   blackboard->set<double>(docker_y_id_, goal->docker_y);
+  blackboard->set<double>(precise_xy_id_, goal->precise_xy);
+  blackboard->set<double>(precise_yaw_id_, goal->precise_yaw);
 }
 
 void
