@@ -859,9 +859,13 @@ void RegulatedPurePursuitController::setSpeedLimit(
   const double & speed_limit,
   const bool & percentage)
 {
-  if (speed_limit == nav2_costmap_2d::NO_SPEED_LIMIT) {
+  if (speed_limit == nav2_costmap_2d::NO_SPEED_LIMIT) { //0.0
     // Restore default value
     desired_linear_vel_ = base_desired_linear_vel_;
+  } else if (speed_limit < nav2_costmap_2d::NO_SPEED_LIMIT)
+  {
+    /* code */
+    desired_linear_vel_ = 0.0;
   } else {
     if (percentage) {
       // Speed limit is expressed in % from maximum speed of robot
