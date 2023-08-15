@@ -27,6 +27,7 @@
 #include "tf2_ros/transform_listener.h"
 #include "tf2_ros/create_timer_ros.h"
 #include "geometry_msgs/msg/twist.hpp"
+#include "std_msgs/msg/bool.hpp"
 #include "nav2_util/simple_action_server.hpp"
 #include "nav2_util/robot_utils.hpp"
 #include "nav2_core/behavior.hpp"
@@ -131,6 +132,7 @@ public:
     collision_checker_ = collision_checker;
 
     vel_pub_ = node->template create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 1);
+    collision_monito_switch_pub_ = node->template create_publisher<std_msgs::msg::Bool>("collision_monitor/switch", 1);
 
     onConfigure();
   }
@@ -140,6 +142,7 @@ public:
   {
     action_server_.reset();
     vel_pub_.reset();
+    collision_monito_switch_pub_.reset();
     onCleanup();
   }
 
@@ -149,6 +152,7 @@ public:
     RCLCPP_INFO(logger_, "Activating %s", behavior_name_.c_str());
 
     vel_pub_->on_activate();
+    collision_monito_switch_pub_->on_activate();
     action_server_->activate();
     enabled_ = true;
   }
@@ -157,6 +161,7 @@ public:
   void deactivate() override
   {
     vel_pub_->on_deactivate();
+    collision_monito_switch_pub_->on_deactivate();
     action_server_->deactivate();
     enabled_ = false;
   }
@@ -166,6 +171,7 @@ protected:
 
   std::string behavior_name_;
   rclcpp_lifecycle::LifecyclePublisher<geometry_msgs::msg::Twist>::SharedPtr vel_pub_;
+  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Bool>::SharedPtr collision_monito_switch_pub_;
   std::shared_ptr<ActionServer> action_server_;
   std::shared_ptr<nav2_costmap_2d::CostmapTopicCollisionChecker> collision_checker_;
   std::shared_ptr<tf2_ros::Buffer> tf_;
@@ -283,6 +289,9 @@ protected:
     cmd_vel->angular.z = 0.0;
 
     vel_pub_->publish(std::move(cmd_vel));
+    auto collision_monitor_switch = std::make_unique<std_msgs::msg::Bool>();
+    collision_monitor_switch->data = true;
+    collision_monito_switch_pub_->publish(collision_monitor_switch);
   }
 };
 

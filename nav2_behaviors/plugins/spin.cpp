@@ -179,7 +179,9 @@ Status Spin::onCycleUpdate()
     RCLCPP_WARN(logger_, "Collision Ahead - Exiting Spin");
     return Status::FAILED;
   }
-
+  auto collision_monitor_switch = std::make_unique<std_msgs::msg::Bool>();
+  collision_monitor_switch->data = false;
+  collision_monito_switch_pub_->publish(collision_monitor_switch);
   vel_pub_->publish(std::move(cmd_vel));
 
   return Status::RUNNING;

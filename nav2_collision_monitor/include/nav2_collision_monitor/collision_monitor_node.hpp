@@ -21,6 +21,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
+#include "std_msgs/msg/bool.hpp"
 
 #include "tf2/time.h"
 #include "tf2_ros/buffer.h"
@@ -95,6 +96,7 @@ protected:
    * @param msg Input cmd_vel message
    */
   void cmdVelInCallback(geometry_msgs::msg::Twist::ConstSharedPtr msg);
+  void switchCallback(std_msgs::msg::Bool::ConstSharedPtr msg);
   /**
    * @brief Publishes output cmd_vel. If robot was stopped more than stop_pub_timeout_ seconds,
    * quit to publish 0-velocity.
@@ -203,6 +205,7 @@ protected:
   // Input/output speed controls
   /// @beirf Input cmd_vel subscriber
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_in_sub_;
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr monitor_switch_sub_;
   /// @brief Output cmd_vel publisher
   rclcpp_lifecycle::LifecyclePublisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_out_pub_;
 
@@ -212,6 +215,7 @@ protected:
 
   /// @brief Whether main routine is active
   bool process_active_;
+  bool monitor_on_;
 
   /// @brief Previous robot action
   Action robot_action_prev_;

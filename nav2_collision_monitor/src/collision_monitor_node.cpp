@@ -29,6 +29,7 @@ namespace nav2_collision_monitor
 
 CollisionMonitor::CollisionMonitor(const rclcpp::NodeOptions & options)
 : nav2_util::LifecycleNode("collision_monitor", "", options),
+  monitor_on_(true),
   process_active_(false), robot_action_prev_{DO_NOTHING, {-1.0, -1.0, -1.0}, ""},
   stop_stamp_{0, 0, get_clock()->get_clock_type()}, stop_pub_timeout_(1.0, 0.0)
 {
@@ -61,10 +62,14 @@ CollisionMonitor::on_configure(const rclcpp_lifecycle::State & /*state*/)
   if (!getParameters(cmd_vel_in_topic, cmd_vel_out_topic, state_topic)) {
     return nav2_util::CallbackReturn::FAILURE;
   }
-
+  monitor_switch_sub_ = this->create_subscription<std_msgs::msg::Bool>(
+    "collision_monitor/switch", 1,
+    std::bind(&CollisionMonitor::switchCallback, this, std::placeholders::_1));
+    
   cmd_vel_in_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
     cmd_vel_in_topic, 1,
     std::bind(&CollisionMonitor::cmdVelInCallback, this, std::placeholders::_1));
+  
   cmd_vel_out_pub_ = this->create_publisher<geometry_msgs::msg::Twist>(
     cmd_vel_out_topic, 1);
   if (!state_topic.empty()) {
@@ -111,6 +116,7 @@ CollisionMonitor::on_deactivate(const rclcpp_lifecycle::State & /*state*/)
 
   // Deactivating main worker
   process_active_ = false;
+  monitor_on_ = false;
 
   // Reset action type to default after worker deactivating
   robot_action_prev_ = {DO_NOTHING, {-1.0, -1.0, -1.0}, ""};
@@ -161,6 +167,11 @@ CollisionMonitor::on_shutdown(const rclcpp_lifecycle::State & /*state*/)
 void CollisionMonitor::cmdVelInCallback(geometry_msgs::msg::Twist::ConstSharedPtr msg)
 {
   process({msg->linear.x, msg->linear.y, msg->angular.z});
+}
+
+void CollisionMonitor::switchCallback(std_msgs::msg::Bool::ConstSharedPtr msg)
+{
+  monitor_on_ = msg->data;
 }
 
 void CollisionMonitor::publishVelocity(const Action & robot_action)
@@ -374,6 +385,9 @@ void CollisionMonitor::process(const Velocity & cmd_vel_in)
   std::shared_ptr<Polygon> action_polygon;
 
   for (std::shared_ptr<Polygon> polygon : polygons_) {
+    if (!monitor_on_) {
+      break;
+    }
     if (robot_action.action_type == STOP) {
       // If robot already should stop, do nothing
       break;
@@ -423,9 +437,7 @@ bool CollisionMonitor::processStopSlowdownLimit(
   if (polygon->getPointsInside(collision_points) >= polygon->getMinPoints()) {
     if (polygon->getActionType() == STOP) {
       // Setting up zero velocity for STOP model
-      if (!polygon->getStopPureRotation() && (velocity.x == 0.0 || abs(velocity.x) == 0.042 || abs(velocity.x) == 0.008)){
-        return false;
-      }
+
       robot_action.polygon_name = polygon->getName();
       robot_action.action_type = STOP;
       robot_action.req_vel.x = 0.0;
