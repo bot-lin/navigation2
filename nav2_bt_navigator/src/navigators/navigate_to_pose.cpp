@@ -281,8 +281,8 @@ NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr goal)
   blackboard->set<bool>(is_reverse_blackboard_id_, goal->is_reverse);
   blackboard->set<double>(docker_x_id_, goal->docker_x);
   blackboard->set<double>(docker_y_id_, goal->docker_y);
-  blackboard->set<double>(precise_xy_id_, goal->precise_xy);
-  blackboard->set<double>(precise_yaw_id_, goal->precise_yaw);
+  blackboard->set<float>(precise_xy_id_, goal->precise_xy);
+  blackboard->set<float>(precise_yaw_id_, goal->precise_yaw);
 }
 
 void

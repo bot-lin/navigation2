@@ -9,8 +9,8 @@ float32 yaw_goal_tolerance
 bool is_reverse
 float64 docker_x
 float64 docker_y
-float64 precise_xy
-float64 precise_yaw
+float32 precise_xy
+float32 precise_yaw
 ---
 #result definition
 std_msgs/Empty result
