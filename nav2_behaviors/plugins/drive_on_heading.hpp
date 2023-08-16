@@ -58,7 +58,7 @@ public:
    */
   Status change_goal(const std::shared_ptr<const typename ActionT::Goal> command) override
   {
-    preempt_driveon_ = false;
+    preempt_behavior_ = false;
     if (command->target.y != 0.0 || command->target.z != 0.0) {
       RCLCPP_INFO(
         this->logger_,
@@ -91,7 +91,7 @@ public:
 
   Status onRun(const std::shared_ptr<const typename ActionT::Goal> command) override
   {
-    preempt_driveon_ = false;
+    preempt_behavior_ = false;
     if (command->target.y != 0.0 || command->target.z != 0.0) {
       RCLCPP_INFO(
         this->logger_,
@@ -124,7 +124,7 @@ public:
 
   void onActionCompletion()
   {
-    preempt_driveon_ = false;
+    preempt_behavior_ = false;
   }
 
   /**
@@ -159,7 +159,7 @@ public:
 
     feedback_->distance_traveled = distance;
     this->action_server_->publish_feedback(feedback_);
-    if (preempt_driveon_) {
+    if (preempt_behavior_) {
       this->stopRobot();
       return Status::SUCCEEDED;
     }
@@ -242,13 +242,8 @@ protected:
       node,
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
-    preempt_moving_sub_ = node->create_subscription<std_msgs::msg::Empty>("preempt_driveon", rclcpp::SystemDefaultsQoS(),std::bind(&DriveOnHeading::preemptDriveonCallback, this, std::placeholders::_1));
   }
 
-  void preemptDriveonCallback(const std_msgs::msg::Empty) const
-  {
-    preempt_driveon_ = true;
-  }
 
   typename ActionT::Feedback::SharedPtr feedback_;
 
@@ -258,8 +253,7 @@ protected:
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
   double simulate_ahead_time_;
-  bool preempt_driveon_;
-  rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_moving_sub_;
+  
 };
 
 }  // namespace nav2_behaviors
