@@ -233,8 +233,9 @@ protected:
       node,
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
-
-   
+    
+    preempt_driveon_sub_ = node->create_subscription<std_msgs::msg::Empty>(
+      "topic", 10, std::bind(&DriveOnHeading::topic_callback, this, std::placeholders::_1));
   }
 
   void topic_callback(const std_msgs::msg::Empty::SharedPtr) const
