@@ -101,6 +101,7 @@ CollisionMonitor::on_activate(const rclcpp_lifecycle::State & /*state*/)
 
   // Activating main worker
   process_active_ = true;
+  monitor_on_ = true;
 
   // Creating bond connection
   createBond();
