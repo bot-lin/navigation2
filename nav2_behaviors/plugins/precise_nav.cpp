@@ -195,8 +195,10 @@ Status PreciseNav::onCycleUpdate()
         this->stopRobot();
         return Status::SUCCEEDED;
     }
+    RCLCPP_INFO(this->logger_, "target pose in Odom x: %f, y: %f, yaw: %f", target_x_, target_y_, target_yaw_);
     RCLCPP_INFO(this->logger_, "current pose x: %f, y: %f", current_pose.pose.position.x, current_pose.pose.position.y);
     RCLCPP_INFO(this->logger_, "current pose z: %f, w: %f", current_pose.pose.orientation.z, current_pose.pose.orientation.w);
+    RCLCPP_INFO(this->logger_, "Distance to goal: %f, yaw error: %f", distance_to_goal, yaw_goal_error);
     RCLCPP_INFO(this->logger_, "pub vel x: %f, w: %f", cmd_vel->linear.x, cmd_vel->angular.z);
     this->vel_pub_->publish(std::move(cmd_vel));
     auto collision_monitor_switch = std::make_unique<std_msgs::msg::Bool>();
