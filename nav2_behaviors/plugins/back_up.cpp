@@ -19,7 +19,6 @@ namespace nav2_behaviors
 
 Status BackUp::change_goal(const std::shared_ptr<const BackUpAction::Goal> command)
 {
-  preempt_driveon_ = false;
   if (command->target.y != 0.0 || command->target.z != 0.0) {
     RCLCPP_INFO(
       logger_,
@@ -45,25 +44,8 @@ Status BackUp::change_goal(const std::shared_ptr<const BackUpAction::Goal> comma
   return Status::SUCCEEDED;
 }
 
-void BackUp::onConfigure()
-{
-  auto node = this->node_.lock();
-  if (!node) {
-    throw std::runtime_error{"Failed to lock node"};
-  }
-
-  nav2_util::declare_parameter_if_not_declared(
-    node,
-    "simulate_ahead_time", rclcpp::ParameterValue(2.0));
-  node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
-  
-  // preempt_driveon_sub_ = node->create_subscription<std_msgs::msg::Empty>(
-  //   "topic", 10, std::bind(&DriveOnHeading::topic_callback, this, std::placeholders::_1));
-}
-
 Status BackUp::onRun(const std::shared_ptr<const BackUpAction::Goal> command)
 {
-  preempt_driveon_ = false;
   if (command->target.y != 0.0 || command->target.z != 0.0) {
     RCLCPP_INFO(
       logger_,
