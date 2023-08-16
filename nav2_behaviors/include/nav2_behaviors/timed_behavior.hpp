@@ -28,6 +28,7 @@
 #include "tf2_ros/create_timer_ros.h"
 #include "geometry_msgs/msg/twist.hpp"
 #include "std_msgs/msg/bool.hpp"
+#include "std_msgs/msg/empty.hpp"
 #include "nav2_util/simple_action_server.hpp"
 #include "nav2_util/robot_utils.hpp"
 #include "nav2_core/behavior.hpp"
@@ -178,7 +179,6 @@ protected:
 
   double cycle_frequency_;
   double enabled_;
-  bool preempt_behavior_;
   std::string global_frame_;
   std::string robot_base_frame_;
   double transform_tolerance_;

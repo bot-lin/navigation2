@@ -45,6 +45,7 @@ public:
     feedback_(std::make_shared<typename ActionT::Feedback>()),
     command_x_(0.0),
     command_speed_(0.0),
+    preempt_driveon(false),
     simulate_ahead_time_(0.0)
   {
   }
@@ -58,7 +59,6 @@ public:
    */
   Status change_goal(const std::shared_ptr<const typename ActionT::Goal> command) override
   {
-    this->preempt_behavior_ = false;
     if (command->target.y != 0.0 || command->target.z != 0.0) {
       RCLCPP_INFO(
         this->logger_,
@@ -91,7 +91,6 @@ public:
 
   Status onRun(const std::shared_ptr<const typename ActionT::Goal> command) override
   {
-    this->preempt_behavior_ = false;
     if (command->target.y != 0.0 || command->target.z != 0.0) {
       RCLCPP_INFO(
         this->logger_,
@@ -120,11 +119,6 @@ public:
     }
 
     return Status::SUCCEEDED;
-  }
-
-  void onActionCompletion()
-  {
-    this->preempt_behavior_ = false;
   }
 
   /**
@@ -159,10 +153,7 @@ public:
 
     feedback_->distance_traveled = distance;
     this->action_server_->publish_feedback(feedback_);
-    if (this->preempt_behavior_) {
-      this->stopRobot();
-      return Status::SUCCEEDED;
-    }
+
     if (distance >= std::fabs(command_x_)) {
       RCLCPP_INFO(this->logger_, "Finished, stopping robot...");
       this->stopRobot();
@@ -242,7 +233,14 @@ protected:
       node,
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
+    preempt_driveon_sub_ = node->create_subscription<std_msgs::msg::Empty>(
+      "topic", 10, std::bind(&DriveOnHeading::topic_callback, this, _1));
   }
+
+  void topic_callback(const std_msgs::msg::Empty::SharedPtr) const
+    {
+      RCLCPP_INFO(this->get_logger(), "I heard: Empty");
+    }
 
 
   typename ActionT::Feedback::SharedPtr feedback_;
@@ -252,8 +250,9 @@ protected:
   double command_speed_;
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
+  bool preempt_driveon;
   double simulate_ahead_time_;
-  
+  clcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_driveon_sub_;
 };
 
 }  // namespace nav2_behaviors

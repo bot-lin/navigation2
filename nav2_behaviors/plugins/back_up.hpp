@@ -19,6 +19,7 @@
 
 #include "drive_on_heading.hpp"
 #include "nav2_msgs/action/back_up.hpp"
+#include "std_msgs/msg/empty.hpp"
 
 using BackUpAction = nav2_msgs::action::BackUp;
 

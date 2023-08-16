@@ -19,7 +19,7 @@ namespace nav2_behaviors
 
 Status BackUp::change_goal(const std::shared_ptr<const BackUpAction::Goal> command)
 {
-  this->preempt_behavior_ = false;
+  preempt_driveon_ = false;
   if (command->target.y != 0.0 || command->target.z != 0.0) {
     RCLCPP_INFO(
       logger_,
@@ -47,7 +47,7 @@ Status BackUp::change_goal(const std::shared_ptr<const BackUpAction::Goal> comma
 
 Status BackUp::onRun(const std::shared_ptr<const BackUpAction::Goal> command)
 {
-  this->preempt_behavior_ = false;
+  preempt_driveon_ = false;
   if (command->target.y != 0.0 || command->target.z != 0.0) {
     RCLCPP_INFO(
       logger_,
