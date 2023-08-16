@@ -291,7 +291,7 @@ protected:
     vel_pub_->publish(std::move(cmd_vel));
     auto collision_monitor_switch = std::make_unique<std_msgs::msg::Bool>();
     collision_monitor_switch->data = true;
-    collision_monito_switch_pub_->publish(collision_monitor_switch);
+    collision_monito_switch_pub_->publish(std::move(collision_monitor_switch));
   }
 };
 
