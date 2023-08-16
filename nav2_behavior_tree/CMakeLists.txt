@@ -162,6 +162,9 @@ list(APPEND plugin_libs nav2_is_battery_low_condition_bt_node)
 add_library(nav2_is_charging_condition_bt_node SHARED plugins/condition/is_charging_condition.cpp)
 list(APPEND plugin_libs nav2_is_charging_condition_bt_node)
 
+add_library(nav2_is_fork_loaded_condition_bt_node SHARED plugins/condition/is_fork_loaded_condition.cpp)
+list(APPEND plugin_libs nav2_is_fork_loaded_condition_bt_node)
+
 add_library(nav2_reinitialize_global_localization_service_bt_node SHARED plugins/action/reinitialize_global_localization_service.cpp)
 list(APPEND plugin_libs nav2_reinitialize_global_localization_service_bt_node)
 
