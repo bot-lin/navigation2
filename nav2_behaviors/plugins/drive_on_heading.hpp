@@ -58,7 +58,7 @@ public:
    */
   Status change_goal(const std::shared_ptr<const typename ActionT::Goal> command) override
   {
-    preempt_behavior_ = false;
+    this->preempt_behavior_ = false;
     if (command->target.y != 0.0 || command->target.z != 0.0) {
       RCLCPP_INFO(
         this->logger_,
@@ -91,7 +91,7 @@ public:
 
   Status onRun(const std::shared_ptr<const typename ActionT::Goal> command) override
   {
-    preempt_behavior_ = false;
+    this->preempt_behavior_ = false;
     if (command->target.y != 0.0 || command->target.z != 0.0) {
       RCLCPP_INFO(
         this->logger_,
@@ -124,7 +124,7 @@ public:
 
   void onActionCompletion()
   {
-    preempt_behavior_ = false;
+    this->preempt_behavior_ = false;
   }
 
   /**
@@ -159,7 +159,7 @@ public:
 
     feedback_->distance_traveled = distance;
     this->action_server_->publish_feedback(feedback_);
-    if (preempt_behavior_) {
+    if (this->preempt_behavior_) {
       this->stopRobot();
       return Status::SUCCEEDED;
     }
