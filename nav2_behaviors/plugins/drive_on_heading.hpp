@@ -242,7 +242,7 @@ protected:
       node,
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
-    preempt_teleop_sub_ = node->create_subscription<std_msgs::msg::Empty>(
+    preempt_moving_sub_ = node->create_subscription<std_msgs::msg::Empty>(
     "preempt_driveon", rclcpp::SystemDefaultsQoS(),
     std::bind(
       &preemptDriveonCallback,
