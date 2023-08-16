@@ -24,6 +24,7 @@
 #include "nav2_msgs/action/drive_on_heading.hpp"
 #include "nav2_msgs/action/back_up.hpp"
 #include "nav2_util/node_utils.hpp"
+#include "std_msgs/msg/empty.hpp"
 
 namespace nav2_behaviors
 {
@@ -57,6 +58,7 @@ public:
    */
   Status change_goal(const std::shared_ptr<const typename ActionT::Goal> command) override
   {
+    preempt_driveon_ = false;
     if (command->target.y != 0.0 || command->target.z != 0.0) {
       RCLCPP_INFO(
         this->logger_,
@@ -89,6 +91,7 @@ public:
 
   Status onRun(const std::shared_ptr<const typename ActionT::Goal> command) override
   {
+    preempt_driveon_ = false;
     if (command->target.y != 0.0 || command->target.z != 0.0) {
       RCLCPP_INFO(
         this->logger_,
@@ -119,6 +122,11 @@ public:
     return Status::SUCCEEDED;
   }
 
+  void onActionCompletion()
+  {
+    preempt_driveon_ = false;
+  }
+
   /**
    * @brief Loop function to run behavior
    * @return Status of behavior
@@ -133,6 +141,8 @@ public:
         "Exceeded time allowance before reaching the DriveOnHeading goal - Exiting DriveOnHeading");
       return Status::FAILED;
     }
+
+
 
     geometry_msgs::msg::PoseStamped current_pose;
     if (!nav2_util::getCurrentPose(
@@ -149,13 +159,15 @@ public:
 
     feedback_->distance_traveled = distance;
     this->action_server_->publish_feedback(feedback_);
-
+    if (preempt_driveon_) {
+      this->stopRobot();
+      return Status::SUCCEEDED;
+    }
     if (distance >= std::fabs(command_x_)) {
       RCLCPP_INFO(this->logger_, "Finished, stopping robot...");
       this->stopRobot();
       return Status::SUCCEEDED;
     }
-
     auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
     cmd_vel->linear.y = 0.0;
     cmd_vel->angular.z = 0.0;
@@ -230,6 +242,16 @@ protected:
       node,
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
+    preempt_teleop_sub_ = node->create_subscription<std_msgs::msg::Empty>(
+    "preempt_driveon", rclcpp::SystemDefaultsQoS(),
+    std::bind(
+      &preemptDriveonCallback,
+      this, std::placeholders::_1));
+  }
+
+  void preemptDriveonCallback(const std_msgs::msg::Empty::SharedPtr)
+  {
+    preempt_driveon_ = true;
   }
 
   typename ActionT::Feedback::SharedPtr feedback_;
@@ -240,6 +262,8 @@ protected:
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
   double simulate_ahead_time_;
+  bool preempt_driveon_;
+  rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_moving_sub_;
 };
 
 }  // namespace nav2_behaviors
