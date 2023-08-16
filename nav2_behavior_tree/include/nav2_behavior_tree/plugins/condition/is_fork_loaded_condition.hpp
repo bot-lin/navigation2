@@ -74,7 +74,7 @@ private:
   rclcpp::Node::SharedPtr node_;
   rclcpp::CallbackGroup::SharedPtr callback_group_;
   rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
-  rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr fork_loaded_sub_;
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr fork_loaded_sub_;
   std::string forkloaded_topic_;
   bool fork_loaded_;
   rclcpp::Time start_time_;
