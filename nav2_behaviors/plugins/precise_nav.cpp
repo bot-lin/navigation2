@@ -62,6 +62,7 @@ void PreciseNav::onConfigure()
 
 Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> command) 
 {
+    reached_distance_goal_ = false;
     geometry_msgs::msg::PoseStamped pose_tmp;
     pose_tmp.pose.position.x = command->pose.pose.position.x;
     pose_tmp.pose.position.y = command->pose.pose.position.y;
@@ -145,6 +146,7 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
     target_yaw_ = yaw;
+    reached_distance_goal_ = false;
     return Status::SUCCEEDED;
 }
 Status PreciseNav::onCycleUpdate()
