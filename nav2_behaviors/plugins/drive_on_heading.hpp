@@ -45,7 +45,7 @@ public:
     feedback_(std::make_shared<typename ActionT::Feedback>()),
     command_x_(0.0),
     command_speed_(0.0),
-    preempt_driveon(false),
+    preempt_driveon_(false),
     simulate_ahead_time_(0.0)
   {
   }
@@ -234,12 +234,11 @@ protected:
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
     preempt_driveon_sub_ = node->create_subscription<std_msgs::msg::Empty>(
-      "topic", 10, std::bind(&DriveOnHeading::topic_callback, this, _1));
+      "topic", 10, std::bind(&DriveOnHeading::topic_callback, this, std::placeholders::_1));
   }
 
   void topic_callback(const std_msgs::msg::Empty::SharedPtr) const
     {
-      RCLCPP_INFO(this->get_logger(), "I heard: Empty");
     }
 
 
@@ -250,7 +249,7 @@ protected:
   double command_speed_;
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
-  bool preempt_driveon;
+  bool preempt_driveon_;
   double simulate_ahead_time_;
   rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_driveon_sub_;
 };
