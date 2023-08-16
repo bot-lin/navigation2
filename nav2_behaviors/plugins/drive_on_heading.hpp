@@ -252,7 +252,7 @@ protected:
   rclcpp::Time end_time_;
   bool preempt_driveon;
   double simulate_ahead_time_;
-  clcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_driveon_sub_;
+  rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_driveon_sub_;
 };
 
 }  // namespace nav2_behaviors
