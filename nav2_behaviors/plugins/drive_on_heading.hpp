@@ -245,7 +245,7 @@ protected:
     preempt_moving_sub_ = node->create_subscription<std_msgs::msg::Empty>(
     "preempt_driveon", rclcpp::SystemDefaultsQoS(),
     std::bind(
-      &preemptDriveonCallback,
+      &DriveOnHeading::preemptDriveonCallback,
       this, std::placeholders::_1));
   }
 
