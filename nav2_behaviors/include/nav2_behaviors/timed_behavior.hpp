@@ -261,6 +261,7 @@ protected:
           result->total_elapsed_time = steady_clock_.now() - start_time;
           result->docking_point = pose_map_;
           action_server_->succeeded_current(result);
+          stopRobot();
           onActionCompletion();
           return;
 
