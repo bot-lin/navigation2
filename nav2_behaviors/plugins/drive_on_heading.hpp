@@ -151,6 +151,7 @@ public:
     this->action_server_->publish_feedback(feedback_);
 
     if (distance >= std::fabs(command_x_)) {
+      RCLCPP_INFO(this->logger_, "Current robot pose is not available.");
       this->stopRobot();
       return Status::SUCCEEDED;
     }
