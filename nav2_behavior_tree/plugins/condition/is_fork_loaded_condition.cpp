@@ -48,9 +48,9 @@ BT::NodeStatus IsForkLoadedCondition::tick()
   callback_group_executor_.spin_some();
 
   if (fork_loaded_) 
-    return BT::NodeStatus::FAILURE;
-  else
     return BT::NodeStatus::SUCCESS;
+  else
+    return BT::NodeStatus::FAILURE;
   
 }
 
