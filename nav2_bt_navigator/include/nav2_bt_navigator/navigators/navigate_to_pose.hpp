@@ -134,6 +134,8 @@ protected:
   std::string precise_yaw_blackboard_id_;
   std::string docker_x_id_;
   std::string docker_y_id_;
+  std::string docker_z_id_;
+  std::string docker_w_id_;
   std::string precise_xy_id_;
   std::string precise_yaw_id_;
 

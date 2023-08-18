@@ -81,6 +81,16 @@ NavigateToPoseNavigator::configure(
   }
   docker_x_id_ = node->get_parameter("docker_x_id").as_string();
 
+  if (!node->has_parameter("docker_z_id")) {
+    node->declare_parameter("docker_z_id", std::string("docker_z"));
+  }
+  docker_z_id_ = node->get_parameter("docker_z_id").as_string();
+
+  if (!node->has_parameter("docker_w_id")) {
+    node->declare_parameter("docker_w_id", std::string("docker_w"));
+  }
+  docker_w_id_ = node->get_parameter("docker_w_id").as_string();
+
   if (!node->has_parameter("docker_y_id")) {
     node->declare_parameter("docker_y_id", std::string("docker_y"));
   }
@@ -281,6 +291,8 @@ NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr goal)
   blackboard->set<bool>(is_reverse_blackboard_id_, goal->is_reverse);
   blackboard->set<double>(docker_x_id_, goal->docker_x);
   blackboard->set<double>(docker_y_id_, goal->docker_y);
+  blackboard->set<double>(docker_z_id_, goal->docker_z);
+  blackboard->set<double>(docker_w_id_, goal->docker_w);
   blackboard->set<float>(precise_xy_id_, goal->precise_xy);
   blackboard->set<float>(precise_yaw_id_, goal->precise_yaw);
 }
