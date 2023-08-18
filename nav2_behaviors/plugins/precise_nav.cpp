@@ -76,8 +76,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     pose2d.y = pose_tmp.pose.position.y;
     pose2d.theta = tf2::getYaw(pose_tmp.pose.orientation);
     
-    double goal_cost = this->collision_checker_->scorePose(pose2d);
-    RCLCPP_INFO(this->logger_, "Goal cost:  %f", goal_cost);
+
     is_reverse_ = command->is_reverse;
     yaw_goal_tolerance_ = command->yaw_goal_tolerance;
     distance_goal_tolerance_ = command->distance_goal_tolerance;
@@ -132,8 +131,7 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     pose2d.y = pose_tmp.pose.position.y;
     pose2d.theta = tf2::getYaw(pose_tmp.pose.orientation);
     
-    double goal_cost = this->collision_checker_->scorePose(pose2d);
-    RCLCPP_INFO(this->logger_, "Goal cost:  %f", goal_cost);
+
     is_reverse_ = command->is_reverse;
 
     if (command->pose.header.frame_id != "odom")

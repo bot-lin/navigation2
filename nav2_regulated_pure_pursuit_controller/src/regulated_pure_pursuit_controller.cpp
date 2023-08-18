@@ -861,7 +861,7 @@ void RegulatedPurePursuitController::setSpeedLimit(
 {
   if (speed_limit == nav2_costmap_2d::NO_SPEED_LIMIT) { //0.0
     // Restore default value
-    desired_linear_vel_ = base_desired_linear_vel_;
+    desired_linear_vel_ = desired_linear_vel_;
   } else if (speed_limit < nav2_costmap_2d::NO_SPEED_LIMIT)
   {
     /* code */

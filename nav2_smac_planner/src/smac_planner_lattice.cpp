@@ -253,7 +253,11 @@ nav_msgs::msg::Path SmacPlannerLattice::createPlan(
     NodeLattice::motion_table.getClosestAngularBin(tf2::getYaw(start.pose.orientation)));
 
   // Set goal point, in A* bin search coordinates
-  _costmap->worldToMap(goal.pose.position.x, goal.pose.position.y, mx, my);
+  if (!_costmap->worldToMap(goal.pose.position.x, goal.pose.position.y, mx, my)) {
+    throw nav2_core::GoalOutsideMapBounds(
+            "Goal Coordinates of(" + std::to_string(goal.pose.position.x) + ", " +
+            std::to_string(goal.pose.position.y) + ") was outside bounds");
+  }
   _a_star->setGoal(
     mx, my,
     NodeLattice::motion_table.getClosestAngularBin(tf2::getYaw(goal.pose.orientation)));
