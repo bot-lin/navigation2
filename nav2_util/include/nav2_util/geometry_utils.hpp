@@ -31,10 +31,10 @@ namespace nav2_util
 namespace geometry_utils
 {
 
-inline double quaternionTo2DAngle(geometry_msgs::msg::Quaternion& q_msg)
+inline double quaternionTo2DAngle(const geometry_msgs::msg::Quaternion& q_msg)
 {   
     tf2::Quaternion q;
-    q = tf2::fromMsg(q_msg);
+    tf2::fromMsg(q_msg, q);
     double roll, pitch, yaw;
     tf2::Matrix3x3 m(q);
     m.getRPY(roll, pitch, yaw);
