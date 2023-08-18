@@ -34,7 +34,7 @@ namespace geometry_utils
 inline double quaternionTo2DAngle(const geometry_msgs::msg::Quaternion& q_msg)
 {   
     tf2::Quaternion q;
-    q = tf2::toMsg(q_msg);
+    q = tf2::fromMsg(q_msg);
     double roll, pitch, yaw;
     tf2::Matrix3x3 m(q);
     m.getRPY(roll, pitch, yaw);
