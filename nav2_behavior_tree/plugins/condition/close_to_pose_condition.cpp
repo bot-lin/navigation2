@@ -71,7 +71,8 @@ BT::NodeStatus CloseToPoseCondition::tick()
   // Get euclidean distance
   auto distance = nav2_util::geometry_utils::euclidean_distance(
     target_pose.pose, current_pose.pose);
-
+  auto current_yaw = nav2_util::geometry_utils::quaternionTo2DAngle(current_pose.pose.orientation);
+  auto target_yaw = nav2_util::geometry_utils::quaternionTo2DAngle(target_pose.pose.orientation);
   if (distance < distance_) {
     RCLCPP_INFO(node_->get_logger(), "Close to pose");
     return BT::NodeStatus::SUCCESS;
