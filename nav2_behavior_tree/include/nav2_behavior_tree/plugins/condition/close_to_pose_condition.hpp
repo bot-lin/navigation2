@@ -62,6 +62,9 @@ public:
       BT::InputPort<double>("distance", 1.0, "Distance"),
       BT::InputPort<double>("pose_x", 1.0, "pose x"),
       BT::InputPort<double>("pose_y", 1.0, "pose y"),
+      BT::InputPort<double>("orientation_z", 0.0, "orientation z"),
+      BT::InputPort<double>("orientation_w", 1.0, "orientation w"),
+      BT::InputPort<double>("yaw_tolerance", 0.3, "yaw_tolerance"),
       BT::InputPort<std::string>("global_frame", std::string("map"), "Global frame"),
       BT::InputPort<std::string>("robot_base_frame", std::string("base_link"), "Robot base frame")
     };
@@ -76,6 +79,9 @@ private:
   double distance_;
   double pose_x_;
   double pose_y_;
+  double orientation_z_;
+  double orientation_w_;
+  double yaw_tolerance_;
   double transform_tolerance_;
   std::string global_frame_;
   std::string robot_base_frame_;

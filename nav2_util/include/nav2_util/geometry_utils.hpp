@@ -26,11 +26,22 @@
 #include "nav_msgs/msg/path.hpp"
 #include "tf2/LinearMath/Matrix3x3.h"
 
+
 namespace nav2_util
 {
 namespace geometry_utils
 {
 
+inline bool areYawsClose(double yaw1, double yaw2, double threshold = 0.01) {
+    double diff = std::fmod(yaw1 - yaw2 + M_PI, 2.0 * M_PI) - M_PI;
+    if (diff < -M_PI) diff += 2.0 * M_PI;
+
+    return std::abs(diff) < threshold;
+}
+
+inline double computeOrientation(double xa, double ya, double xb, double yb) {
+    return atan2(yb - ya, xb - xa);
+}
 inline double quaternionTo2DAngle(const geometry_msgs::msg::Quaternion& q_msg)
 {   
     tf2::Quaternion q;

@@ -30,6 +30,9 @@ CloseToPoseCondition::CloseToPoseCondition(
   distance_(0.5),
   pose_x_(0.0),
   pose_y_(0.0),
+  orientation_z_(0.0),
+  orientation_w_(1.0),
+  yaw_tolerance_(0.3),
   transform_tolerance_(0.1),
   global_frame_("map"),
   robot_base_frame_("base_link")
@@ -50,6 +53,16 @@ BT::NodeStatus CloseToPoseCondition::tick()
   getInput("distance", distance_);
   getInput("pose_x", pose_x_);
   getInput("pose_y", pose_y_);
+  if (!getInput("orientation_z", orientation_z_)) {
+   orientation_z_ = 0.0;
+  }
+  if (!getInput("orientation_w", orientation_w_)) {
+   orientation_w_ = 1.0;
+  }
+
+  if (!getInput("yaw_tolerance", yaw_tolerance_)) {
+   yaw_tolerance_ = 0.3;
+  }
 
   // Determine distance travelled since we've started this iteration
   geometry_msgs::msg::PoseStamped current_pose;
@@ -68,12 +81,16 @@ BT::NodeStatus CloseToPoseCondition::tick()
   geometry_msgs::msg::PoseStamped target_pose;
   target_pose.pose.position.x = pose_x_;
   target_pose.pose.position.y = pose_y_;
+  target_pose.pose.orientation.z = orientation_z_;
+  target_pose.pose.orientation.w = orientation_w_;
+
   // Get euclidean distance
   auto distance = nav2_util::geometry_utils::euclidean_distance(
     target_pose.pose, current_pose.pose);
   auto current_yaw = nav2_util::geometry_utils::quaternionTo2DAngle(current_pose.pose.orientation);
   auto target_yaw = nav2_util::geometry_utils::quaternionTo2DAngle(target_pose.pose.orientation);
-  if (distance < distance_) {
+  auto yaw_close = nav2_util::geometry_utils::areYawsClose(current_yaw, target_yaw, yaw_tolerance_);
+  if (distance < distance_ && yaw_close) {
     RCLCPP_INFO(node_->get_logger(), "Close to pose");
     return BT::NodeStatus::SUCCESS;
   }
