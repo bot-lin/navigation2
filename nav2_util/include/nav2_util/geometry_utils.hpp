@@ -24,11 +24,20 @@
 #include "geometry_msgs/msg/quaternion.hpp"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "nav_msgs/msg/path.hpp"
+#include "tf2/LinearMath/Matrix3x3.h"
 
 namespace nav2_util
 {
 namespace geometry_utils
 {
+
+inline double quaternionTo2DAngle(const tf2::Quaternion& q)
+{
+    double roll, pitch, yaw;
+    tf2::Matrix3x3 m(q);
+    m.getRPY(roll, pitch, yaw);
+    return yaw;
+} 
 
 /**
  * @brief Get a geometry_msgs Quaternion from a yaw angle
