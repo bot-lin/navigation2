@@ -127,7 +127,7 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     max_linear_velocity_ = command->max_linear_velocity;
     max_angular_velocity_ = command->max_angular_velocity;    
     position_controller_.initPID(command->position_p, command->position_i, command->position_d);
-    orientation_controller_.initPID(command->orientation_p, command->orientation_i, command->orientation_d)
+    orientation_controller_.initPID(command->orientation_p, command->orientation_i, command->orientation_d);
 
 
     if (command->pose.header.frame_id != "odom")
