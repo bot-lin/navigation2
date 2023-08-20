@@ -196,7 +196,7 @@ Status PreciseNav::onCycleUpdate()
     rclcpp::Time current_pid_time = steady_clock_.now();
     double dt = (current_pid_time - last_pid_time_).seconds();
 
-    double linear_velocity = position_controller_.compute(distance_error, 0, dt);
+    double linear_velocity = (distance_error > distance_goal_tolerance_) ? position_controller_.compute(distance_error, 0, dt) : 0.0;
     double angular_velocity = orientation_controller_.compute(orientation_error, 0, dt);
     last_pid_time_ = current_pid_time;
 
