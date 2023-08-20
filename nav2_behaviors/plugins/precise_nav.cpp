@@ -38,26 +38,11 @@ void PreciseNav::onConfigure()
         "distance_goal_tolerance", rclcpp::ParameterValue(0.03));
     node->get_parameter("distance_goal_tolerance", distance_goal_tolerance_);
 
-    nav2_util::declare_parameter_if_not_declared(
-        node,
-        "heading_tolerance", rclcpp::ParameterValue(0.1));
-    node->get_parameter("heading_tolerance", heading_tolerance_);
 
     nav2_util::declare_parameter_if_not_declared(
         node,
         "yaw_goal_tolerance", rclcpp::ParameterValue(0.05));
     node->get_parameter("yaw_goal_tolerance", yaw_goal_tolerance_);
-
-    nav2_util::declare_parameter_if_not_declared(
-        node,
-        "angular_velocity", rclcpp::ParameterValue(0.2));
-    node->get_parameter("angular_velocity", angular_velocity_);
-
-    nav2_util::declare_parameter_if_not_declared(
-        node,
-        "linear_velocity", rclcpp::ParameterValue(0.042));
-    node->get_parameter("linear_velocity", linear_velocity_);
-    RCLCPP_INFO(this->logger_, "******************* %f", yaw_goal_tolerance_);
 
 }
 
