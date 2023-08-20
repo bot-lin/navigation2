@@ -187,8 +187,8 @@ Status PreciseNav::onCycleUpdate()
         distance_error = -distance_error;  // reverse motion
         direction_orientation_error = direction_orientation_error > 0 ? direction_orientation_error - M_PI : direction_orientation_error + M_PI;
     }
-    double orientation_error = (distance_error > distance_goal_tolerance_) ? direction_orientation_error : final_orientation_error;
-    if (distance_error <= distance_goal_tolerance_ && std::abs(orientation_error) <= yaw_goal_tolerance_) {
+    double orientation_error = (std::abs(distance_error) > distance_goal_tolerance_) ? direction_orientation_error : final_orientation_error;
+    if (std::abs(distance_error) <= distance_goal_tolerance_ && std::abs(orientation_error) <= yaw_goal_tolerance_) {
         return Status::SUCCEEDED;
     }
     while(orientation_error > M_PI) orientation_error -= 2*M_PI;
@@ -196,7 +196,7 @@ Status PreciseNav::onCycleUpdate()
     rclcpp::Time current_pid_time = steady_clock_.now();
     double dt = (current_pid_time - last_pid_time_).seconds();
 
-    double linear_velocity = (distance_error > distance_goal_tolerance_) ? position_controller_.compute(distance_error, 0, dt) : 0.0;
+    double linear_velocity = (std::abs(distance_error) > distance_goal_tolerance_) ? position_controller_.compute(distance_error, 0, dt) : 0.0;
     double angular_velocity = orientation_controller_.compute(orientation_error, 0, dt);
     last_pid_time_ = current_pid_time;
 
