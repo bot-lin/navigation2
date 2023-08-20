@@ -11,8 +11,6 @@
 #include <tf2/LinearMath/Quaternion.h>
 using namespace std::chrono_literals;
 
-
-
 namespace nav2_behaviors
 {
 
@@ -59,10 +57,12 @@ void PreciseNav::onConfigure()
     node->get_parameter("linear_velocity", linear_velocity_);
     RCLCPP_INFO(this->logger_, "******************* %f", yaw_goal_tolerance_);
 
+
 }
 
 Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> command) 
 {
+    reached_distance_goal_ = false;
     geometry_msgs::msg::PoseStamped pose_tmp;
     pose_tmp.pose.position.x = command->pose.pose.position.x;
     pose_tmp.pose.position.y = command->pose.pose.position.y;
@@ -76,14 +76,10 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     pose2d.y = pose_tmp.pose.position.y;
     pose2d.theta = tf2::getYaw(pose_tmp.pose.orientation);
     
+
     is_reverse_ = command->is_reverse;
     yaw_goal_tolerance_ = command->yaw_goal_tolerance;
     distance_goal_tolerance_ = command->distance_goal_tolerance;
-    max_linear_velocity_ = command->max_linear_velocity;
-    max_angular_velocity_ = command->max_angular_velocity;    
-    position_controller_.initPID(command->position_p, command->position_i, command->position_d);
-    orientation_controller_.initPID(command->orientation_p, command->orientation_i, command->orientation_d)
-
     RCLCPP_INFO(this->logger_, "From precise nav");
     RCLCPP_INFO(this->logger_, "Is reverse %d", is_reverse_);
     RCLCPP_INFO(this->logger_, "distance_goal_tolerance %f", distance_goal_tolerance_);
@@ -115,7 +111,6 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
     target_yaw_ = yaw;
-    last_pid_time_ = steady_clock_.now();
     return Status::SUCCEEDED;
 }
 
@@ -136,14 +131,8 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     pose2d.y = pose_tmp.pose.position.y;
     pose2d.theta = tf2::getYaw(pose_tmp.pose.orientation);
     
-    is_reverse_ = command->is_reverse;
-    yaw_goal_tolerance_ = command->yaw_goal_tolerance;
-    distance_goal_tolerance_ = command->distance_goal_tolerance;
-    max_linear_velocity_ = command->max_linear_velocity;
-    max_angular_velocity_ = command->max_angular_velocity;    
-    position_controller_.initPID(command->position_p, command->position_i, command->position_d);
-    orientation_controller_.initPID(command->orientation_p, command->orientation_i, command->orientation_d)
 
+    is_reverse_ = command->is_reverse;
 
     if (command->pose.header.frame_id != "odom")
     {
@@ -170,7 +159,7 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
     target_yaw_ = yaw;
-    last_pid_time_ = steady_clock_.now();
+    reached_distance_goal_ = false;
     return Status::SUCCEEDED;
 }
 Status PreciseNav::onCycleUpdate()
@@ -183,50 +172,49 @@ Status PreciseNav::onCycleUpdate()
       RCLCPP_ERROR(this->logger_, "Current robot pose is not available.");
       return Status::FAILED;
     }
-    tf2::Quaternion q(current_pose.pose.orientation.x, 
-                        current_pose.pose.orientation.y, 
-                        current_pose.pose.orientation.z,
-                        current_pose.pose.orientation.w);
-    tf2::Matrix3x3 m(q);
-    double roll, pitch, current_robot_yaw;
-    m.getRPY(roll, pitch, current_robot_yaw);
+    double distance_to_goal = getDistanceToGoal(current_pose);
+    double heading_error = getHeadingErrorToGoal(current_pose);
+    double yaw_goal_error = getRadiansToGoal(current_pose);
 
-    double distance_error = std::sqrt(std::pow(target_x_ - current_pose.pose.position.x, 2) + 
-                                      std::pow(target_y_ - current_pose.pose.position.y, 2));
-    
-    double target_direction_theta = std::atan2(target_y_ - current_pose.pose.position.y, target_x_ - current_pose.pose.position.x);
-    double final_orientation_error = target_yaw_ - current_robot_yaw;
-    double direction_orientation_error = target_direction_theta - current_robot_yaw;
-
-    if (is_reverse_) {
-        distance_error = -distance_error;  // reverse motion
-        direction_orientation_error = direction_orientation_error > 0 ? direction_orientation_error - M_PI : direction_orientation_error + M_PI;
-    }
-    double orientation_error = (distance_error > 0.1) ? direction_orientation_error : final_orientation_error;
-    while(orientation_error > M_PI) orientation_error -= 2*M_PI;
-    while(orientation_error < -M_PI) orientation_error += 2*M_PI;
-    rclcpp::Time current_pid_time = steady_clock_.now();
-    double dt = (current_pid_time - last_pid_time_).seconds();
-
-    double linear_velocity = position_controller_.compute(distance_error, 0, dt);
-    double angular_velocity = orientation_controller_.compute(orientation_error, 0, dt);
-    last_pid_time_ = current_pid_time;
-
-    // Clamp velocities to their respective limits
-    if (std::abs(linear_velocity) > max_linear_velocity_) {
-        linear_velocity = (linear_velocity > 0 ? max_linear_velocity_ : -max_linear_velocity_);
-    }
-    if (std::abs(angular_velocity) > max_angular_velocity_) {
-        angular_velocity = (angular_velocity > 0 ? max_angular_velocity_ : -max_angular_velocity_);
-    }
     auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
-    cmd_vel->linear.x = linear_velocity;
-    cmd_vel->angular.z = angular_velocity;
- 
+    if (distance_to_goal > distance_goal_tolerance_ && !reached_distance_goal_)
+    {
+        if (std::fabs(heading_error) > heading_tolerance_){
+            if (is_reverse_) cmd_vel->linear.x = -0.008;
+            else cmd_vel->linear.x = 0.008;
+            if (heading_error > 0) cmd_vel->angular.z = angular_velocity_;
+            else cmd_vel->angular.z = -angular_velocity_;
+        }
+        else
+        {
+            if (is_reverse_) cmd_vel->linear.x = -linear_velocity_;
+            else cmd_vel->linear.x = linear_velocity_;
+        }
+    }
+    else if (std::fabs(yaw_goal_error) > yaw_goal_tolerance_)
+    {
+        cmd_vel->angular.z = 0.3 * yaw_goal_error;
+        if (cmd_vel->angular.z < 0.1 && cmd_vel->angular.z >0.0){
+            cmd_vel->angular.z = 0.1;
+        }
+        else if (cmd_vel->angular.z > -0.1 && cmd_vel->angular.z <0.0)
+        {
+            cmd_vel->angular.z = -0.1;
+        }
+        
+        reached_distance_goal_ = true;
+    }
+    else
+    {
+        reached_distance_goal_ = false;
+        this->stopRobot();
+        return Status::SUCCEEDED;
+    }
     RCLCPP_INFO(this->logger_, "target pose in Odom x: %f, y: %f, yaw: %f", target_x_, target_y_, target_yaw_);
     RCLCPP_INFO(this->logger_, "current pose x: %f, y: %f", current_pose.pose.position.x, current_pose.pose.position.y);
     RCLCPP_INFO(this->logger_, "current pose z: %f, w: %f", current_pose.pose.orientation.z, current_pose.pose.orientation.w);
-    RCLCPP_INFO(this->logger_, "Distance to goal: %f, yaw error: %f", distance_error, orientation_error);
+    RCLCPP_INFO(this->logger_, "Distance to goal: %f, yaw error: %f", distance_to_goal, yaw_goal_error);
+    RCLCPP_INFO(this->logger_, "reached_distance_goal_: %d", reached_distance_goal_);
     RCLCPP_INFO(this->logger_, "pub vel x: %f, w: %f", cmd_vel->linear.x, cmd_vel->angular.z);
     this->vel_pub_->publish(std::move(cmd_vel));
     auto collision_monitor_switch = std::make_unique<std_msgs::msg::Bool>();
@@ -252,8 +240,6 @@ double PreciseNav::getHeadingErrorToGoal(geometry_msgs::msg::PoseStamped current
     tf2::Matrix3x3 m(q);
     double roll, pitch, current_robot_heading;
     m.getRPY(roll, pitch, current_robot_heading);
-
-    
     double delta_x, delta_y;
     if (is_reverse_){
         delta_x = current_pose.pose.position.x - target_x_ ;

@@ -3,6 +3,15 @@ geometry_msgs/PoseStamped pose
 bool is_reverse
 float32 distance_goal_tolerance
 float32 yaw_goal_tolerance
+double position_p
+double position_i
+double position_d
+double orientation_p
+double orientation_i
+double orientation_d
+double max_linear_velocity
+double max_angular_velocity
+
 builtin_interfaces/Duration time_allowance
 ---
 #result definition
