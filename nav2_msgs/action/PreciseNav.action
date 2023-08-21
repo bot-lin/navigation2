@@ -11,6 +11,7 @@ float64 orientation_i
 float64 orientation_d
 float64 max_linear_velocity
 float64 max_angular_velocity
+bool reverse_yaw
 
 builtin_interfaces/Duration time_allowance
 ---

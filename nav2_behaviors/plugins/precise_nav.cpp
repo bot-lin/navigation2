@@ -78,6 +78,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     
 
     is_reverse_ = command->is_reverse;
+    
     yaw_goal_tolerance_ = command->yaw_goal_tolerance;
     distance_goal_tolerance_ = command->distance_goal_tolerance;
     RCLCPP_INFO(this->logger_, "From precise nav");
@@ -111,6 +112,9 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
     target_yaw_ = yaw;
+    if (command->reverse_yaw){
+        target_yaw_ = -target_yaw_;
+    }
     return Status::SUCCEEDED;
 }
 
