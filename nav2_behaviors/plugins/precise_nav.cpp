@@ -193,6 +193,7 @@ Status PreciseNav::onCycleUpdate()
         {
             if (is_reverse_) cmd_vel->linear.x = -linear_velocity_;
             else cmd_vel->linear.x = linear_velocity_;
+            cmd_vel->angular.z = 0.3 * heading_error;
         }
     }
     else if (std::fabs(yaw_goal_error) > yaw_goal_tolerance_)
