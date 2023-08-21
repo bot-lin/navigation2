@@ -198,8 +198,7 @@ Status PreciseNav::onCycleUpdate()
 
     double linear_velocity = (std::abs(distance_error) > distance_goal_tolerance_) ? position_controller_.compute(distance_error, 0, dt) : 0.0;
     double angular_velocity = orientation_controller_.compute(orientation_error, 0, dt);
-    double ration = angular_velocity / max_angular_velocity_;
-    linear_velocity = linear_velocity * (1 - std::abs(ration));
+
     last_pid_time_ = current_pid_time;
 
     // Clamp velocities to their respective limits
@@ -209,6 +208,8 @@ Status PreciseNav::onCycleUpdate()
     if (std::abs(angular_velocity) > max_angular_velocity_) {
         angular_velocity = (angular_velocity > 0 ? max_angular_velocity_ : -max_angular_velocity_);
     }
+    double ration = std::abs(angular_velocity) / max_angular_velocity_;
+    linear_velocity = linear_velocity * (1 - std::abs(ration));
     auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
     cmd_vel->linear.x = linear_velocity;
     cmd_vel->angular.z = angular_velocity;
