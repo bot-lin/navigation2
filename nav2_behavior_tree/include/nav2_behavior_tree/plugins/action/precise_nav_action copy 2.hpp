@@ -59,6 +59,15 @@ public:
         BT::InputPort<bool>("is_reverse", "Is reverse"),
         BT::InputPort<float>("distance_goal_tolerance", "distance goal tolerance"),
         BT::InputPort<float>("yaw_goal_tolerance", "yaw goal tolerance"),
+        BT::InputPort<double>("position_p", "pid for position"),
+        BT::InputPort<double>("position_i", "pid for position"),
+        BT::InputPort<double>("position_d", "pid for position"),
+        BT::InputPort<double>("orientation_p", "pid for position"),
+        BT::InputPort<double>("orientation_i", "pid for position"),
+        BT::InputPort<double>("orientation_d", "pid for position"),
+        BT::InputPort<double>("max_angular_velocity", "max_angular_velocity"),
+        BT::InputPort<double>("max_linear_velocity", "max_linear_velocity")
+
       });
   }
 };

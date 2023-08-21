@@ -44,6 +44,30 @@ void PreciseNavAction::on_tick()
   if (!getInput("yaw_goal_tolerance", goal_.yaw_goal_tolerance)) {
     goal_.yaw_goal_tolerance = 0.05;
   }
+  if (!getInput("position_p", goal_.position_p)) {
+    goal_.position_p = 0.0;
+  }
+  if (!getInput("position_i", goal_.position_i)) {
+    goal_.position_i = 0.0;
+  }
+  if (!getInput("position_d", goal_.position_d)) {
+    goal_.position_d = 0.0;
+  }
+  if (!getInput("orientation_p", goal_.orientation_p)) {
+    goal_.orientation_p = 0.0;
+  }
+  if (!getInput("orientation_i", goal_.orientation_i)) {
+    goal_.orientation_i = 0.0;
+  }
+  if (!getInput("orientation_d", goal_.orientation_d)) {
+    goal_.orientation_d = 0.0;
+  }
+  if (!getInput("max_angular_velocity", goal_.max_angular_velocity)) {
+    goal_.max_angular_velocity = 0.2;
+  }
+  if (!getInput("max_linear_velocity", goal_.max_linear_velocity)) {
+    goal_.max_linear_velocity = 0.05;
+  }
 }
 
 void PreciseNavAction::on_wait_for_result(

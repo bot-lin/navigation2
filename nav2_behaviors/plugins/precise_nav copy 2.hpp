@@ -9,6 +9,32 @@
 #include "nav2_msgs/action/precise_nav.hpp"
 #include "geometry_msgs/msg/quaternion.hpp"
 
+class PIDController {
+private:
+    double Kp, Ki, Kd;
+    double previous_error, integral;
+
+public:
+    PIDController() 
+        : previous_error(0), integral(0) {}
+    
+    void initPID(double p, double i, double d) {
+        Kp = p;
+        Ki = i;
+        Kd = d;
+        previous_error = 0.0;
+        integral = 0.0;
+    }
+ 
+    double compute(double setpoint, double actual_value, double dt) {
+        double error = setpoint - actual_value;
+        integral += error * dt;
+        double derivative = (error - previous_error) / dt;
+        previous_error = error;
+        return Kp * error + Ki * integral + Kd * derivative;
+    }
+};
+
 namespace nav2_behaviors
 {
 using PreciseNavAction = nav2_msgs::action::PreciseNav;
@@ -32,12 +58,14 @@ protected:
     double target_y_;
     double target_yaw_;
     double distance_goal_tolerance_ = 0.03;
-    double heading_tolerance_ = 0.1;
     double yaw_goal_tolerance_ = 0.1;
-    double angular_velocity_ = 0.2;
-    double linear_velocity_ = 0.04;
-    bool reached_distance_goal_ = false;
+    double max_angular_velocity_ = 0.2;
+    double max_linear_velocity_ = 0.05;
+    
+    PIDController position_controller_, orientation_controller_;
+
     bool is_reverse_ = false;
+    rclcpp::Time last_pid_time_;
     
 };
 }
