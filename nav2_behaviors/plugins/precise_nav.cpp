@@ -198,6 +198,8 @@ Status PreciseNav::onCycleUpdate()
 
     double linear_velocity = (std::abs(distance_error) > distance_goal_tolerance_) ? position_controller_.compute(distance_error, 0, dt) : 0.0;
     double angular_velocity = orientation_controller_.compute(orientation_error, 0, dt);
+    double ration = angular_velocity / max_angular_velocity_;
+    linear_velocity = linear_velocity * (1 - std::abs(ration));
     last_pid_time_ = current_pid_time;
 
     // Clamp velocities to their respective limits
