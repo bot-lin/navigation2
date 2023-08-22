@@ -55,6 +55,11 @@ void PreciseNav::onConfigure()
         node,
         "linear_velocity", rclcpp::ParameterValue(0.042));
     node->get_parameter("linear_velocity", linear_velocity_);
+
+    nav2_util::declare_parameter_if_not_declared(
+        node,
+        "orientation_p", rclcpp::ParameterValue(0.1));
+    node->get_parameter("orientation_p", orientation_p_);
     RCLCPP_INFO(this->logger_, "******************* %f", yaw_goal_tolerance_);
 
 
@@ -193,12 +198,12 @@ Status PreciseNav::onCycleUpdate()
         {
             if (is_reverse_) cmd_vel->linear.x = -linear_velocity_;
             else cmd_vel->linear.x = linear_velocity_;
-            cmd_vel->angular.z = 0.3 * heading_error;
+            cmd_vel->angular.z = orientation_p_ * heading_error;
         }
     }
     else if (std::fabs(yaw_goal_error) > yaw_goal_tolerance_)
     {
-        cmd_vel->angular.z = 0.3 * yaw_goal_error;
+        cmd_vel->angular.z = orientation_p_ * yaw_goal_error;
         if (cmd_vel->angular.z < 0.1 && cmd_vel->angular.z >0.0){
             cmd_vel->angular.z = 0.1;
         }

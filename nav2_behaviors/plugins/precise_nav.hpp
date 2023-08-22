@@ -36,6 +36,7 @@ protected:
     double yaw_goal_tolerance_ = 0.1;
     double angular_velocity_ = 0.2;
     double linear_velocity_ = 0.04;
+    double orientation_p_ = 0.1;
     bool reached_distance_goal_ = false;
     bool is_reverse_ = false;
     
