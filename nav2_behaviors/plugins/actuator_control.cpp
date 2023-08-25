@@ -125,9 +125,12 @@ void ActuatorControl::preemptActuatorCallback(const std_msgs::msg::Empty::Shared
 void ActuatorControl::actuatorStatusCallback(const std_msgs::msg::Int32::SharedPtr msg)
 {
   actuator_status_ = msg->data;
+  RCLCPP_INFO(
+      logger_,
+      "actuator status received ");
   if (actuator_status_ == 0 && elasped_time_.seconds() > 2.0){
     preempt_teleop_ = true;
-      RCLCPP_WARN_STREAM(
+      RCLCPP_INFO(
       logger_,
       "actuator is idle");
   }
