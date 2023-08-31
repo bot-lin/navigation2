@@ -216,6 +216,9 @@ list(APPEND plugin_libs nav2_single_trigger_bt_node)
 add_library(nav2_planner_selector_bt_node SHARED plugins/action/planner_selector_node.cpp)
 list(APPEND plugin_libs nav2_planner_selector_bt_node)
 
+add_library(nav2_pub_bool_topic_bt_node SHARED plugins/action/pub_bool_topic_node.cpp)
+list(APPEND plugin_libs nav2_pub_bool_topic_bt_node)
+
 add_library(nav2_controller_selector_bt_node SHARED plugins/action/controller_selector_node.cpp)
 list(APPEND plugin_libs nav2_controller_selector_bt_node)
 

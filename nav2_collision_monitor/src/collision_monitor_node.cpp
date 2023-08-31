@@ -383,36 +383,34 @@ void CollisionMonitor::process(const Velocity & cmd_vel_in)
   Action robot_action{DO_NOTHING, cmd_vel_in, ""};
   // Polygon causing robot action (if any)
   std::shared_ptr<Polygon> action_polygon;
-
-  for (std::shared_ptr<Polygon> polygon : polygons_) {
-    if (!monitor_on_) {
-      break;
-    }
-    if (robot_action.action_type == STOP) {
-      // If robot already should stop, do nothing
-      break;
-    }
-
-    // Update polygon coordinates
-    polygon->updatePolygon();
-
-    const ActionType at = polygon->getActionType();
-    if (at == STOP || at == SLOWDOWN || at == LIMIT) {
-      // Process STOP/SLOWDOWN for the selected polygon
-      if (processStopSlowdownLimit(polygon, collision_points, cmd_vel_in, robot_action)) {
-        action_polygon = polygon;
+  if (monitor_on_){
+    for (std::shared_ptr<Polygon> polygon : polygons_) {
+      if (robot_action.action_type == STOP) {
+        // If robot already should stop, do nothing
+        break;
       }
-    } else if (at == APPROACH) {
-      // Process APPROACH for the selected polygon
-      if (processApproach(polygon, collision_points, cmd_vel_in, robot_action)) {
-        action_polygon = polygon;
+
+      // Update polygon coordinates
+      polygon->updatePolygon();
+
+      const ActionType at = polygon->getActionType();
+      if (at == STOP || at == SLOWDOWN || at == LIMIT) {
+        // Process STOP/SLOWDOWN for the selected polygon
+        if (processStopSlowdownLimit(polygon, collision_points, cmd_vel_in, robot_action)) {
+          action_polygon = polygon;
+        }
+      } else if (at == APPROACH) {
+        // Process APPROACH for the selected polygon
+        if (processApproach(polygon, collision_points, cmd_vel_in, robot_action)) {
+          action_polygon = polygon;
+        }
       }
     }
-  }
 
-  if (robot_action.polygon_name != robot_action_prev_.polygon_name) {
-    // Report changed robot behavior
-    notifyActionState(robot_action, action_polygon);
+    if (robot_action.polygon_name != robot_action_prev_.polygon_name) {
+      // Report changed robot behavior
+      notifyActionState(robot_action, action_polygon);
+    }
   }
 
   // Publish requred robot velocity
