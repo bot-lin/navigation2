@@ -95,20 +95,17 @@ Status ActuatorControl::onCycleUpdate()
       logger_,
       "Exceeded time allowance before reaching the " << behavior_name_.c_str() <<
         "goal - Exiting " << behavior_name_.c_str());
-    auto message = std_msgs::msg::Int32();
-    message.data = 0;
-    actuator_command_pub_->publish(message);
+    // auto message = std_msgs::msg::Int32();
+    // message.data = 0;
+    // actuator_command_pub_->publish(message);
     return Status::FAILED;
   }
 
-  // user states that teleop was successful
+  // Actuator done successfully
   if (preempt_teleop_) {
-    //
-    //  stop_actuator();
-    //
-    auto message = std_msgs::msg::Int32();
-    message.data = 0;
-    actuator_command_pub_->publish(message);
+    // auto message = std_msgs::msg::Int32();
+    // message.data = 0;
+    // actuator_command_pub_->publish(message);
     return Status::SUCCEEDED;
   }
 
