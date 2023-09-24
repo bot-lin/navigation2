@@ -38,6 +38,9 @@ FindCylinderCentroid::FindCylinderCentroid(
   
   client_ =
     node_->create_client<zbot_interfaces::srv::FindCylinderSrv>("find_cylinder_centroid");
+  
+  server_timeout_ = config().blackboard->template get<std::chrono::milliseconds>("server_timeout");
+  getInput<std::chrono::milliseconds>("server_timeout", server_timeout_);
 
  
 }

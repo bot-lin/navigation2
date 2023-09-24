@@ -60,6 +60,8 @@ public:
         "radius_limits",
         "the value of the radius limits"),
 
+      BT::InputPort<std::chrono::milliseconds>("server_timeout"),
+
       BT::InputPort<std::string>(
         "topic_name",
         "planner_selector",
@@ -82,6 +84,7 @@ private:
   rclcpp::Client<zbot_interfaces::srv::FindCylinderSrv>::SharedPtr client_;
   rclcpp::Node::SharedPtr node_;
   bool processing_;
+  std::chrono::milliseconds server_timeout_;
 
 };
 
