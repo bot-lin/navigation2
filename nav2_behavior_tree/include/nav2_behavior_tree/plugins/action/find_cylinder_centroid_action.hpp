@@ -19,7 +19,7 @@
 #include <memory>
 #include <string>
 
-#include "zbots_msgs/srv/find_cylinder_srv.hpp"
+#include "zbot_interfaces/srv/find_cylinder_srv.hpp"
 
 #include "behaviortree_cpp_v3/action_node.h"
 
