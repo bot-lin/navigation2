@@ -57,9 +57,10 @@ BT::NodeStatus FindCylinderCentroid::tick()
     rclcpp::FutureReturnCode::SUCCESS)
   {
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Cylinder centroid found");
-    if (result.get()->succeeded) {
+    auto tmp = result.get();
+    if (tmp->succeeded) {
       RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Cylinder centroid succeeded");
-      RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Centroid: %f,%f,%f", result.get()->centroid.pose.position.x, result.get()->centroid.pose.position.y, result.get()->centroid.pose.position.z);
+      RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Centroid: %f,%f,%f", tmp->centroid.pose.position.x, tmp->centroid.pose.position.y, tmp->centroid.pose.position.z);
       return BT::NodeStatus::SUCCESS;
     }
     else{
