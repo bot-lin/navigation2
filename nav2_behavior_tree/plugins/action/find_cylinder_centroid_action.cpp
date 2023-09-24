@@ -45,7 +45,7 @@ BT::NodeStatus FindCylinderCentroid::tick()
   auto request = std::make_shared<zbot_interfaces::srv::FindCylinderSrv::Request>();
   getInput("radius_limits", request->radius_limits);
 
-  while (!client->wait_for_service(1s)) {
+  while (!client_->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
       RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
       return 0;
@@ -53,9 +53,9 @@ BT::NodeStatus FindCylinderCentroid::tick()
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
   }
 
-  auto result = client->async_send_request(request);
+  auto result = client_->async_send_request(request);
   // Wait for the result.
-  if (rclcpp::spin_until_future_complete(node, result) ==
+  if (rclcpp::spin_until_future_complete(node_, result) ==
     rclcpp::FutureReturnCode::SUCCESS)
   {
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Centroid: %f,%f,%f", result.get()->centroid.pose.position.x, result.get()->centroid.pose.position.y, result.get()->centroid.pose.position.z);
