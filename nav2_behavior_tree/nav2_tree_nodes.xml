@@ -172,6 +172,11 @@
         <input_port name="topic_value">true or false</input_port>
     </Action>
 
+      <Action ID="FindCylinderCentroid">
+        <input_port name="radius_limits">Name of the topic to receive planner selection commands</input_port>
+        <input_port name="topic_value">true or false</input_port>
+    </Action>
+
     <Action ID="ControllerSelector">
         <input_port name="topic_name">Name of the topic to receive controller selection commands</input_port>
         <input_port name="default_controller">Default controller of the controller selector</input_port>
