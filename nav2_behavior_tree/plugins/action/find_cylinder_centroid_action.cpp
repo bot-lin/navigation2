@@ -59,6 +59,7 @@ BT::NodeStatus FindCylinderCentroid::tick()
   using ServiceResponseFuture =
 	    rclcpp::Client<zbot_interfaces::srv::FindCylinderSrv>::SharedFuture;
   auto response_received_callback = [this](ServiceResponseFuture result) {
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Start calling find cylinder request");
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Centroid: %f,%f,%f", result.get()->centroid.pose.position.x, result.get()->centroid.pose.position.y, result.get()->centroid.pose.position.z);
         processing_ = false;
         return BT::NodeStatus::SUCCESS;
