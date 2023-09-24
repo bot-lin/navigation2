@@ -30,7 +30,7 @@ IsPathValidCondition::IsPathValidCondition(
 
   server_timeout_ = config().blackboard->template get<std::chrono::milliseconds>("server_timeout");
   getInput<std::chrono::milliseconds>("server_timeout", server_timeout_);
-}
+} 
 
 BT::NodeStatus IsPathValidCondition::tick()
 {
@@ -41,8 +41,8 @@ BT::NodeStatus IsPathValidCondition::tick()
 
   request->path = path;
   auto result = client_->async_send_request(request);
-
-  if (rclcpp::spin_until_future_complete(node_, result, server_timeout_) ==
+  std::chrono::milliseconds mscond(1000);
+  if (rclcpp::spin_until_future_complete(node_, result, mscond) ==
     rclcpp::FutureReturnCode::SUCCESS)
   {
     if (result.get()->is_valid) {
