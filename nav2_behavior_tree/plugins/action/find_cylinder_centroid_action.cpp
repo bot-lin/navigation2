@@ -51,8 +51,9 @@ BT::NodeStatus FindCylinderCentroid::tick()
   getInput("radius_limits", request->radius_limits);
 
   auto result = client_->async_send_request(request);
+  std::chrono::milliseconds mscond(1000);
 
-  if (rclcpp::spin_until_future_complete(node_, result, server_timeout_) ==
+  if (rclcpp::spin_until_future_complete(node_, result, mscond) ==
     rclcpp::FutureReturnCode::SUCCESS)
   {
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Cylinder centroid found");
