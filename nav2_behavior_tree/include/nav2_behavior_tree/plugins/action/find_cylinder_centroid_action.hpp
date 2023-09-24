@@ -81,6 +81,7 @@ private:
 
   rclcpp::Client<zbot_interfaces::srv::FindCylinderSrv>::SharedPtr client_;
   rclcpp::Node::SharedPtr node_;
+  bool processing_;
 
 };
 
