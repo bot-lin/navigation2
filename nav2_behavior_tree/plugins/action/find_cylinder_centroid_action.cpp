@@ -26,6 +26,8 @@ namespace nav2_behavior_tree
 {
 
 using std::placeholders::_1;
+using namespace std::chrono_literals;
+
 
 FindCylinderCentroid::FindCylinderCentroid(
   const std::string & name,
@@ -45,7 +47,7 @@ BT::NodeStatus FindCylinderCentroid::tick()
   auto request = std::make_shared<zbot_interfaces::srv::FindCylinderSrv::Request>();
   getInput("radius_limits", request->radius_limits);
 
-  while (!client_->wait_for_service(1.0)) {
+  while (!client_->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
       RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
       return BT::NodeStatus::FAILURE;
