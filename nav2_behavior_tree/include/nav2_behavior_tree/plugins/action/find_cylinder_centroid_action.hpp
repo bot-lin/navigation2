@@ -61,11 +61,13 @@ public:
         "the value of the radius limits"),
 
       BT::InputPort<std::chrono::milliseconds>("server_timeout"),
+      
 
       BT::InputPort<std::string>(
         "topic_name",
         "planner_selector",
-        "the input topic name to select the planner")
+        "the input topic name to select the planner"),
+      BT::OutputPort<geometry_msgs::msg::PoseStamped>("centroid_point", "docking point coordinate to map"),
     };
   }
 
