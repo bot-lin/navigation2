@@ -47,25 +47,37 @@ BT::NodeStatus FindCylinderCentroid::tick()
   auto request = std::make_shared<zbot_interfaces::srv::FindCylinderSrv::Request>();
   getInput("radius_limits", request->radius_limits);
 
-  while (!client_->wait_for_service(1s)) {
-    if (!rclcpp::ok()) {
-      RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
-      return BT::NodeStatus::FAILURE;
-    }
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
-  }
+  auto result = client_->async_send_request(request);
 
-  processing_ = true;
-  using ServiceResponseFuture =
-	    rclcpp::Client<zbot_interfaces::srv::FindCylinderSrv>::SharedFuture;
-  auto response_received_callback = [this](ServiceResponseFuture result) {
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Start calling find cylinder request");
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Centroid: %f,%f,%f", result.get()->centroid.pose.position.x, result.get()->centroid.pose.position.y, result.get()->centroid.pose.position.z);
-        processing_ = false;
-        return BT::NodeStatus::SUCCESS;
-  };
-  auto future_result = client_->async_send_request(request, response_received_callback);
-  while (processing_) sleep(0.1);
+  if (rclcpp::spin_until_future_complete(node_, result, server_timeout_) ==
+    rclcpp::FutureReturnCode::SUCCESS)
+  {
+    if (result.get()->succeeded) {
+      RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Centroid: %f,%f,%f", result.get()->centroid.pose.position.x, result.get()->centroid.pose.position.y, result.get()->centroid.pose.position.z);
+      return BT::NodeStatus::SUCCESS;
+    }
+  }
+  return BT::NodeStatus::FAILURE;
+
+  // while (!client_->wait_for_service(1s)) {
+  //   if (!rclcpp::ok()) {
+  //     RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
+  //     return BT::NodeStatus::FAILURE;
+  //   }
+  //   RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
+  // }
+
+  // processing_ = true;
+  // using ServiceResponseFuture =
+	//     rclcpp::Client<zbot_interfaces::srv::FindCylinderSrv>::SharedFuture;
+  // auto response_received_callback = [this](ServiceResponseFuture result) {
+  //       RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Start calling find cylinder request");
+  //       RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Centroid: %f,%f,%f", result.get()->centroid.pose.position.x, result.get()->centroid.pose.position.y, result.get()->centroid.pose.position.z);
+  //       processing_ = false;
+  //       return BT::NodeStatus::SUCCESS;
+  // };
+  // auto future_result = client_->async_send_request(request, response_received_callback);
+  // while (processing_) sleep(0.1);
 
   // auto result = client_->async_send_request(request);
   // // Wait for the result.
@@ -77,7 +89,7 @@ BT::NodeStatus FindCylinderCentroid::tick()
   //   RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to call service add_two_ints");
   // }
 
-  return BT::NodeStatus::SUCCESS;
+  // return BT::NodeStatus::SUCCESS;
 }
 
 
