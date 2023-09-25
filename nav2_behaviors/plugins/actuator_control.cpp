@@ -153,12 +153,12 @@ void ActuatorControl::actuatorStatusCallback(const std_msgs::msg::Int32::SharedP
   RCLCPP_INFO(
       logger_,
       "actuator status received ");
-  if (actuator_status_ == 0 && elasped_time_.seconds() > 2.0){
-    preempt_teleop_ = true;
-      RCLCPP_INFO(
-      logger_,
-      "actuator is idle");
-  }
+  // if (actuator_status_ == 0 && elasped_time_.seconds() > 2.0){
+  //   preempt_teleop_ = true;
+  //     RCLCPP_INFO(
+  //     logger_,
+  //     "actuator is idle");
+  // }
 }
 
 }  // namespace nav2_behaviors
