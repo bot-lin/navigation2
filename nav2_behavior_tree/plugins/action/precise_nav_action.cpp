@@ -47,6 +47,7 @@ void PreciseNavAction::on_tick()
   if (!getInput("yaw_goal_tolerance", goal_.yaw_goal_tolerance)) {
     goal_.yaw_goal_tolerance = 0.05;
   }
+  getInput("is_heading_only", is_heading_only);
 }
 
 void PreciseNavAction::on_wait_for_result(
