@@ -109,8 +109,36 @@ Status ActuatorControl::onCycleUpdate()
     return Status::SUCCEEDED;
   }
 
+  switch (actuator_status_)
+  {
+  case 2:
+  {
+    auto message = std_msgs::msg::Int32();
+    message.data = 0;
+    actuator_command_pub_->publish(message);
+    return Status::SUCCEEDED;
+  }
+  case 3:
+    {
+    auto message = std_msgs::msg::Int32();
+    message.data = 0;
+    actuator_command_pub_->publish(message);
+    return Status::FAILED;
+  }
+  case 4:
+  {
+    auto message = std_msgs::msg::Int32();
+    message.data = 0;
+    actuator_command_pub_->publish(message);
+    return Status::FAILED;
+  }
   
-  return Status::RUNNING;
+  default:
+    return Status::RUNNING;
+  }
+
+  
+  
 }
 
 
