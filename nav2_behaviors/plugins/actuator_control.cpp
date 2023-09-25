@@ -71,6 +71,7 @@ Status ActuatorControl::onRun(const std::shared_ptr<const ActuatorControlAction:
   RCLCPP_INFO(
       logger_,
       "Actuator control on run send %d to %s", command->task_index, actuator_index.c_str());
+  current_task_index_ = command->task_index;
   command_time_allowance_ = command->time_allowance;
   end_time_ = steady_clock_.now() + command_time_allowance_;
   return Status::SUCCEEDED;
@@ -111,6 +112,13 @@ Status ActuatorControl::onCycleUpdate()
 
   switch (actuator_status_)
   {
+    case 0:
+    {
+      auto message = std_msgs::msg::Int32();
+      message.data = current_task_index_;
+      actuator_command_pub_->publish(message);
+      return Status::RUNNING;
+    }
   case 2:
   {
     auto message = std_msgs::msg::Int32();
