@@ -123,21 +123,30 @@ Status ActuatorControl::onCycleUpdate()
   {
     auto message = std_msgs::msg::Int32();
     message.data = 0;
-    actuator_command_pub_->publish(message);
+    while (actuator_status_ != 0){
+      actuator_command_pub_->publish(message);
+      rclcpp::spin_some(node_.lock());
+    }
     return Status::SUCCEEDED;
   }
   case 3:
     {
     auto message = std_msgs::msg::Int32();
     message.data = 0;
-    actuator_command_pub_->publish(message);
+    while (actuator_status_ != 0){
+      actuator_command_pub_->publish(message);
+      rclcpp::spin_some(node_.lock());
+    }
     return Status::FAILED;
   }
   case 4:
   {
     auto message = std_msgs::msg::Int32();
     message.data = 0;
-    actuator_command_pub_->publish(message);
+    while (actuator_status_ != 0){
+      actuator_command_pub_->publish(message);
+      rclcpp::spin_some(node_.lock());
+    }
     return Status::FAILED;
   }
   
