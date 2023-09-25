@@ -91,6 +91,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     RCLCPP_INFO(this->logger_, "Is reverse %d", is_reverse_);
     RCLCPP_INFO(this->logger_, "distance_goal_tolerance %f", distance_goal_tolerance_);
     RCLCPP_INFO(this->logger_, "yaw_goal_tolerance %f", yaw_goal_tolerance_);
+    RCLCPP_INFO(this->logger_, "is heading only  %f", is_heading_only_);
 
     if (command->pose.header.frame_id != "odom")
     {
