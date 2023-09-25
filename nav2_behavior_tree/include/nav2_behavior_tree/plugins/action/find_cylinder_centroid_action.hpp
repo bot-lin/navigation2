@@ -68,6 +68,7 @@ public:
         "planner_selector",
         "the input topic name to select the planner"),
       BT::OutputPort<geometry_msgs::msg::PoseStamped>("centroid_point", "docking point coordinate to map"),
+      BT::OutputPort<double>("forward_distance", "forward distance to the docking point"),
     };
   }
 

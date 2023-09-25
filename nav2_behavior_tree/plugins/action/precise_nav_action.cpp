@@ -53,7 +53,7 @@ void PreciseNavAction::on_wait_for_result(
   std::shared_ptr<const nav2_msgs::action::PreciseNav::Feedback>/*feedback*/)
 {
   geometry_msgs::msg::PoseStamped new_goal;
-  bool is_reverse, reverse_yaw;
+  bool is_reverse, reverse_yaw, is_heading_only;
   float distance_goal_tolerance;
   float yaw_goal_tolerance;
   getInput("goal", new_goal);
@@ -61,6 +61,9 @@ void PreciseNavAction::on_wait_for_result(
   getInput("reverse_yaw", reverse_yaw);
   getInput("distance_goal_tolerance", distance_goal_tolerance);
   getInput("yaw_goal_tolerance", yaw_goal_tolerance);
+  getInput("is_heading_only", is_heading_only);
+
+  
   if (new_goal != goal_.pose)
   {
     goal_.pose = new_goal;
@@ -68,6 +71,7 @@ void PreciseNavAction::on_wait_for_result(
     goal_.distance_goal_tolerance = distance_goal_tolerance;
     goal_.yaw_goal_tolerance = yaw_goal_tolerance;
     goal_.reverse_yaw = reverse_yaw;
+    goal_.heading_only = is_heading_only;
     goal_updated_ = true;
   }
   

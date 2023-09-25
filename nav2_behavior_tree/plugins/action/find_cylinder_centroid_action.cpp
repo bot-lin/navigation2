@@ -62,6 +62,7 @@ BT::NodeStatus FindCylinderCentroid::tick()
       RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Cylinder centroid succeeded");
       RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Centroid: %f,%f,%f", tmp->centroid.pose.position.x, tmp->centroid.pose.position.y, tmp->centroid.pose.position.z);
       setOutput("centroid_point", tmp->centroid);
+      setOutput("forward_distance", tmp->centroid.pose.position.x);
       return BT::NodeStatus::SUCCESS;
     }
     else{

@@ -80,6 +80,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     pose2d.x = pose_tmp.pose.position.x;
     pose2d.y = pose_tmp.pose.position.y;
     pose2d.theta = tf2::getYaw(pose_tmp.pose.orientation);
+    is_heading_only_ = command->heading_only;
     
 
     is_reverse_ = command->is_reverse;
@@ -139,8 +140,8 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     pose2d.x = pose_tmp.pose.position.x;
     pose2d.y = pose_tmp.pose.position.y;
     pose2d.theta = tf2::getYaw(pose_tmp.pose.orientation);
+    is_heading_only_ = command->heading_only;
     
-
     is_reverse_ = command->is_reverse;
 
     if (command->pose.header.frame_id != "odom")
@@ -186,46 +187,60 @@ Status PreciseNav::onCycleUpdate()
     double yaw_goal_error = getRadiansToGoal(current_pose);
 
     auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
-    if (distance_to_goal > distance_goal_tolerance_ && !reached_distance_goal_)
-    {
+    if (is_heading_only_){
         if (std::fabs(heading_error) > heading_tolerance_){
-            if (is_reverse_) cmd_vel->linear.x = -0.01;
-            else cmd_vel->linear.x = 0.01;
+            cmd_vel->linear.x = 0.0;
             if (heading_error > 0) cmd_vel->angular.z = angular_velocity_;
             else cmd_vel->angular.z = -angular_velocity_;
         }
+        else{
+            this->stopRobot();
+            return Status::SUCCEEDED;
+        }
+    }
+    else{
+        if (distance_to_goal > distance_goal_tolerance_ && !reached_distance_goal_)
+        {
+            if (std::fabs(heading_error) > heading_tolerance_){
+                if (is_reverse_) cmd_vel->linear.x = -0.01;
+                else cmd_vel->linear.x = 0.01;
+                if (heading_error > 0) cmd_vel->angular.z = angular_velocity_;
+                else cmd_vel->angular.z = -angular_velocity_;
+            }
+            else
+            {
+                if (is_reverse_) cmd_vel->linear.x = -linear_velocity_;
+                else cmd_vel->linear.x = linear_velocity_;
+                cmd_vel->angular.z = orientation_p_ * heading_error;
+            }
+        }
+        else if (std::fabs(yaw_goal_error) > yaw_goal_tolerance_)
+        {
+            cmd_vel->angular.z = orientation_p_ * yaw_goal_error;
+            if (cmd_vel->angular.z < 0.1 && cmd_vel->angular.z >0.0){
+                cmd_vel->angular.z = 0.1;
+            }
+            else if (cmd_vel->angular.z > -0.1 && cmd_vel->angular.z <0.0)
+            {
+                cmd_vel->angular.z = -0.1;
+            }
+            
+            reached_distance_goal_ = true;
+        }
         else
         {
-            if (is_reverse_) cmd_vel->linear.x = -linear_velocity_;
-            else cmd_vel->linear.x = linear_velocity_;
-            cmd_vel->angular.z = orientation_p_ * heading_error;
+            reached_distance_goal_ = false;
+            this->stopRobot();
+            return Status::SUCCEEDED;
         }
+        RCLCPP_INFO(this->logger_, "target pose in Odom x: %f, y: %f, yaw: %f", target_x_, target_y_, target_yaw_);
+        RCLCPP_INFO(this->logger_, "current pose x: %f, y: %f", current_pose.pose.position.x, current_pose.pose.position.y);
+        RCLCPP_INFO(this->logger_, "current pose z: %f, w: %f", current_pose.pose.orientation.z, current_pose.pose.orientation.w);
+        RCLCPP_INFO(this->logger_, "Distance to goal: %f, yaw error: %f", distance_to_goal, yaw_goal_error);
+        RCLCPP_INFO(this->logger_, "reached_distance_goal_: %d", reached_distance_goal_);
+        RCLCPP_INFO(this->logger_, "pub vel x: %f, w: %f", cmd_vel->linear.x, cmd_vel->angular.z);
     }
-    else if (std::fabs(yaw_goal_error) > yaw_goal_tolerance_)
-    {
-        cmd_vel->angular.z = orientation_p_ * yaw_goal_error;
-        if (cmd_vel->angular.z < 0.1 && cmd_vel->angular.z >0.0){
-            cmd_vel->angular.z = 0.1;
-        }
-        else if (cmd_vel->angular.z > -0.1 && cmd_vel->angular.z <0.0)
-        {
-            cmd_vel->angular.z = -0.1;
-        }
-        
-        reached_distance_goal_ = true;
-    }
-    else
-    {
-        reached_distance_goal_ = false;
-        this->stopRobot();
-        return Status::SUCCEEDED;
-    }
-    RCLCPP_INFO(this->logger_, "target pose in Odom x: %f, y: %f, yaw: %f", target_x_, target_y_, target_yaw_);
-    RCLCPP_INFO(this->logger_, "current pose x: %f, y: %f", current_pose.pose.position.x, current_pose.pose.position.y);
-    RCLCPP_INFO(this->logger_, "current pose z: %f, w: %f", current_pose.pose.orientation.z, current_pose.pose.orientation.w);
-    RCLCPP_INFO(this->logger_, "Distance to goal: %f, yaw error: %f", distance_to_goal, yaw_goal_error);
-    RCLCPP_INFO(this->logger_, "reached_distance_goal_: %d", reached_distance_goal_);
-    RCLCPP_INFO(this->logger_, "pub vel x: %f, w: %f", cmd_vel->linear.x, cmd_vel->angular.z);
+
     this->vel_pub_->publish(std::move(cmd_vel));
     auto collision_monitor_switch = std::make_unique<std_msgs::msg::Bool>();
     collision_monitor_switch->data = false;

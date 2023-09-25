@@ -39,6 +39,7 @@ protected:
     double orientation_p_ = 0.1;
     bool reached_distance_goal_ = false;
     bool is_reverse_ = false;
+    bool is_heading_only_ = false;
     
 };
 }
