@@ -32,9 +32,13 @@ DriveOnHeadingAction::DriveOnHeadingAction(
   getInput("speed", speed);
   double time_allowance;
   getInput("time_allowance", time_allowance);
+  double bias;
+  if (!getInput("bias", bias)) {
+    bias = 0.0;
+  }
 
   // Populate the input message
-  goal_.target.x = dist;
+  goal_.target.x = dist - bias;
   goal_.target.y = 0.0;
   goal_.target.z = 0.0;
   goal_.speed = speed;
