@@ -36,8 +36,15 @@ DriveOnHeadingAction::DriveOnHeadingAction(
   if (!getInput("bias", bias)) {
     bias = 0.0;
   }
-
+  RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "driving on heading: dist_to_travel: %f", dist);
+      
   // Populate the input message
+  if (dist - bias < 0.0) {
+    RCLCPP_WARN(
+      node_->get_logger(),
+      "DriveOnHeadingAction: distance to travel is negative, setting to 0.0");
+    dist = bias;
+  }
   goal_.target.x = dist - bias;
   goal_.target.y = 0.0;
   goal_.target.z = 0.0;
