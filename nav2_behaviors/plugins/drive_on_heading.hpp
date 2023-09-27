@@ -174,7 +174,7 @@ public:
     //   return Status::FAILED;
     // }
 
-    this->vel_pub_->publish(std::move(cmd_vel));
+    this->vel_smoothed_pub_->publish(std::move(cmd_vel));
 
     return Status::RUNNING;
   }

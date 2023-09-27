@@ -182,7 +182,7 @@ Status Spin::onCycleUpdate()
   auto collision_monitor_switch = std::make_unique<std_msgs::msg::Bool>();
   collision_monitor_switch->data = false;
   collision_monito_switch_pub_->publish(std::move(collision_monitor_switch));
-  vel_pub_->publish(std::move(cmd_vel));
+  vel_smoothed_pub_->publish(std::move(cmd_vel));
 
   return Status::RUNNING;
 }
