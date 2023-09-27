@@ -114,9 +114,9 @@ Status ActuatorControl::onCycleUpdate()
   {
     case 0:
     {
-      auto message = std_msgs::msg::Int32();
-      message.data = current_task_index_;
-      actuator_command_pub_->publish(message);
+      // auto message = std_msgs::msg::Int32();
+      // message.data = current_task_index_;
+      // actuator_command_pub_->publish(message);
       return Status::RUNNING;
     }
   case 2:
