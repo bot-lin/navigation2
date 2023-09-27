@@ -26,7 +26,13 @@ SpinAction::SpinAction(
   const BT::NodeConfiguration & conf)
 : BtActionNode<nav2_msgs::action::Spin>(xml_tag_name, action_name, conf)
 {
-  double dist;
+
+
+}
+
+void SpinAction::on_tick()
+{
+    double dist;
   getInput("spin_dist", dist);
   double time_allowance;
   getInput("time_allowance", time_allowance);
@@ -35,11 +41,6 @@ SpinAction::SpinAction(
   getInput("is_recovery", is_recovery_);
   bool check_collision;
   getInput("check_collision", check_collision);
-
-}
-
-void SpinAction::on_tick()
-{
   if (is_recovery_) {
     increment_recovery_count();
   }
