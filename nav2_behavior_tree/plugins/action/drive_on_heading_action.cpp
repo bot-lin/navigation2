@@ -26,6 +26,10 @@ DriveOnHeadingAction::DriveOnHeadingAction(
   const BT::NodeConfiguration & conf)
 : BtActionNode<nav2_msgs::action::DriveOnHeading>(xml_tag_name, action_name, conf)
 {
+  
+}
+void DriveOnHeadingAction::on_tick()
+{
   double dist;
   getInput("dist_to_travel", dist);
   double speed;
@@ -50,6 +54,7 @@ DriveOnHeadingAction::DriveOnHeadingAction(
   goal_.target.z = 0.0;
   goal_.speed = speed;
   goal_.time_allowance = rclcpp::Duration::from_seconds(time_allowance);
+
 }
 
 }  // namespace nav2_behavior_tree
