@@ -89,6 +89,14 @@ ament_target_dependencies(nav2_actuator_control_behavior
 ${dependencies}
 )
 
+add_library(nav2_trident_control_behavior SHARED
+plugins/trident_control.cpp
+)
+
+ament_target_dependencies(nav2_trident_control_behavior
+${dependencies}
+)
+
 add_library(nav2_drive_on_heading_behavior SHARED
   plugins/drive_on_heading.cpp
 )
@@ -155,6 +163,7 @@ install(TARGETS ${library_name}
                 nav2_back_up_behavior
                 nav2_wait_command_behavior
                 nav2_actuator_control_behavior
+                nav2_trident_control_behavior
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -194,6 +203,7 @@ ament_export_libraries(${library_name}
   nav2_drive_on_heading_behavior
   nav2_back_up_behavior
   nav2_actuator_control_behavior
+  nav2_trident_control_behavior
 )
 ament_export_dependencies(${dependencies})
 ament_package()

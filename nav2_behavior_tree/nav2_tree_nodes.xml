@@ -53,6 +53,11 @@
       <input_port name="server_timeout">Server timeout</input_port>
     </Action>
 
+    <Action ID="CancelTridentControl">
+      <input_port name="service_name">Service name to cancel the trident control behavior</input_port>
+      <input_port name="server_timeout">Server timeout</input_port>
+    </Action>
+
     <Action ID="CancelWaitCommand">
       <input_port name="service_name">Service name to cancel the wait command behavior</input_port>
       <input_port name="server_timeout">Server timeout</input_port>
@@ -216,6 +221,12 @@
     </Action>
 
     <Action ID="ActuatorControl">
+      <input_port name="time_allowance">Allowed time for spinning</input_port>
+      <input_port name="actuator_id">Service name</input_port>
+      <input_port name="task_id">Server timeout</input_port>
+    </Action>
+
+    <Action ID="TridentControl">
       <input_port name="time_allowance">Allowed time for spinning</input_port>
       <input_port name="actuator_id">Service name</input_port>
       <input_port name="task_id">Server timeout</input_port>
