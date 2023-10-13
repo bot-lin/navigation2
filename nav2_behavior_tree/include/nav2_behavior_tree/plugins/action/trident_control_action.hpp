@@ -27,7 +27,7 @@ namespace nav2_behavior_tree
 /**
  * @brief A nav2_behavior_tree::BtActionNode class that wraps nav2_msgs::action::TridentControl
  */
-class TridentControlAction : public BtActionNode<nav2_msgs::action::TridentControl>
+class TridentControlAction : public BtActionNode<nav2_msgs::action::ActuatorControl>
 {
 public:
   /**
