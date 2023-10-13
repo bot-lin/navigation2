@@ -22,11 +22,11 @@
       <input_port name="server_name">Service name</input_port>
       <input_port name="server_timeout">Server timeout</input_port>
     </Action>
-
+<!-- 
     <Action ID="CancelControl">
       <input_port name="service_name">Service name to cancel the controller server</input_port>
       <input_port name="server_timeout">Server timeout</input_port>
-    </Action>
+    </Action> -->
 
     <Action ID="CancelBackUp">
       <input_port name="service_name">Service name to cancel the backup behavior</input_port>
