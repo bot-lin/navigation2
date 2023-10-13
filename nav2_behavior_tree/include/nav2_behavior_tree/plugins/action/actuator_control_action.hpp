@@ -57,6 +57,7 @@ public:
     return providedBasicPorts(
       {
         BT::InputPort<double>("time_allowance", 0.0, "Allowed time for running assisted teleop"),
+        BT::InputPort<double>("minimum_time", 0.5, "Minimum time required "),
         BT::InputPort<std::string>("actuator_id", "a", "Actuator ID"),
         BT::InputPort<int>("task_id", 0, "Task ID"),
       });

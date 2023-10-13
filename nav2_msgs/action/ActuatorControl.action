@@ -1,6 +1,7 @@
 #goal definition
 string actuator_index
 int32 task_index
+float64 minimum_time
 builtin_interfaces/Duration time_allowance
 
 ---

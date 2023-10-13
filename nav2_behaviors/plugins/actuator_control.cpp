@@ -30,7 +30,7 @@ void ActuatorControl::onConfigure()
   if (!node) {
     throw std::runtime_error{"Failed to lock node"};
   }
-  actuator_status_ = 0;
+  task_status_ = 0;
 }
 
 Status ActuatorControl::change_goal(const std::shared_ptr<const ActuatorControlAction::Goal> command)
@@ -48,6 +48,7 @@ Status ActuatorControl::change_goal(const std::shared_ptr<const ActuatorControlA
       "Actuator control change goal send %d to %s", command->task_index, actuator_index.c_str());
   command_time_allowance_ = command->time_allowance;
   end_time_ = steady_clock_.now() + command_time_allowance_;
+  minimum_time_ = command->minimum_time;
   return Status::SUCCEEDED;
 }
 
@@ -73,6 +74,7 @@ Status ActuatorControl::onRun(const std::shared_ptr<const ActuatorControlAction:
       "Actuator control on run send %d to %s", command->task_index, actuator_index.c_str());
   current_task_index_ = command->task_index;
   command_time_allowance_ = command->time_allowance;
+  minimum_time_ = command->minimum_time;
   end_time_ = steady_clock_.now() + command_time_allowance_;
   return Status::SUCCEEDED;
 }
@@ -81,12 +83,12 @@ void ActuatorControl::onActionCompletion()
 {
   preempt_teleop_ = false;
   actuator_status_sub_.reset();
-  actuator_status_ = 0;
+  task_status_ = 0;
 }
 
 Status ActuatorControl::onCycleUpdate()
 {
-  feedback_->actuator_status = actuator_status_;
+  feedback_->actuator_status = task_status_;
   action_server_->publish_feedback(feedback_);
 
   rclcpp::Duration time_remaining = end_time_ - steady_clock_.now();
@@ -96,21 +98,21 @@ Status ActuatorControl::onCycleUpdate()
       logger_,
       "Exceeded time allowance before reaching the " << behavior_name_.c_str() <<
         "goal - Exiting " << behavior_name_.c_str());
-    // auto message = std_msgs::msg::Int32();
-    // message.data = 0;
-    // actuator_command_pub_->publish(message);
+    auto message = std_msgs::msg::Int32();
+    message.data = 0;
+    actuator_command_pub_->publish(message);
     return Status::FAILED;
   }
 
   // Actuator done successfully
   if (preempt_teleop_) {
-    // auto message = std_msgs::msg::Int32();
-    // message.data = 0;
-    // actuator_command_pub_->publish(message);
+    auto message = std_msgs::msg::Int32();
+    message.data = 0;
+    actuator_command_pub_->publish(message);
     return Status::SUCCEEDED;
   }
 
-  switch (actuator_status_)
+  switch (task_status_)
   {
     case 0:
     {
@@ -119,8 +121,9 @@ Status ActuatorControl::onCycleUpdate()
       // actuator_command_pub_->publish(message);
       return Status::RUNNING;
     }
-  case 2:
+  case 1:
   {
+    if (elasped_time_.seconds() < minimum_time_) return Status::RUNNING;
     auto message = std_msgs::msg::Int32();
     message.data = 0;
     actuator_command_pub_->publish(message);
@@ -157,10 +160,8 @@ void ActuatorControl::preemptActuatorCallback(const std_msgs::msg::Empty::Shared
 
 void ActuatorControl::actuatorStatusCallback(const std_msgs::msg::Int32::SharedPtr msg)
 {
-  actuator_status_ = msg->data;
-  RCLCPP_INFO(
-      logger_,
-      "actuator status received ");
+  task_status_ = msg->data;
+
   // if (actuator_status_ == 0 && elasped_time_.seconds() > 2.0){
   //   preempt_teleop_ = true;
   //     RCLCPP_INFO(

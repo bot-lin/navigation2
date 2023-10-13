@@ -27,9 +27,11 @@ ActuatorControlAction::ActuatorControlAction(
 : BtActionNode<nav2_msgs::action::ActuatorControl>(xml_tag_name, action_name, conf)
 {
   double time_allowance;
+  double minimum_time;
   std::string actuator_id;
   int task_id;
   getInput("time_allowance", time_allowance);
+  getInput("minimum_time", minimum_time);
   getInput("actuator_id", actuator_id);
   getInput("task_id", task_id);
 
@@ -37,6 +39,7 @@ ActuatorControlAction::ActuatorControlAction(
   goal_.time_allowance = rclcpp::Duration::from_seconds(time_allowance);
   goal_.actuator_index = actuator_id;
   goal_.task_index = task_id;
+  goal_.minimum_time = minimum_time;
 }
 
 void ActuatorControlAction::on_tick()
