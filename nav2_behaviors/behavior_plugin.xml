@@ -40,12 +40,12 @@
 	    <description></description>
 	  </class>
 	</library>
-
+<!-- 
 	<library path="nav2_trident_control_behavior">
 	  <class name="nav2_behaviors/TridentControl" type="nav2_behaviors::TridentControl" base_class_type="nav2_core::Behavior">
 	    <description></description>
 	  </class>
-	</library>
+	</library> -->
 
 	<library path="nav2_precise_nav_behavior">
 	  <class name="nav2_behaviors/PreciseNav" type="nav2_behaviors::PreciseNav" base_class_type="nav2_core::Behavior">
