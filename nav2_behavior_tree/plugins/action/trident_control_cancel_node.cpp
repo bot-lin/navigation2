@@ -26,7 +26,7 @@ TridentControlCancel::TridentControlCancel(
   const std::string & xml_tag_name,
   const std::string & action_name,
   const BT::NodeConfiguration & conf)
-: BtCancelActionNode<nav2_msgs::action::TridentControl>(xml_tag_name, action_name, conf)
+: BtCancelActionNode<nav2_msgs::action::ActuatorControl>(xml_tag_name, action_name, conf)
 {
 }
 
