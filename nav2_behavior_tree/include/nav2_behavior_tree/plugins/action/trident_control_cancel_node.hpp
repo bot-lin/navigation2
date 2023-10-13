@@ -18,10 +18,10 @@
 #include <memory>
 #include <string>
 
-#include "nav2_msgs/action/trident_control.hpp"
+#include "nav2_msgs/action/actuator_control.hpp"
 
 #include "nav2_behavior_tree/bt_cancel_action_node.hpp"
-
+ 
 namespace nav2_behavior_tree
 {
 
