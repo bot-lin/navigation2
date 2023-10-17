@@ -13,6 +13,7 @@ float64 max_linear_velocity
 float64 max_angular_velocity
 bool reverse_yaw
 bool heading_only
+string target_tf_frame
 
 builtin_interfaces/Duration time_allowance
 ---

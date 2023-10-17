@@ -81,6 +81,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     pose2d.y = pose_tmp.pose.position.y;
     pose2d.theta = tf2::getYaw(pose_tmp.pose.orientation);
     is_heading_only_ = command->heading_only;
+    target_tf_frame_ = command->target_tf_frame;
     
 
     is_reverse_ = command->is_reverse;
@@ -93,18 +94,18 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     RCLCPP_INFO(this->logger_, "yaw_goal_tolerance %f", yaw_goal_tolerance_);
     RCLCPP_INFO(this->logger_, "is heading only  %d", is_heading_only_);
 
-    if (command->pose.header.frame_id != "odom")
+    if (command->pose.header.frame_id != target_tf_frame_)
     {
-        bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
+        bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, target_tf_frame_, this->transform_tolerance_);
         if (!tf_response)
         {
-            RCLCPP_ERROR(this->logger_, "Failed to transform goal pose in odom frame from %s", command->pose.header.frame_id.c_str());
+            RCLCPP_ERROR(this->logger_, "Failed to transform goal pose in %s frame from %s", target_tf_frame_.c_str(), command->pose.header.frame_id.c_str());
             return Status::FAILED;
         }
-        RCLCPP_INFO(this->logger_, "Converting goal pose in odom frame from %s", command->pose.header.frame_id.c_str());
+        RCLCPP_INFO(this->logger_, "Converting goal pose in %s frame from %s", target_tf_frame_.c_str(), command->pose.header.frame_id.c_str());
         RCLCPP_INFO(this->logger_, "Converted pose x: %f, y: %f", pose_tmp.pose.position.x, pose_tmp.pose.position.y);
     }
-    RCLCPP_INFO(this->logger_, "target pose in Odom x: %f, y: %f", pose_tmp.pose.position.x, pose_tmp.pose.position.y);
+    RCLCPP_INFO(this->logger_, "target pose in %s x: %f, y: %f", target_tf_frame_.c_str(), pose_tmp.pose.position.x, pose_tmp.pose.position.y);
 
     // else{
     //     pose_tmp = command->pose;
@@ -142,24 +143,25 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     pose2d.y = pose_tmp.pose.position.y;
     pose2d.theta = tf2::getYaw(pose_tmp.pose.orientation);
     is_heading_only_ = command->heading_only;
+    target_tf_frame_ = command->target_tf_frame;
     
     is_reverse_ = command->is_reverse;
 
-    if (command->pose.header.frame_id != "odom")
+    if (command->pose.header.frame_id != target_tf_frame_.c_str())
     {
-        bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, "odom", this->transform_tolerance_);
+        bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, target_tf_frame_.c_str(), this->transform_tolerance_);
         if (!tf_response)
         {
-            RCLCPP_ERROR(this->logger_, "Failed to transform goal pose in odom frame from %s", command->pose.header.frame_id.c_str());
+            RCLCPP_ERROR(this->logger_, "Failed to transform goal pose in %s frame from %s", target_tf_frame_.c_str(), command->pose.header.frame_id.c_str());
             return Status::FAILED;
         }
-        RCLCPP_INFO(this->logger_, "Converting goal pose in odom frame from %s", command->pose.header.frame_id.c_str());
+        RCLCPP_INFO(this->logger_, "Converting goal pose in %s frame from %s", target_tf_frame_.c_str(), command->pose.header.frame_id.c_str());
         
     }
     else{
         pose_tmp = command->pose;
     }
-    RCLCPP_INFO(this->logger_, "target pose in Odom x: %f, y: %f", pose_tmp.pose.position.x, pose_tmp.pose.position.y);
+    RCLCPP_INFO(this->logger_, "target pose in %s x: %f, y: %f", target_tf_frame_.c_str(), pose_tmp.pose.position.x, pose_tmp.pose.position.y);
     target_x_ = pose_tmp.pose.position.x;
     target_y_ = pose_tmp.pose.position.y;
     tf2::Quaternion q(pose_tmp.pose.orientation.x, 
@@ -177,7 +179,7 @@ Status PreciseNav::onCycleUpdate()
 {
     geometry_msgs::msg::PoseStamped current_pose;
     if (!nav2_util::getCurrentPose(
-        current_pose, *this->tf_, "odom", this->robot_base_frame_,
+        current_pose, *this->tf_, target_tf_frame_.c_str(), this->robot_base_frame_,
         this->transform_tolerance_))
     {
       RCLCPP_ERROR(this->logger_, "Current robot pose is not available.");
@@ -234,7 +236,7 @@ Status PreciseNav::onCycleUpdate()
             this->stopRobot();
             return Status::SUCCEEDED;
         }
-        RCLCPP_INFO(this->logger_, "target pose in Odom x: %f, y: %f, yaw: %f", target_x_, target_y_, target_yaw_);
+        RCLCPP_INFO(this->logger_, "target pose in %s x: %f, y: %f, yaw: %f", target_tf_frame_.c_str(), target_x_, target_y_, target_yaw_);
         RCLCPP_INFO(this->logger_, "current pose x: %f, y: %f", current_pose.pose.position.x, current_pose.pose.position.y);
         RCLCPP_INFO(this->logger_, "current pose z: %f, w: %f", current_pose.pose.orientation.z, current_pose.pose.orientation.w);
         RCLCPP_INFO(this->logger_, "Distance to goal: %f, yaw error: %f", distance_to_goal, yaw_goal_error);
