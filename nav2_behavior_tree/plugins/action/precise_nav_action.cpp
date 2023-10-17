@@ -47,6 +47,9 @@ void PreciseNavAction::on_tick()
   if (!getInput("yaw_goal_tolerance", goal_.yaw_goal_tolerance)) {
     goal_.yaw_goal_tolerance = 0.05;
   }
+  if (!getInput("target_tf_frame", goal_.target_tf_frame)) {
+    goal_.target_tf_frame = "odom";
+  }
   getInput("is_heading_only", goal_.heading_only);
 }
 
@@ -57,12 +60,14 @@ void PreciseNavAction::on_wait_for_result(
   bool is_reverse, reverse_yaw, is_heading_only;
   float distance_goal_tolerance;
   float yaw_goal_tolerance;
+  std::string target_tf_frame;
   getInput("goal", new_goal);
   getInput("is_reverse", is_reverse);
   getInput("reverse_yaw", reverse_yaw);
   getInput("distance_goal_tolerance", distance_goal_tolerance);
   getInput("yaw_goal_tolerance", yaw_goal_tolerance);
   getInput("is_heading_only", is_heading_only);
+  getInput("target_tf_frame", target_tf_frame);
 
   
   if (new_goal != goal_.pose)
@@ -73,6 +78,7 @@ void PreciseNavAction::on_wait_for_result(
     goal_.yaw_goal_tolerance = yaw_goal_tolerance;
     goal_.reverse_yaw = reverse_yaw;
     goal_.heading_only = is_heading_only;
+    goal_.target_tf_frame = target_tf_frame;
     goal_updated_ = true;
   }
   
