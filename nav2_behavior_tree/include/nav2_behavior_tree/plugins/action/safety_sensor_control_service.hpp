@@ -37,6 +37,22 @@ public:
   SafetySensorControlService(
     const std::string & service_node_name,
     const BT::NodeConfiguration & conf);
+
+  void on_tick() override;
+
+  /**
+   * @brief Creates list of BT ports
+   * @return BT::PortsList Containing basic ports along with node-specific ports
+   */
+  static BT::PortsList providedPorts()
+  {
+    return providedBasicPorts(
+      {
+        BT::InputPort<bool>( 
+          "bool_value", false,
+          "bool value")
+      });
+  }
 };
 
 }  // namespace nav2_behavior_tree

@@ -24,6 +24,11 @@ SafetySensorControlService::SafetySensorControlService(
 : BtServiceNode<std_srvs::srv::SetBool>(service_node_name, conf)
 {}
 
+void SafetySensorControlService::on_tick()
+{
+  getInput("bool_value", request_->data);
+}
+
 }  // namespace nav2_behavior_tree
 
 #include "behaviortree_cpp_v3/bt_factory.h"

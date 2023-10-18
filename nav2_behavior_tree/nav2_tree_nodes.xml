@@ -152,6 +152,7 @@
     <Action ID="SafetySensorControl">
         <input_port name="service_name">Service name</input_port>
         <input_port name="server_timeout">Server timeout</input_port>
+        <input_port name="bool_value">control value</input_port>
     </Action>
 
     <Action ID="TruncatePath">
