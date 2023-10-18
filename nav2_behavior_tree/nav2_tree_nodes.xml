@@ -149,6 +149,11 @@
         <input_port name="server_timeout">Server timeout</input_port>
     </Action>
 
+    <Action ID="SafetySensorControl">
+        <input_port name="service_name">Service name</input_port>
+        <input_port name="server_timeout">Server timeout</input_port>
+    </Action>
+
     <Action ID="TruncatePath">
         <input_port name="distance">Distance before goal to truncate</input_port>
         <input_port name="input_path">Path to truncate</input_port>

@@ -178,6 +178,9 @@ list(APPEND plugin_libs nav2_is_fork_loaded_condition_bt_node)
 add_library(nav2_reinitialize_global_localization_service_bt_node SHARED plugins/action/reinitialize_global_localization_service.cpp)
 list(APPEND plugin_libs nav2_reinitialize_global_localization_service_bt_node)
 
+add_library(nav2_safety_sensor_control_service_bt_node SHARED plugins/action/safety_sensor_control_service.cpp)
+list(APPEND plugin_libs nav2_safety_sensor_control_service_bt_node)
+
 add_library(nav2_rate_controller_bt_node SHARED plugins/decorator/rate_controller.cpp)
 list(APPEND plugin_libs nav2_rate_controller_bt_node)
 
