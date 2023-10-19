@@ -254,6 +254,7 @@ protected:
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
   double simulate_ahead_time_;
+  rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_moving_sub_;
   
 };
 
