@@ -104,6 +104,11 @@ public:
       return Status::FAILED;
     }
    this->preempt_moving_ = false;
+   
+   auto node = this->node_.lock();
+    if (!node) {
+      throw std::runtime_error{"Failed to lock node"};
+    }
     preempt_moving_sub_ = node->create_subscription<std_msgs::msg::Empty>(
       "wait_until_command", rclcpp::SystemDefaultsQoS(),
       std::bind(
