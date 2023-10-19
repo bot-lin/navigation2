@@ -239,8 +239,11 @@ protected:
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
 
-    
-    
+  }
+
+  void preemptMovingCallback()
+  {
+    preempt_moving_ = true;
   }
 
 
