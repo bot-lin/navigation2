@@ -74,7 +74,7 @@ Status WaitCommand::onCycleUpdate()
       logger_,
       "Exceeded time allowance before reaching the " << behavior_name_.c_str() <<
         "goal - Exiting " << behavior_name_.c_str());
-    return Status::SUCCEEDED;
+    return Status::FAILED;
   }
 
   // user states that teleop was successful
