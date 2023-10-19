@@ -104,16 +104,6 @@ public:
       return Status::FAILED;
     }
    this->preempt_moving_ = false;
-   
-   auto node = this->node_.lock();
-    if (!node) {
-      throw std::runtime_error{"Failed to lock node"};
-    }
-    preempt_moving_sub_ = node->create_subscription<std_msgs::msg::Empty>(
-      "wait_until_command", rclcpp::SystemDefaultsQoS(),
-      std::bind(
-      &DriveOnHeading::preemptMovingCallback,
-      this, std::placeholders::_1));
 
     command_x_ = command->target.x;
     command_speed_ = command->speed;
@@ -249,14 +239,10 @@ protected:
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
 
-
-
+    
+    
   }
 
-  void preemptMovingCallback()
-  {
-    preempt_moving_ = true;
-  }
 
 
 
@@ -269,8 +255,6 @@ protected:
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
   double simulate_ahead_time_;
-  bool preempt_moving_{false};
-  rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_moving_sub_;
   
 };
 
