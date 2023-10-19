@@ -26,11 +26,15 @@ WaitCommandAction::WaitCommandAction(
   const BT::NodeConfiguration & conf)
 : BtActionNode<nav2_msgs::action::WaitCommand>(xml_tag_name, action_name, conf)
 {
-  double time_allowance;
+  double time_allowance vel_x, vel_z;
   getInput("time_allowance", time_allowance);
+  getInput("vel_x", vel_x);
+  getInput("vel_z", vel_z);
 
   // Populate the input message
   goal_.time_allowance = rclcpp::Duration::from_seconds(time_allowance);
+  goal_.vel_x = vel_x;
+  goal_.vel_z = vel_z;
 }
 
 void WaitCommandAction::on_tick()

@@ -42,6 +42,8 @@ Status WaitCommand::change_goal(const std::shared_ptr<const WaitCommandAction::G
 {
   preempt_wait_ = false;
   command_time_allowance_ = command->time_allowance;
+  vel_x_ = command->vel_x;
+  vel_z_ = command->vel_z;
   end_time_ = steady_clock_.now() + command_time_allowance_;
   return Status::SUCCEEDED;
 }
@@ -50,6 +52,8 @@ Status WaitCommand::onRun(const std::shared_ptr<const WaitCommandAction::Goal> c
 {
   preempt_wait_ = false;
   command_time_allowance_ = command->time_allowance;
+  vel_x_ = command->vel_x;
+  vel_z_ = command->vel_z;
   end_time_ = steady_clock_.now() + command_time_allowance_;
   return Status::SUCCEEDED;
 }
@@ -78,6 +82,12 @@ Status WaitCommand::onCycleUpdate()
     stopRobot();
     return Status::SUCCEEDED;
   }
+
+  auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
+  cmd_vel->linear.y = 0.0;
+  cmd_vel->angular.z = vel_z_;
+  cmd_vel->linear.x = vel_x_;
+  this->vel_smoothed_pub_->publish(std::move(cmd_vel));
   return Status::RUNNING;
 }
 

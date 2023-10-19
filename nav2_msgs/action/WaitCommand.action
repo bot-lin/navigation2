@@ -1,5 +1,7 @@
 #goal definition
 builtin_interfaces/Duration time_allowance
+float64 vel_z
+float64 vel_x
 ---
 #result definition
 geometry_msgs/PoseStamped docking_point

@@ -55,7 +55,9 @@ public:
   {
     return providedBasicPorts(
       {
-        BT::InputPort<double>("time_allowance", 10.0, "Allowed time for running wait command")
+        BT::InputPort<double>("time_allowance", 10.0, "Allowed time for running wait command"),
+        BT::InputPort<double>("vel_x", 0.0, "Allowed time for running wait command"),
+        BT::InputPort<double>("vel_z", 0.0, "Allowed time for running wait command")
       });
   }
 

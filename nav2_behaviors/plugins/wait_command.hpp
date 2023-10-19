@@ -76,6 +76,8 @@ protected:
 
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
+  double vel_x_{0.0};
+  double vel_z_{0.0};
 };
 }  // namespace nav2_behaviors
 
