@@ -47,6 +47,7 @@ public:
     command_speed_(0.0),
     simulate_ahead_time_(0.0)
   {
+
   }
 
   ~DriveOnHeading() = default;
@@ -70,7 +71,7 @@ public:
       RCLCPP_ERROR(this->logger_, "Speed and command sign did not match");
       return Status::FAILED;
     }
-
+    preempt_wait_ = false;
     command_x_ = command->target.x;
     command_speed_ = command->speed;
     command_time_allowance_ = command->time_allowance;
@@ -102,6 +103,7 @@ public:
       RCLCPP_ERROR(this->logger_, "Speed and command sign did not match");
       return Status::FAILED;
     }
+    preempt_wait_ = false;
 
     command_x_ = command->target.x;
     command_speed_ = command->speed;
@@ -135,8 +137,6 @@ public:
       return Status::FAILED;
     }
 
-
-
     geometry_msgs::msg::PoseStamped current_pose;
     if (!nav2_util::getCurrentPose(
         current_pose, *this->tf_, this->global_frame_, this->robot_base_frame_,
@@ -144,6 +144,12 @@ public:
     {
       RCLCPP_ERROR(this->logger_, "Current robot pose is not available.");
       return Status::FAILED;
+    }
+
+    if (preempt_wait_) {
+      this->stopRobot();
+      preempt_wait_ = false;
+      return Status::SUCCEEDED;
     }
 
     double diff_x = initial_pose_.pose.position.x - current_pose.pose.position.x;
@@ -232,7 +238,17 @@ protected:
       node,
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
+
+    preempt_wait_sub_ = node->create_subscription<std_msgs::msg::Empty>(
+      "wait_util_command", rclcpp::SystemDefaultsQoS(),
+      std::bind(
+      &preemptTeleopCallback,
+      this, std::placeholders::_1));
     
+  }
+
+  void preemptTeleopCallback(const std_msgs::msg::Empty::SharedPtr msg){
+    preempt_wait_ = true;
   }
 
 
@@ -245,6 +261,8 @@ protected:
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
   double simulate_ahead_time_;
+  rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_wait_sub_;
+  bool preempt_wait_{false};
 };
 
 }  // namespace nav2_behaviors
