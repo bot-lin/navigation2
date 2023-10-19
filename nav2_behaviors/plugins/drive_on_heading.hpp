@@ -71,7 +71,7 @@ public:
       RCLCPP_ERROR(this->logger_, "Speed and command sign did not match");
       return Status::FAILED;
     }
-    preempt_wait_ = false;
+    this->preempt_moving_ = false;
     command_x_ = command->target.x;
     command_speed_ = command->speed;
     command_time_allowance_ = command->time_allowance;
@@ -103,7 +103,7 @@ public:
       RCLCPP_ERROR(this->logger_, "Speed and command sign did not match");
       return Status::FAILED;
     }
-    preempt_wait_ = false;
+   this->preempt_moving_ = false;
 
     command_x_ = command->target.x;
     command_speed_ = command->speed;
@@ -146,9 +146,9 @@ public:
       return Status::FAILED;
     }
 
-    if (preempt_wait_) {
+    if (this->preempt_moving_) {
       this->stopRobot();
-      preempt_wait_ = false;
+      this->preempt_moving_ = false;
       return Status::SUCCEEDED;
     }
 
@@ -239,11 +239,7 @@ protected:
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
 
-    preempt_wait_sub_ = node->create_subscription<std_msgs::msg::Empty>(
-      "wait_util_command", rclcpp::SystemDefaultsQoS(),
-      std::bind(
-      &preemptTeleopCallback,
-      this, std::placeholders::_1));
+    
     
   }
 
@@ -261,8 +257,7 @@ protected:
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
   double simulate_ahead_time_;
-  rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_wait_sub_;
-  bool preempt_wait_{false};
+  
 };
 
 }  // namespace nav2_behaviors
