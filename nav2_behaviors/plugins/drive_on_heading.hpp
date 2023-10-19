@@ -239,6 +239,12 @@ protected:
       "simulate_ahead_time", rclcpp::ParameterValue(2.0));
     node->get_parameter("simulate_ahead_time", simulate_ahead_time_);
 
+    preempt_moving_sub_ = node->create_subscription<std_msgs::msg::Empty>(
+      "wait_until_command", rclcpp::SystemDefaultsQoS(),
+      std::bind(
+      &DriveOnHeading::preemptMovingCallback,
+      this, std::placeholders::_1));
+
   }
 
   void preemptMovingCallback()

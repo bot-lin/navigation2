@@ -196,7 +196,7 @@ protected:
   double transform_tolerance_;
   geometry_msgs::msg::PoseStamped pose_map_;
   rclcpp::Duration elasped_time_{0, 0};
-  bool preempt_moving_{false};
+  
 
   // Clock
   rclcpp::Clock steady_clock_{RCL_STEADY_TIME};
