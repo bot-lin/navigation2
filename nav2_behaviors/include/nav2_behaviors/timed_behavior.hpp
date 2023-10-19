@@ -135,11 +135,11 @@ public:
     vel_pub_ = node->template create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 1);
     vel_smoothed_pub_ = node->template create_publisher<geometry_msgs::msg::Twist>("cmd_vel_smoothed", 1);
     collision_monito_switch_pub_ = node->template create_publisher<std_msgs::msg::Bool>("collision_monitor/switch", 1);
-    preempt_moving_sub_ = node->create_subscription<std_msgs::msg::Empty>(
-      "wait_until_command", rclcpp::SystemDefaultsQoS(),
-      std::bind(
-      &TimedBehavior::preemptMovingCallback,
-      this, std::placeholders::_1));
+    // preempt_moving_sub_ = node->create_subscription<std_msgs::msg::Empty>(
+    //   "wait_until_command", rclcpp::SystemDefaultsQoS(),
+    //   std::bind(
+    //   &TimedBehavior::preemptMovingCallback,
+    //   this, std::placeholders::_1));
 
     onConfigure();
   }
@@ -148,7 +148,7 @@ public:
   void cleanup() override
   {
     action_server_.reset();
-    preempt_moving_sub_.reset();
+    // preempt_moving_sub_.reset();
     vel_pub_.reset();
     vel_smoothed_pub_.reset();
     collision_monito_switch_pub_.reset();
@@ -184,7 +184,7 @@ protected:
   rclcpp_lifecycle::LifecyclePublisher<geometry_msgs::msg::Twist>::SharedPtr vel_pub_;
   rclcpp_lifecycle::LifecyclePublisher<geometry_msgs::msg::Twist>::SharedPtr vel_smoothed_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Bool>::SharedPtr collision_monito_switch_pub_;
-  rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_moving_sub_;
+  // rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr preempt_moving_sub_;
   std::shared_ptr<ActionServer> action_server_;
   std::shared_ptr<nav2_costmap_2d::CostmapTopicCollisionChecker> collision_checker_;
   std::shared_ptr<tf2_ros::Buffer> tf_;
@@ -206,11 +206,11 @@ protected:
 
   // Main execution callbacks for the action server implementation calling the Behavior's
   // onRun and cycle functions to execute a specific behavior
-  void preemptMovingCallback()
-  {
-    preempt_moving_ = true;
-  }
-  
+  // void preemptMovingCallback()
+  // {
+  //   preempt_moving_ = true;
+  // }
+
   void execute()
   {
     RCLCPP_INFO(logger_, "Running %s", behavior_name_.c_str());
