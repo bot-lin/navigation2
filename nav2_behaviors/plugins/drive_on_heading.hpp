@@ -243,9 +243,6 @@ protected:
     
   }
 
-  void preemptTeleopCallback(const std_msgs::msg::Empty::SharedPtr msg){
-    preempt_wait_ = true;
-  }
 
 
 
