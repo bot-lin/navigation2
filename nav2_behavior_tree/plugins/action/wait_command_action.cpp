@@ -26,7 +26,7 @@ WaitCommandAction::WaitCommandAction(
   const BT::NodeConfiguration & conf)
 : BtActionNode<nav2_msgs::action::WaitCommand>(xml_tag_name, action_name, conf)
 {
-  double time_allowance vel_x, vel_z;
+  double time_allowance, vel_x, vel_z;
   getInput("time_allowance", time_allowance);
   getInput("vel_x", vel_x);
   getInput("vel_z", vel_z);
