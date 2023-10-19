@@ -71,7 +71,6 @@ public:
       RCLCPP_ERROR(this->logger_, "Speed and command sign did not match");
       return Status::FAILED;
     }
-    this->preempt_moving_ = false;
     command_x_ = command->target.x;
     command_speed_ = command->speed;
     command_time_allowance_ = command->time_allowance;
@@ -103,7 +102,6 @@ public:
       RCLCPP_ERROR(this->logger_, "Speed and command sign did not match");
       return Status::FAILED;
     }
-   this->preempt_moving_ = false;
 
     command_x_ = command->target.x;
     command_speed_ = command->speed;
@@ -146,11 +144,6 @@ public:
       return Status::FAILED;
     }
 
-    if (this->preempt_moving_) {
-      this->stopRobot();
-      this->preempt_moving_ = false;
-      return Status::SUCCEEDED;
-    }
 
     double diff_x = initial_pose_.pose.position.x - current_pose.pose.position.x;
     double diff_y = initial_pose_.pose.position.y - current_pose.pose.position.y;
@@ -242,9 +235,6 @@ protected:
     
     
   }
-
-
-
 
 
   typename ActionT::Feedback::SharedPtr feedback_;
