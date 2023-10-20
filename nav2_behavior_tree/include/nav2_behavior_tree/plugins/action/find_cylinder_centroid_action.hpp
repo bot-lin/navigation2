@@ -60,9 +60,16 @@ public:
         "radius_limits",
         "the value of the radius limits"),
 
-      BT::InputPort<std::chrono::milliseconds>("server_timeout"),
+      BT::InputPort<double>(
+        "vel_z",
+        "absolute rotational vel"),
+      
+      BT::InputPort<double>(
+        "diff_threshold",
+        "diff threshold"),
       
 
+      BT::InputPort<std::chrono::milliseconds>("server_timeout"),
       BT::InputPort<std::string>(
         "topic_name",
         "planner_selector",
