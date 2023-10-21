@@ -51,6 +51,7 @@ BT::NodeStatus FindCylinderCentroid::tick()
   getInput("radius_limits", request->radius_limits);
   getInput("vel_z", request->vel_z);
   getInput("diff_threshold", request->diff_threshold);
+  getInput("is_reverse", request->is_reverse);
 
   auto result = client_->async_send_request(request);
   std::chrono::milliseconds mscond(20000);
