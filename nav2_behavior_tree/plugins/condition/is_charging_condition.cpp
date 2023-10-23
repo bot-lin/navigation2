@@ -60,9 +60,9 @@ BT::NodeStatus IsChargingCondition::tick()
 
 
     if(charging_time.seconds() > charing_duration_)
-      return BT::NodeStatus::FAILURE;
-    else
       return BT::NodeStatus::SUCCESS;
+    else
+      return BT::NodeStatus::FAILURE;
   }
   return BT::NodeStatus::FAILURE;
 }
