@@ -17,12 +17,12 @@
 
 #include "std_msgs/msg/string.hpp"
 
-#include "nav2_behavior_tree/plugins/action/find_docking_point_cancel_node.hpp"
+#include "nav2_behavior_tree/plugins/action/find_cylinder_centroid_cancel_node.hpp"
 
 namespace nav2_behavior_tree
 {
 
-FindDockingPointCancel::FindDockingPointCancel(
+FindCylinderCentroidCancel::FindCylinderCentroidCancel(
   const std::string & xml_tag_name,
   const std::string & action_name,
   const BT::NodeConfiguration & conf)
