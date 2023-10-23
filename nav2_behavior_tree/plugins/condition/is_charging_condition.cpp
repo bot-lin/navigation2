@@ -53,15 +53,15 @@ BT::NodeStatus IsChargingCondition::tick()
   RCLCPP_INFO(node_->get_logger(), "is_charging_: %d", is_charging_);
 
   if (is_charging_) {
-    // rclcpp::Duration charging_time = steady_clock_.now() - start_time_;
-    // RCLCPP_INFO(node_->get_logger(), "charging_time: %f", charging_time.seconds());
-    // RCLCPP_INFO(node_->get_logger(), "start_time_: %f", start_time_.seconds());
+    rclcpp::Duration charging_time = steady_clock_.now() - start_time_;
+    RCLCPP_INFO(node_->get_logger(), "charging_time: %f", charging_time.seconds());
+    RCLCPP_INFO(node_->get_logger(), "start_time_: %f", start_time_.seconds());
 
 
 
-    // if(charging_time.seconds() > charing_duration_)
-    //   return BT::NodeStatus::FAILURE;
-    // else
+    if(charging_time.seconds() > charing_duration_)
+      return BT::NodeStatus::FAILURE;
+    else
       return BT::NodeStatus::SUCCESS;
   }
   return BT::NodeStatus::FAILURE;
@@ -71,7 +71,7 @@ void IsChargingCondition::chargingCallback(std_msgs::msg::Int8::SharedPtr msg)
 {
 
   if (msg->data == 1) {
-    // if(!is_charging_) start_time_ = steady_clock_.now();
+    if(!is_charging_) start_time_ = steady_clock_.now();
     is_charging_ = true;
   } else {
     is_charging_ = false;
