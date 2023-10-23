@@ -67,7 +67,9 @@ void PreciseNavAction::on_wait_for_result(
   getInput("distance_goal_tolerance", distance_goal_tolerance);
   getInput("yaw_goal_tolerance", yaw_goal_tolerance);
   getInput("is_heading_only", is_heading_only);
-  getInput("target_tf_frame", target_tf_frame);
+    if (!getInput("target_tf_frame", target_tf_frame)) {
+    target_tf_frame = "odom";
+  }
 
   
   if (new_goal != goal_.pose)
