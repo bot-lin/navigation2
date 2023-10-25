@@ -44,6 +44,27 @@ using nav2_util::declare_parameter_if_not_declared;
 using rcl_interfaces::msg::ParameterType;
 using std::placeholders::_1;
 
+typedef std::pair<double, double> DoublePoint;
+
+double euclideanDistance(const DoublePoint& p1, const DoublePoint& p2) {
+    return std::sqrt(std::pow(p1.first - p2.first, 2) + std::pow(p1.second - p2.second, 2));
+}
+
+DoublePoint findClosestPoint(const DoublePoint& target, const std::vector<Pose>& points) {
+    double minDistance = std::numeric_limits<double>::max();
+    DoublePoint closestPoint = {points[0].x, points[0].y};
+
+    for (const auto& point : points) {
+        double distance = euclideanDistance(target, {point.x,point.y});
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestPoint = {point.x, point.y};
+        }
+    }
+
+    return closestPoint;
+}
+
 namespace nav2_navfn_planner
 {
 
@@ -171,7 +192,21 @@ nav_msgs::msg::Path NavfnPlanner::createPlan(
     return path;
   }
 
-  if (!makePlan(start.pose, goal.pose, tolerance_, path)) {
+  std::string filename_txt = "/data/path.txt";
+  std::vector<Pose> available_poses = readPathsFromFile(filename_txt);
+  DoublePoint closestPoint = findClosestPoint({start.pose.position.x, start.pose.position.y}, available_poses);
+  geometry_msgs::msg::PoseStamped closestPoint_start;
+  closestPoint_start = start;
+  closestPoint_start.pose.position.x = closestPoint.fisrt;
+  closestPoint_start.pose.position.y = closestPoint.second;
+  closestPoint = findClosestPoint({goal.pose.position.x, goal.pose.position.y}, available_poses);
+  geometry_msgs::msg::PoseStamped closestPoint_goal;
+  closestPoint_goal = goal;
+  closestPoint_goal.pose.position.x = closestPoint.fisrt;
+  closestPoint_goal.pose.position.y = closestPoint.second;
+  
+
+  if (!makePlan(closestPoint_start.pose, closestPoint_goal.pose, tolerance_, path)) {
     RCLCPP_WARN(
       logger_, "%s: failed to create plan with "
       "tolerance %.2f.", name_.c_str(), tolerance_);
@@ -185,6 +220,21 @@ nav_msgs::msg::Path NavfnPlanner::createPlan(
 #endif
 
   return path;
+}
+
+
+
+std::vector<Pose> NavfnPlanner::readPathsFromFile(const std::string& filename){
+  std::vector<Pose> poses;
+    std::ifstream file(filename);
+    if (file.is_open()) {
+        double x, y;
+        while (file >> x >> y) {
+            poses.push_back({x, y});
+        }
+    }
+    file.close();
+    return poses;
 }
 
 bool

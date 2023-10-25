@@ -187,6 +187,9 @@ protected:
    */
   bool isPlannerOutOfDate();
 
+  std::vector<Pose> readPathsFromFile(const std::string& filename);
+
+
   // Planner based on ROS1 NavFn algorithm
   std::unique_ptr<NavFn> planner_;
 
