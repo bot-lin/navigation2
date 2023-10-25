@@ -32,6 +32,11 @@
 #include "nav2_costmap_2d/costmap_2d_ros.hpp"
 #include "nav2_util/geometry_utils.hpp"
 
+struct Pose {
+    double x;
+    double y;
+};
+
 namespace nav2_navfn_planner
 {
 
