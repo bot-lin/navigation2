@@ -65,6 +65,19 @@ DoublePoint findClosestPoint(const DoublePoint& target, const std::vector<Pose>&
     return closestPoint;
 }
 
+std::vector<Pose> readPathsFromFile(const std::string& filename){
+  std::vector<Pose> poses;
+    std::ifstream file(filename);
+    if (file.is_open()) {
+        double x, y;
+        while (file >> x >> y) {
+            poses.push_back({x, y});
+        }
+    }
+    file.close();
+    return poses;
+}
+
 namespace nav2_navfn_planner
 {
 
@@ -223,19 +236,6 @@ nav_msgs::msg::Path NavfnPlanner::createPlan(
 }
 
 
-
-std::vector<Pose> NavfnPlanner::readPathsFromFile(const std::string& filename){
-  std::vector<Pose> poses;
-    std::ifstream file(filename);
-    if (file.is_open()) {
-        double x, y;
-        while (file >> x >> y) {
-            poses.push_back({x, y});
-        }
-    }
-    file.close();
-    return poses;
-}
 
 bool
 NavfnPlanner::isPlannerOutOfDate()
