@@ -197,12 +197,12 @@ nav_msgs::msg::Path NavfnPlanner::createPlan(
   DoublePoint closestPoint = findClosestPoint({start.pose.position.x, start.pose.position.y}, available_poses);
   geometry_msgs::msg::PoseStamped closestPoint_start;
   closestPoint_start = start;
-  closestPoint_start.pose.position.x = closestPoint.fisrt;
+  closestPoint_start.pose.position.x = closestPoint.first;
   closestPoint_start.pose.position.y = closestPoint.second;
   closestPoint = findClosestPoint({goal.pose.position.x, goal.pose.position.y}, available_poses);
   geometry_msgs::msg::PoseStamped closestPoint_goal;
   closestPoint_goal = goal;
-  closestPoint_goal.pose.position.x = closestPoint.fisrt;
+  closestPoint_goal.pose.position.x = closestPoint.first;
   closestPoint_goal.pose.position.y = closestPoint.second;
   
 
