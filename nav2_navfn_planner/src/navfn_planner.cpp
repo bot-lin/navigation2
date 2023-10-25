@@ -37,6 +37,7 @@
 #include "nav2_util/costmap.hpp"
 #include "nav2_util/node_utils.hpp"
 #include "nav2_costmap_2d/cost_values.hpp"
+#include <fstream>
 
 using namespace std::chrono_literals;
 using namespace std::chrono;  // NOLINT
