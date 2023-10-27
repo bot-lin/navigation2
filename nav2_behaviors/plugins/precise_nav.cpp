@@ -16,8 +16,9 @@ double find_v_based_on_w(double angleError, double k, double maxLinearVelocity)
     double v = maxLinearVelocity * (1 - k * std::abs(angleError));
     if (v < 0) v = 0;
     return v;
-
 }
+
+
 namespace nav2_behaviors
 {
 
@@ -95,6 +96,8 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     
     yaw_goal_tolerance_ = command->yaw_goal_tolerance;
     distance_goal_tolerance_ = command->distance_goal_tolerance;
+    angularController_.reset_pid();
+    angularController_.setParams(command->orientation_p, command->orientation_i, command->orientation_d);
     RCLCPP_INFO(this->logger_, "From precise nav");
     RCLCPP_INFO(this->logger_, "Is reverse %d", is_reverse_);
     RCLCPP_INFO(this->logger_, "distance_goal_tolerance %f", distance_goal_tolerance_);
@@ -153,6 +156,8 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     target_tf_frame_ = command->target_tf_frame;
     
     is_reverse_ = command->is_reverse;
+    angularController_.reset_pid();
+    angularController_.setParams(command->orientation_p, command->orientation_i, command->orientation_d);
 
     if (command->pose.header.frame_id != target_tf_frame_.c_str())
     {
@@ -212,6 +217,7 @@ Status PreciseNav::onCycleUpdate()
         if (distance_to_goal > distance_goal_tolerance_ && !reached_distance_goal_)
         {
             cmd_vel->linear.x = find_v_based_on_w(heading_error, 2.0, 0.5);
+            cmd_vel->angular.z = angularController_.compute(0.0, heading_error);
             if (is_reverse_) cmd_vel->linear.x = -cmd_vel->linear.x;
             // if (std::fabs(heading_error) > heading_tolerance_){
             //     if (is_reverse_) cmd_vel->linear.x = -0.01;

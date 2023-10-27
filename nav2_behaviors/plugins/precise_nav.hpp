@@ -9,6 +9,36 @@
 #include "nav2_msgs/action/precise_nav.hpp"
 #include "geometry_msgs/msg/quaternion.hpp"
 
+class PIDController {
+    double Kp, Ki, Kd;
+    double integralError = 0;
+    double prevError = 0;
+
+public:
+    PIDController(double p, double i, double d) : Kp(p), Ki(i), Kd(d) {}
+
+    double setParams(double p, double i, double d)
+    {
+        Kp = p;
+        Ki = i;
+        Kd = d;
+    }
+
+    void reset_pid()
+    {
+        integralError = 0;
+        prevError = 0;
+    }
+
+    double compute(double setpoint, double actualValue) {
+        double error = setpoint - actualValue;
+        integralError += error;
+        double derivativeError = error - prevError;
+        prevError = error;
+        return Kp * error + Ki * integralError + Kd * derivativeError;
+    }
+};
+
 namespace nav2_behaviors
 {
 using PreciseNavAction = nav2_msgs::action::PreciseNav;
@@ -40,6 +70,7 @@ protected:
     bool reached_distance_goal_ = false;
     bool is_reverse_ = false;
     bool is_heading_only_ = false;
+    PIDController angularController_(1.0, 0.0, 0.5);
     std::string target_tf_frame_ = "odom";
     
 };
