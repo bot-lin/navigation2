@@ -70,7 +70,7 @@ protected:
     bool reached_distance_goal_ = false;
     bool is_reverse_ = false;
     bool is_heading_only_ = false;
-    PIDController angularController_(1.0, 0.0, 0.5);
+    PIDController angularController_;
     std::string target_tf_frame_ = "odom";
     
 };
