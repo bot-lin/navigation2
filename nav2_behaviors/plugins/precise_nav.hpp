@@ -15,7 +15,7 @@ class PIDController {
     double prevError = 0;
 
 public:
-    PIDController(double p, double i, double d) : Kp(p), Ki(i), Kd(d) {}
+    PIDController(){}
 
     void setParams(double p, double i, double d)
     {
