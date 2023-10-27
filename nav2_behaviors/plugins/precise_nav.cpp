@@ -236,7 +236,8 @@ Status PreciseNav::onCycleUpdate()
         }
         else if (std::fabs(yaw_goal_error) > yaw_goal_tolerance_)
         {
-            cmd_vel->angular.z = orientation_p_ * yaw_goal_error;
+            
+            cmd_vel->angular.z = angularController_.compute(0.0, -yaw_goal_error);
             if (cmd_vel->angular.z < 0.1 && cmd_vel->angular.z >0.0){
                 cmd_vel->angular.z = 0.1;
             }
