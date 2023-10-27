@@ -50,6 +50,15 @@ void PreciseNavAction::on_tick()
   if (!getInput("target_tf_frame", goal_.target_tf_frame)) {
     goal_.target_tf_frame = "odom";
   }
+  if (!getInput("orientation_p", goal_.orientation_p)) {
+    goal_.orientation_p = 1.0;
+  }
+  if (!getInput("orientation_i", goal_.orientation_i)) {
+    goal_.orientation_i = 0.05;
+  }
+  if (!getInput("orientation_d", goal_.orientation_d)) {
+    goal_.orientation_d = 0.1;
+  }
   getInput("is_heading_only", goal_.heading_only);
 }
 

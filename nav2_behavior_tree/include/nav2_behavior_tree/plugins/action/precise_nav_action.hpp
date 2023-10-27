@@ -61,6 +61,9 @@ public:
         BT::InputPort<bool>("is_heading_only", "is_heading_only"),
         BT::InputPort<float>("distance_goal_tolerance", "distance goal tolerance"),
         BT::InputPort<float>("yaw_goal_tolerance", "yaw goal tolerance"),
+        BT::InputPort<double>("orientation_p", "orientation p"),
+        BT::InputPort<double>("orientation_i", "orientation i"),
+        BT::InputPort<double>("orientation_d", "orientation d"),
         BT::InputPort<std::string>("target_tf_frame", "The target frame for the goal pose"),
       });
   }
