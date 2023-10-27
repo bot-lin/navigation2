@@ -14,7 +14,6 @@ using namespace std::chrono_literals;
 double find_v_based_on_w(double angleError, double k, double maxLinearVelocity, double distanceError, double d_max)
 {      
     double distanceFactor = std::min(1.0, distanceError / d_max);
-    double v = maxLinearVelocity * (1 - k * std::abs(angleError));
     double v = maxLinearVelocity * (1 - k * std::abs(angleError)) * distanceFactor;
 
     if (v < 0) v = 0;
