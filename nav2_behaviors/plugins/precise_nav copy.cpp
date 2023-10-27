@@ -11,13 +11,6 @@
 #include <tf2/LinearMath/Quaternion.h>
 using namespace std::chrono_literals;
 
-double find_v_based_on_w(angleError, k, maxLinearVelocity)
-{
-    double v = maxLinearVelocity * (1 - k * std::abs(angleError));
-    if if (v < 0) v = 0;
-    return v;
-
-}
 namespace nav2_behaviors
 {
 
@@ -211,20 +204,18 @@ Status PreciseNav::onCycleUpdate()
     else{
         if (distance_to_goal > distance_goal_tolerance_ && !reached_distance_goal_)
         {
-            cmd_vel->linear.x = find_v_based_on_w(heading_error, 2.0, 0.5);
-            if (is_reverse_) cmd_vel->linear.x = -cmd_vel->linear.x;
-            // if (std::fabs(heading_error) > heading_tolerance_){
-            //     if (is_reverse_) cmd_vel->linear.x = -0.01;
-            //     else cmd_vel->linear.x = 0.01;
-            //     if (heading_error > 0) cmd_vel->angular.z = angular_velocity_;
-            //     else cmd_vel->angular.z = -angular_velocity_;
-            // }
-            // else
-            // {
-            //     if (is_reverse_) cmd_vel->linear.x = -linear_velocity_;
-            //     else cmd_vel->linear.x = linear_velocity_;
-            //     cmd_vel->angular.z = orientation_p_ * heading_error;
-            // }
+            if (std::fabs(heading_error) > heading_tolerance_){
+                if (is_reverse_) cmd_vel->linear.x = -0.01;
+                else cmd_vel->linear.x = 0.01;
+                if (heading_error > 0) cmd_vel->angular.z = angular_velocity_;
+                else cmd_vel->angular.z = -angular_velocity_;
+            }
+            else
+            {
+                if (is_reverse_) cmd_vel->linear.x = -linear_velocity_;
+                else cmd_vel->linear.x = linear_velocity_;
+                cmd_vel->angular.z = orientation_p_ * heading_error;
+            }
         }
         else if (std::fabs(yaw_goal_error) > yaw_goal_tolerance_)
         {

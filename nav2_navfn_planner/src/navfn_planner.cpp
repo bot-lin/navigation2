@@ -218,6 +218,9 @@ nav_msgs::msg::Path NavfnPlanner::createPlan(
   closestPoint_goal = goal;
   closestPoint_goal.pose.position.x = closestPoint.first;
   closestPoint_goal.pose.position.y = closestPoint.second;
+  RCLCPP_INFO(logger_, "Original point to start is: %f, %f", start.pose.position.x, start.pose.position.y);
+  RCLCPP_INFO(logger_, "Original point to end is: %f, %f", goal.pose.position.x, goal.pose.position.y);
+
   RCLCPP_INFO(logger_, "Closest point to start is: %f, %f", closestPoint_start.pose.position.x, closestPoint_start.pose.position.y);
   RCLCPP_INFO(logger_, "Closest point to end is: %f, %f", closestPoint_goal.pose.position.x, closestPoint_goal.pose.position.y);
 
