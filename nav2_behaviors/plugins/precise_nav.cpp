@@ -11,9 +11,12 @@
 #include <tf2/LinearMath/Quaternion.h>
 using namespace std::chrono_literals;
 
-double find_v_based_on_w(double angleError, double k, double maxLinearVelocity)
-{
+double find_v_based_on_w(double angleError, double k, double maxLinearVelocity, double distanceError, double d_max)
+{      
+    double distanceFactor = std::min(1.0, distanceError / d_max);
     double v = maxLinearVelocity * (1 - k * std::abs(angleError));
+    double v = maxLinearVelocity * (1 - k * std::abs(angleError)) * distanceFactor;
+
     if (v < 0) v = 0;
     return v;
 }
@@ -216,7 +219,7 @@ Status PreciseNav::onCycleUpdate()
     else{
         if (distance_to_goal > distance_goal_tolerance_ && !reached_distance_goal_)
         {
-            cmd_vel->linear.x = find_v_based_on_w(heading_error, 1.0, 0.5);
+            cmd_vel->linear.x = find_v_based_on_w(heading_error, 1.0, 0.5, distance_to_goal, 2.0);
             cmd_vel->angular.z = angularController_.compute(0.0, -heading_error);
             if (is_reverse_) cmd_vel->linear.x = -cmd_vel->linear.x;
             // if (std::fabs(heading_error) > heading_tolerance_){
