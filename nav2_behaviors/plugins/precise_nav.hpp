@@ -17,7 +17,7 @@ class PIDController {
 public:
     PIDController(double p, double i, double d) : Kp(p), Ki(i), Kd(d) {}
 
-    double setParams(double p, double i, double d)
+    void setParams(double p, double i, double d)
     {
         Kp = p;
         Ki = i;
