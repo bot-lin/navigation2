@@ -233,10 +233,15 @@ Status PreciseNav::onCycleUpdate()
             //     else cmd_vel->linear.x = linear_velocity_;
             //     cmd_vel->angular.z = orientation_p_ * heading_error;
             // }
+            pid_reset_ = false;
         }
         else if (std::fabs(yaw_goal_error) > yaw_goal_tolerance_)
         {
-            
+            if (!pid_reset_)
+            {
+                angularController_.reset_pid();
+                pid_reset_ = true;
+            }
             cmd_vel->angular.z = angularController_.compute(0.0, -yaw_goal_error);
             if (cmd_vel->angular.z < 0.1 && cmd_vel->angular.z >0.0){
                 cmd_vel->angular.z = 0.1;
