@@ -240,7 +240,7 @@ Status PreciseNav::onCycleUpdate()
             if (!pid_reset_)
             {
                 angularController_.reset_pid();
-                angularController_.setParams(0.15, 0.01, 0.05);
+                angularController_.setParams(0.1, 0.001, 0.05);
                 pid_reset_ = true;
             }
             cmd_vel->angular.z = angularController_.compute(0.0, -yaw_goal_error);
