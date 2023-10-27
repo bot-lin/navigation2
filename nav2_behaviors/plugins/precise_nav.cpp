@@ -11,7 +11,7 @@
 #include <tf2/LinearMath/Quaternion.h>
 using namespace std::chrono_literals;
 
-double find_v_based_on_w(angleError, k, maxLinearVelocity)
+double find_v_based_on_w(double angleError, double k, double maxLinearVelocity)
 {
     double v = maxLinearVelocity * (1 - k * std::abs(angleError));
     if if (v < 0) v = 0;
