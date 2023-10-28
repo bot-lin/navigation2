@@ -63,11 +63,13 @@ public:
     }
 };
 
-double find_v_based_on_w(double angleError, double k, double maxLinearVelocity)
+double find_v_based_on_w(double angleError, double k, double maxLinearVelocity, double scaleFactor)
 {      
     // double distanceFactor = std::min(1.0, distanceError / d_max);
     // double v = maxLinearVelocity * (1 - k * std::abs(angleError)) * distanceFactor;
-    double v = maxLinearVelocity * (1 - k * std::abs(angleError));
+    
+    // double v = maxLinearVelocity * (1 - k * std::abs(angleError));
+    double v = maxLinearVelocity * (1 - k * std::tanh(scaleFactor * angleError))
 
     if (v < 0) v = 0;
     return v;
