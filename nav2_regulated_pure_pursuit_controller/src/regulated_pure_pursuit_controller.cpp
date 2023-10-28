@@ -394,10 +394,11 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
   } else{
     angular_vel = std::clamp(angularController_.compute(0.0, -angle_to_heading), -rotate_to_heading_angular_vel_, rotate_to_heading_angular_vel_);
     applyConstraints(
-      curvature, speed,
+      curvature, angle_to_heading, speed,
       costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
       linear_vel, sign);
   }
+  
   
   // else if (shouldRotateToPath(rotate_pose, angle_to_heading)) {
   //   RCLCPP_INFO(
@@ -812,7 +813,7 @@ void RegulatedPurePursuitController::applyApproachVelocityScaling(
 }
 
 void RegulatedPurePursuitController::applyConstraints(
-  const double & curvature, const geometry_msgs::msg::Twist & /*curr_speed*/,
+  const double & curvature, const double angle_to_heading, const geometry_msgs::msg::Twist & /*curr_speed*/,
   const double & pose_cost, const nav_msgs::msg::Path & path, double & linear_vel, double & sign)
 {
   double curvature_vel = linear_vel;
@@ -845,7 +846,7 @@ void RegulatedPurePursuitController::applyConstraints(
       cost_vel *= cost_scaling_gain_ * min_distance_to_obstacle / cost_scaling_dist_;
     }
   }
-
+  
   // Use the lowest of the 2 constraint heuristics, but above the minimum translational speed
   linear_vel = std::min(cost_vel, curvature_vel);
   linear_vel = std::max(linear_vel, regulated_linear_scaling_min_speed_);
@@ -854,6 +855,10 @@ void RegulatedPurePursuitController::applyConstraints(
 
   // Limit linear velocities to be valid
   linear_vel = std::clamp(fabs(linear_vel), 0.0, desired_linear_vel_);
+
+  double pid_regulated_vel = 0.0;
+  pid_regulated_vel = find_v_based_on_w(angle_to_heading, 2.0, desired_linear_vel_);
+  linear_vel = std::min(pid_regulated_vel, linear_vel);
   linear_vel = sign * linear_vel;
 }
 

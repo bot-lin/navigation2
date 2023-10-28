@@ -63,10 +63,11 @@ public:
     }
 };
 
-double find_v_based_on_w(double angleError, double k, double maxLinearVelocity, double distanceError, double d_max)
+double find_v_based_on_w(double angleError, double k, double maxLinearVelocity)
 {      
-    double distanceFactor = std::min(1.0, distanceError / d_max);
-    double v = maxLinearVelocity * (1 - k * std::abs(angleError)) * distanceFactor;
+    // double distanceFactor = std::min(1.0, distanceError / d_max);
+    // double v = maxLinearVelocity * (1 - k * std::abs(angleError)) * distanceFactor;
+    double v = maxLinearVelocity * (1 - k * std::abs(angleError));
 
     if (v < 0) v = 0;
     return v;
@@ -270,7 +271,7 @@ protected:
    * @param pose_cost cost at this pose
    */
   void applyConstraints(
-    const double & curvature, const geometry_msgs::msg::Twist & speed,
+    const double & curvature, const double angle_to_heading, const geometry_msgs::msg::Twist & speed,
     const double & pose_cost, const nav_msgs::msg::Path & path,
     double & linear_vel, double & sign);
 
