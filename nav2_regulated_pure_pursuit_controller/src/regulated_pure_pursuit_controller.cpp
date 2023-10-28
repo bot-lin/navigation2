@@ -830,6 +830,7 @@ void RegulatedPurePursuitController::applyConstraints(
 
   double pid_regulated_vel = 0.0;
   pid_regulated_vel = find_v_based_on_w(angle_to_heading, pid_scaling_factor_, desired_linear_vel_, pid_steepness_control_);
+  RCLCPP_INFO(logger_, "PID params: P %f, I %f, D %f, scaling %f steep %f", pid_p_, pid_i_, pid_d_, pid_scaling_factor_, pid_steepness_control_);
   // linear_vel = std::min(pid_regulated_vel, linear_vel);
   linear_vel = std::min(cost_vel, pid_regulated_vel);
   applyApproachVelocityScaling(path, linear_vel);
