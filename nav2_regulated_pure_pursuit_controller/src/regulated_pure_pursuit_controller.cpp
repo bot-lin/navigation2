@@ -391,7 +391,7 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
     double angle_to_goal = tf2::getYaw(transformed_plan.poses.back().pose.orientation);
     rotateToHeading(linear_vel, angular_vel, angle_to_goal);
     is_rotating = true;
-    RCLCPP_INFO(logger_, "Rotating to heading");
+    RCLCPP_INFO(logger_, "Rotating to heading %f", angle_to_goal);
     
   } else{
     angular_vel = std::clamp(angularController_.compute(0.0, -angle_to_heading), -rotate_to_heading_angular_vel_, rotate_to_heading_angular_vel_);
