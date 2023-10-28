@@ -851,14 +851,16 @@ void RegulatedPurePursuitController::applyConstraints(
   linear_vel = std::min(cost_vel, curvature_vel);
   linear_vel = std::max(linear_vel, regulated_linear_scaling_min_speed_);
 
-  applyApproachVelocityScaling(path, linear_vel);
+  // applyApproachVelocityScaling(path, linear_vel);
 
   // Limit linear velocities to be valid
   linear_vel = std::clamp(fabs(linear_vel), 0.0, desired_linear_vel_);
 
   double pid_regulated_vel = 0.0;
   pid_regulated_vel = find_v_based_on_w(angle_to_heading, 2.0, desired_linear_vel_);
-  linear_vel = std::min(pid_regulated_vel, linear_vel);
+  // linear_vel = std::min(pid_regulated_vel, linear_vel);
+  linear_vel = pid_regulated_vel;
+  applyApproachVelocityScaling(path, linear_vel);
   linear_vel = sign * linear_vel;
 }
 
