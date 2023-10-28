@@ -306,6 +306,8 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   const geometry_msgs::msg::Twist & speed,
   nav2_core::GoalChecker * goal_checker)
 {
+  RCLCPP_INFO(logger_, "-------------------------");
+
   std::lock_guard<std::mutex> lock_reinit(mutex_);
 
   // Update for the current goal checker's state
@@ -387,7 +389,7 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
   // Make sure we're in compliance with basic constraints
   double angle_to_heading;
   getRadToCarrotPose(carrot_pose, angle_to_heading);
-  if (shouldRotateToGoalHeading(carrot_pose)) {
+  if (shouldRotateToGoalHeading(transformed_plan.poses.back().pose)) {
     double angle_to_goal = tf2::getYaw(transformed_plan.poses.back().pose.orientation);
     rotateToHeading(linear_vel, angular_vel, angle_to_goal);
     is_rotating = true;
@@ -521,7 +523,6 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
     //   throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
     // }
   }
-  RCLCPP_INFO(logger_, "-------------------------");
   RCLCPP_INFO(logger_, "linear %f", linear_vel);
   RCLCPP_INFO(logger_, "angular %f", angular_vel);
   // populate and return message
