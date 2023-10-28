@@ -59,7 +59,7 @@ void RegulatedPurePursuitController::configure(
   double transform_tolerance = 0.1;
   double control_frequency = 20.0;
   goal_dist_tol_ = 0.25;  // reasonable default before first update
-  angularController_.setParams(0.05, 0.001, 0.001);
+  angularController_.setParams(0.05, 0.0, 0.001);
 
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".desired_linear_vel", rclcpp::ParameterValue(0.5));
@@ -517,7 +517,9 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
     //   throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
     // }
   }
-
+  RCLCPP_INFO(logger_, "-------------------------");
+  RCLCPP_INFO(logger_, "linear %f", linear_vel);
+  RCLCPP_INFO(logger_, "angular %f", angular_vel);
   // populate and return message
   geometry_msgs::msg::TwistStamped cmd_vel;
   cmd_vel.header = pose.header;
