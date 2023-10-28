@@ -392,7 +392,7 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
     rotateToHeading(linear_vel, angular_vel, angle_to_goal);
     is_rotating = true;
   } else{
-    angular_vel = std::clamp(angularController_.compute(0.0, -angle_to_heading), -rotate_to_heading_angular_vel, rotate_to_heading_angular_vel);
+    angular_vel = std::clamp(angularController_.compute(0.0, -angle_to_heading), -rotate_to_heading_angular_vel_, rotate_to_heading_angular_vel_);
     applyConstraints(
       curvature, speed,
       costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
