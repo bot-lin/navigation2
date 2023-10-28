@@ -59,7 +59,7 @@ void RegulatedPurePursuitController::configure(
   double transform_tolerance = 0.1;
   double control_frequency = 20.0;
   goal_dist_tol_ = 0.25;  // reasonable default before first update
-  angularController_.setParams(0.2, 0.0, 0.001);
+  angularController_.setParams(0.3, 0.0, 0.001);
 
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".desired_linear_vel", rclcpp::ParameterValue(0.5));
@@ -864,7 +864,7 @@ void RegulatedPurePursuitController::applyConstraints(
   linear_vel = std::clamp(fabs(linear_vel), 0.0, desired_linear_vel_);
 
   double pid_regulated_vel = 0.0;
-  pid_regulated_vel = find_v_based_on_w(angle_to_heading, 1.0, desired_linear_vel_, 2.0);
+  pid_regulated_vel = find_v_based_on_w(angle_to_heading, 1.0, desired_linear_vel_, 3.0);
   // linear_vel = std::min(pid_regulated_vel, linear_vel);
   linear_vel = pid_regulated_vel;
   applyApproachVelocityScaling(path, linear_vel);
