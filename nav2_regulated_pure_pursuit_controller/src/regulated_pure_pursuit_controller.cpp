@@ -59,7 +59,7 @@ void RegulatedPurePursuitController::configure(
   double transform_tolerance = 0.1;
   double control_frequency = 20.0;
   goal_dist_tol_ = 0.25;  // reasonable default before first update
-  angularController_.setParams(0.3, 0.0, 0.001);
+  angularController_.setParams(0.35, 0.0, 0.001);
 
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".desired_linear_vel", rclcpp::ParameterValue(0.5));
