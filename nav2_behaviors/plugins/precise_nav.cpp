@@ -100,6 +100,10 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     distance_goal_tolerance_ = command->distance_goal_tolerance;
     angularController_.reset_pid();
     angularController_.setParams(command->orientation_p, command->orientation_i, command->orientation_d);
+    max_linear_ = command->max_linear;
+    max_angular_ = command->max_angular;
+    scale_factor_ = command->scale_factor;
+    distance_max_ = command->distance_max;
     RCLCPP_INFO(this->logger_, "From precise nav");
     RCLCPP_INFO(this->logger_, "Is reverse %d", is_reverse_);
     RCLCPP_INFO(this->logger_, "distance_goal_tolerance %f", distance_goal_tolerance_);
@@ -160,7 +164,10 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     is_reverse_ = command->is_reverse;
     angularController_.reset_pid();
     angularController_.setParams(command->orientation_p, command->orientation_i, command->orientation_d);
-
+    max_linear_ = command->max_linear;
+    max_angular_ = command->max_angular;
+    scale_factor_ = command->scale_factor;
+    distance_max_ = command->distance_max;
     if (command->pose.header.frame_id != target_tf_frame_.c_str())
     {
         bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, target_tf_frame_.c_str(), this->transform_tolerance_);
@@ -218,8 +225,8 @@ Status PreciseNav::onCycleUpdate()
     else{
         if (distance_to_goal > distance_goal_tolerance_ && !reached_distance_goal_)
         {
-            cmd_vel->linear.x = find_v_based_on_w(heading_error, 1.0, 0.5, distance_to_goal, 2.0);
-            cmd_vel->angular.z = angularController_.compute(0.0, -heading_error);
+            cmd_vel->linear.x = find_v_based_on_w(heading_error, scale_factor_, max_linear_, distance_to_goal, distance_max_);
+            cmd_vel->angular.z = std::clamp(angularController_.compute(0.0, -heading_error), -max_angular_, max_angular_);
             if (is_reverse_) cmd_vel->linear.x = -cmd_vel->linear.x;
             // if (std::fabs(heading_error) > heading_tolerance_){
             //     if (is_reverse_) cmd_vel->linear.x = -0.01;

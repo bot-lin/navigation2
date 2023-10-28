@@ -67,6 +67,10 @@ protected:
     double angular_velocity_ = 0.2;
     double linear_velocity_ = 0.04;
     double orientation_p_ = 0.1;
+    double max_linear_ = 0.5;
+    double max_angular_ = 0.5;
+    double distance_max_ = 1.0;
+    double scale_factor_ = 2.0;
     bool reached_distance_goal_ = false;
     bool is_reverse_ = false;
     bool is_heading_only_ = false;

@@ -59,6 +59,19 @@ void PreciseNavAction::on_tick()
   if (!getInput("orientation_d", goal_.orientation_d)) {
     goal_.orientation_d = 0.1;
   }
+  if (!getInput("max_linear", goal_.max_linear)) {
+    goal_.max_linear = 0.5;
+  }
+  if (!getInput("max_angular", goal_.max_angular)) {
+    goal_.max_angular = 0.5;
+  }
+  if (!getInput("scale_factor", goal_.scale_factor)) {
+    goal_.scale_factor = 2.0;
+  }
+  if (!getInput("distance_max", goal_.distance_max)) {
+    goal_.distance_max = 1.0;
+  }
+
   getInput("is_heading_only", goal_.heading_only);
 }
 

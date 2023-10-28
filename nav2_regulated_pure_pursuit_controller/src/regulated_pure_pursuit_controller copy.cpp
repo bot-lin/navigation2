@@ -59,7 +59,6 @@ void RegulatedPurePursuitController::configure(
   double transform_tolerance = 0.1;
   double control_frequency = 20.0;
   goal_dist_tol_ = 0.25;  // reasonable default before first update
-  angularController_.setParams(0.1, 0.001, 0.001);
 
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".desired_linear_vel", rclcpp::ParameterValue(0.5));
@@ -294,8 +293,25 @@ double RegulatedPurePursuitController::getLookAheadDistance(
   // Else, use the static look ahead distance
   double lookahead_dist = lookahead_dist_;
   if (use_velocity_scaled_lookahead_dist_) {
-    lookahead_dist = fabs(speed.linear.x) * lookahead_time_;
-    lookahead_dist = std::clamp(lookahead_dist, min_lookahead_dist_, max_lookahead_dist_);     
+    //use min_vel, below which the lookahead_dist is set to min_lookahead_dist_
+    //     |
+    //max_d|         ______________
+    //     |        /
+    //     |       / 
+    //     |      /
+    //     |     / 
+    //     |    | 
+    //     |    |
+    //min_d|____|
+    //     |____|______________________________________
+    //         min_v
+    if (fabs(speed.linear.x) < min_vel_lookahead_) {
+      lookahead_dist = min_lookahead_dist_;
+    }else {
+      lookahead_dist = fabs(speed.linear.x) * lookahead_time_;
+      lookahead_dist = std::clamp(lookahead_dist, min_lookahead_dist_, max_lookahead_dist_);     
+    }
+
   }
 
   return lookahead_dist;
@@ -386,34 +402,25 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
   bool is_rotating = false;
   // Make sure we're in compliance with basic constraints
   double angle_to_heading;
-  getRadToCarrotPose(carrot_pose, angle_to_heading);
   if (shouldRotateToGoalHeading(carrot_pose)) {
     double angle_to_goal = tf2::getYaw(transformed_plan.poses.back().pose.orientation);
     rotateToHeading(linear_vel, angular_vel, angle_to_goal);
     is_rotating = true;
-  } else{
-    angular_vel = std::clamp(angularController_.compute(0.0, -angle_to_heading), -rotate_to_heading_angular_vel, rotate_to_heading_angular_vel);
+  } else if (shouldRotateToPath(rotate_pose, angle_to_heading)) {
+    RCLCPP_INFO(
+    logger_,
+    "Rotating");
+    rotateToHeading(linear_vel, angular_vel, angle_to_heading);
+    is_rotating = true;
+  } else {
     applyConstraints(
       curvature, speed,
       costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
       linear_vel, sign);
-  }
-  
-  // else if (shouldRotateToPath(rotate_pose, angle_to_heading)) {
-  //   RCLCPP_INFO(
-  //   logger_,
-  //   "Rotating");
-  //   rotateToHeading(linear_vel, angular_vel, angle_to_heading);
-  //   is_rotating = true;
-  // } else {
-  //   applyConstraints(
-  //     curvature, speed,
-  //     costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
-  //     linear_vel, sign);
 
-  //   // Apply curvature to angular velocity after constraining linear velocity
-  //   angular_vel = linear_vel * curvature;
-  // }
+    // Apply curvature to angular velocity after constraining linear velocity
+    angular_vel = linear_vel * curvature;
+  }
 
   std_msgs::msg::Bool msg;
   // Collision checking on this velocity heading
@@ -540,18 +547,6 @@ bool RegulatedPurePursuitController::shouldRotateToPath(
   return use_rotate_to_heading_ && fabs(angle_to_path) > rotate_to_heading_min_angle_;
 }
 
-void RegulatedPurePursuitController::getRadToCarrotPose(
-  const geometry_msgs::msg::PoseStamped & carrot_pose, double & angle_to_path)
-{
-  // Whether we should rotate robot to rough path heading
-  if (move_reversing_){
-    angle_to_path = atan2(-carrot_pose.pose.position.y, -carrot_pose.pose.position.x);
-  }
-  else{
-    angle_to_path = atan2(carrot_pose.pose.position.y, carrot_pose.pose.position.x);
-  }
-}
-
 bool RegulatedPurePursuitController::shouldRotateToGoalHeading(
   const geometry_msgs::msg::PoseStamped & carrot_pose)
 {
@@ -570,11 +565,9 @@ void RegulatedPurePursuitController::rotateToHeading(
   angular_vel = sign * rotate_to_heading_angular_vel_;
 
   // const double & dt = control_duration_;
-  // const double min_feasible_angular_speed = curr_speed.angular.z - params_->max_angular_accel * dt;
-  // const double max_feasible_angular_speed = curr_speed.angular.z + params_->max_angular_accel * dt;
+  // const double min_feasible_angular_speed = curr_speed.angular.z - max_angular_accel_ * dt;
+  // const double max_feasible_angular_speed = curr_speed.angular.z + max_angular_accel_ * dt;
   // angular_vel = std::clamp(angular_vel, min_feasible_angular_speed, max_feasible_angular_speed);
-
-  
 }
 
 geometry_msgs::msg::Point RegulatedPurePursuitController::circleSegmentIntersection(

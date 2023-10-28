@@ -33,45 +33,6 @@
 #include "std_msgs/msg/bool.hpp"
 #include "std_msgs/msg/float32.hpp"
 
-class PIDController {
-    double Kp, Ki, Kd;
-    double integralError = 0;
-    double prevError = 0;
-
-public:
-    PIDController(){}
-
-    void setParams(double p, double i, double d)
-    {
-        Kp = p;
-        Ki = i;
-        Kd = d;
-    }
-
-    void reset_pid()
-    {
-        integralError = 0;
-        prevError = 0;
-    }
-
-    double compute(double setpoint, double actualValue) {
-        double error = setpoint - actualValue;
-        integralError += error;
-        double derivativeError = error - prevError;
-        prevError = error;
-        return Kp * error + Ki * integralError + Kd * derivativeError;
-    }
-};
-
-double find_v_based_on_w(double angleError, double k, double maxLinearVelocity, double distanceError, double d_max)
-{      
-    double distanceFactor = std::min(1.0, distanceError / d_max);
-    double v = maxLinearVelocity * (1 - k * std::abs(angleError)) * distanceFactor;
-
-    if (v < 0) v = 0;
-    return v;
-}
-
 namespace nav2_regulated_pure_pursuit_controller
 {
 
@@ -196,9 +157,6 @@ protected:
    * @return Whether should rotate to path heading
    */
   bool shouldRotateToPath(
-    const geometry_msgs::msg::PoseStamped & carrot_pose, double & angle_to_path);
-
-  void getRadToCarrotPose(
     const geometry_msgs::msg::PoseStamped & carrot_pose, double & angle_to_path);
 
   /**
@@ -364,7 +322,6 @@ protected:
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<nav_msgs::msg::Path>> carrot_arc_pub_;
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>> turning_radius_pub_;
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Bool>> collision_pub_;
-  PIDController angularController_;
 
   std::unique_ptr<nav2_costmap_2d::FootprintCollisionChecker<nav2_costmap_2d::Costmap2D *>>
   collision_checker_;

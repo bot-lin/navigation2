@@ -64,6 +64,11 @@ public:
         BT::InputPort<double>("orientation_p", "orientation p"),
         BT::InputPort<double>("orientation_i", "orientation i"),
         BT::InputPort<double>("orientation_d", "orientation d"),
+        BT::InputPort<double>("max_linear", "max_linear"),
+        BT::InputPort<double>("max_angular", "max_angular"),
+        BT::InputPort<double>("scale_factor", "scale_factor"),
+        BT::InputPort<double>("distance_max", "distance_max"),
+
         BT::InputPort<std::string>("target_tf_frame", "The target frame for the goal pose"),
       });
   }
