@@ -59,12 +59,9 @@ void RegulatedPurePursuitController::configure(
   double transform_tolerance = 0.1;
   double control_frequency = 20.0;
   goal_dist_tol_ = 0.25;  // reasonable default before first update
-  angularController_.setParams(0.4, 0.0, 0.001);
-
+  
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".desired_linear_vel", rclcpp::ParameterValue(0.5));
-  declare_parameter_if_not_declared(
-    node, plugin_name_ + ".curvature_lookahead_dist", rclcpp::ParameterValue(1.0));
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".lookahead_dist", rclcpp::ParameterValue(0.6));
   declare_parameter_if_not_declared(
@@ -74,7 +71,7 @@ void RegulatedPurePursuitController::configure(
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".lookahead_time", rclcpp::ParameterValue(1.5));
   declare_parameter_if_not_declared(
-    node, plugin_name_ + ".rotate_to_heading_angular_vel", rclcpp::ParameterValue(1.8));
+    node, plugin_name_ + ".max_angular_vel", rclcpp::ParameterValue(1.8));
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".transform_tolerance", rclcpp::ParameterValue(0.1));
   declare_parameter_if_not_declared(
@@ -91,10 +88,7 @@ void RegulatedPurePursuitController::configure(
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".use_collision_detection",
     rclcpp::ParameterValue(true));
-  declare_parameter_if_not_declared(
-    node, plugin_name_ + ".use_regulated_linear_velocity_scaling", rclcpp::ParameterValue(true));
-  declare_parameter_if_not_declared(
-    node, plugin_name_ + ".use_fixed_curvature_lookahead", rclcpp::ParameterValue(true));
+ 
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".use_cost_regulated_linear_velocity_scaling",
     rclcpp::ParameterValue(true));
@@ -104,10 +98,8 @@ void RegulatedPurePursuitController::configure(
     node, plugin_name_ + ".cost_scaling_gain", rclcpp::ParameterValue(1.0));
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".inflation_cost_scaling_factor", rclcpp::ParameterValue(3.0));
-  declare_parameter_if_not_declared(
-    node, plugin_name_ + ".regulated_linear_scaling_min_radius", rclcpp::ParameterValue(0.90));
-  declare_parameter_if_not_declared(
-    node, plugin_name_ + ".regulated_linear_scaling_radius_factor", rclcpp::ParameterValue(1.0));
+  
+  
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".regulated_linear_scaling_min_speed", rclcpp::ParameterValue(0.25));
   declare_parameter_if_not_declared(
@@ -126,9 +118,20 @@ void RegulatedPurePursuitController::configure(
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".use_interpolation",
     rclcpp::ParameterValue(true));
+  declare_parameter_if_not_declared(
+    node, plugin_name_ + ".pid_p", rclcpp::ParameterValue(0.4));
+  declare_parameter_if_not_declared(
+    node, plugin_name_ + ".pid_i", rclcpp::ParameterValue(0.0));
+  declare_parameter_if_not_declared(
+    node, plugin_name_ + ".pid_d", rclcpp::ParameterValue(0.001));
+  declare_parameter_if_not_declared(
+    node, plugin_name_ + ".pid_i_max", rclcpp::ParameterValue(1.0));
+  declare_parameter_if_not_declared(
+    node, plugin_name_ + ".pid_scaling_factor", rclcpp::ParameterValue(1.0));
+  declare_parameter_if_not_declared(
+    node, plugin_name_ + ".pid_steepness_control", rclcpp::ParameterValue(2.0));
 
   node->get_parameter(plugin_name_ + ".desired_linear_vel", desired_linear_vel_);
-  node->get_parameter(plugin_name_ + ".curvature_lookahead_dist", curvature_lookahead_dist_);
   base_desired_linear_vel_ = desired_linear_vel_;
   node->get_parameter(plugin_name_ + ".lookahead_dist", lookahead_dist_);
   node->get_parameter(plugin_name_ + ".min_lookahead_dist", min_lookahead_dist_);
@@ -136,8 +139,8 @@ void RegulatedPurePursuitController::configure(
   node->get_parameter(plugin_name_ + ".max_lookahead_dist", max_lookahead_dist_);
   node->get_parameter(plugin_name_ + ".lookahead_time", lookahead_time_);
   node->get_parameter(
-    plugin_name_ + ".rotate_to_heading_angular_vel",
-    rotate_to_heading_angular_vel_);
+    plugin_name_ + ".max_angular_vel",
+    max_angular_vel_);
   node->get_parameter(plugin_name_ + ".transform_tolerance", transform_tolerance);
   node->get_parameter(
     plugin_name_ + ".use_velocity_scaled_lookahead_dist",
@@ -159,12 +162,7 @@ void RegulatedPurePursuitController::configure(
   node->get_parameter(
     plugin_name_ + ".use_collision_detection",
     use_collision_detection_);
-  node->get_parameter(
-    plugin_name_ + ".use_regulated_linear_velocity_scaling",
-    use_regulated_linear_velocity_scaling_);
-  node->get_parameter(
-    plugin_name_ + ".use_fixed_curvature_lookahead",
-    use_fixed_curvature_lookahead_);
+ 
   node->get_parameter(
     plugin_name_ + ".use_cost_regulated_linear_velocity_scaling",
     use_cost_regulated_linear_velocity_scaling_);
@@ -173,15 +171,7 @@ void RegulatedPurePursuitController::configure(
   node->get_parameter(
     plugin_name_ + ".inflation_cost_scaling_factor",
     inflation_cost_scaling_factor_);
-  node->get_parameter(
-    plugin_name_ + ".regulated_linear_scaling_min_radius",
-    regulated_linear_scaling_min_radius_);
-  node->get_parameter(
-    plugin_name_ + ".regulated_linear_scaling_radius_factor",
-    regulated_linear_scaling_radius_factor_);
-  node->get_parameter(
-    plugin_name_ + ".regulated_linear_scaling_min_speed",
-    regulated_linear_scaling_min_speed_);
+
   node->get_parameter(plugin_name_ + ".use_rotate_to_heading", use_rotate_to_heading_);
   node->get_parameter(plugin_name_ + ".rotate_to_heading_min_angle", rotate_to_heading_min_angle_);
   node->get_parameter(plugin_name_ + ".max_angular_accel", max_angular_accel_);
@@ -194,6 +184,15 @@ void RegulatedPurePursuitController::configure(
   node->get_parameter(
     plugin_name_ + ".use_interpolation",
     use_interpolation_);
+  
+  node->get_parameter(plugin_name_ + ".pid_p", pid_p_);
+  node->get_parameter(plugin_name_ + ".pid_i", pid_i_);
+  node->get_parameter(plugin_name_ + ".pid_d", pid_d_);
+  node->get_parameter(plugin_name_ + ".pid_i_max", pid_i_max_);
+  node->get_parameter(plugin_name_ + ".pid_scaling_factor", pid_scaling_factor_);
+  node->get_parameter(plugin_name_ + ".pid_steepness_control", pid_steepness_control_);
+  angularController_.setParams(pid_p_, pid_i_, pid_d_, pid_i_max_);
+
 
   transform_tolerance_ = tf2::durationFromSec(transform_tolerance);
   control_duration_ = 1.0 / control_frequency;
@@ -359,19 +358,6 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
 
   // Find curvature of circle (k = 1 / R)
   double curvature = 0.0;
-  if (use_fixed_curvature_lookahead_){
-    auto curvature_pose = getLookAheadPoint(lookahead_dist * 2, transformed_plan);
-    const double curvature_dist2 =
-    (curvature_pose.pose.position.x * curvature_pose.pose.position.x) +
-    (curvature_pose.pose.position.y * curvature_pose.pose.position.y);
-    if (curvature_dist2 > 0.001) {
-    curvature = 2.0 * curvature_pose.pose.position.y / curvature_dist2;
-    }
-  }else{
-    if (carrot_dist2 > 0.001) {
-      curvature = 2.0 * carrot_pose.pose.position.y / carrot_dist2;
-    }
-  }
   
 auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
   // Setting the velocity direction
@@ -396,7 +382,7 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
     RCLCPP_INFO(logger_, "Rotating to heading %f", angle_to_goal);
     
   } else{
-    angular_vel = std::clamp(angularController_.compute(0.0, -angle_to_heading), -rotate_to_heading_angular_vel_, rotate_to_heading_angular_vel_);
+    angular_vel = std::clamp(angularController_.compute(0.0, -angle_to_heading), -max_angular_vel_, max_angular_vel_);
     applyConstraints(
       curvature, angle_to_heading, speed,
       costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
@@ -575,7 +561,7 @@ void RegulatedPurePursuitController::rotateToHeading(
   // Rotate in place using max angular velocity / acceleration possible
   linear_vel = 0.0;
   const double sign = angle_to_path > 0.0 ? 1.0 : -1.0;
-  angular_vel = sign * rotate_to_heading_angular_vel_;
+  angular_vel = sign * max_angular_vel_;
 
   // const double & dt = control_duration_;
   // const double min_feasible_angular_speed = curr_speed.angular.z - params_->max_angular_accel * dt;
@@ -823,22 +809,7 @@ void RegulatedPurePursuitController::applyConstraints(
   const double & curvature, const double angle_to_heading, const geometry_msgs::msg::Twist & /*curr_speed*/,
   const double & pose_cost, const nav_msgs::msg::Path & path, double & linear_vel, double & sign)
 {
-  double curvature_vel = linear_vel;
   double cost_vel = linear_vel;
-
-  // limit the linear velocity by curvature
-  const double radius = fabs(1.0 / curvature);
-  std_msgs::msg::Float32 radius_msg;
-  radius_msg.data = radius;
-  turning_radius_pub_->publish(radius_msg);
-  const double & min_rad = regulated_linear_scaling_min_radius_;
-  // RCLCPP_INFO(logger_, "Radius: %f", radius);
-  if (use_regulated_linear_velocity_scaling_ && radius < min_rad) {
-    curvature_vel *= 1.0 - (fabs(radius/regulated_linear_scaling_radius_factor_ - min_rad) / min_rad);
-  // RCLCPP_INFO(logger_, "regulated_linear_scaling_radius_factor: %f", regulated_linear_scaling_radius_factor_);
-  // RCLCPP_INFO(logger_, "factor: %f", 1.0 -fabs(radius/regulated_linear_scaling_radius_factor_ - min_rad) / min_rad);
-
-  }
 
   // limit the linear velocity by proximity to obstacles
   if (use_cost_regulated_linear_velocity_scaling_ &&
@@ -854,19 +825,13 @@ void RegulatedPurePursuitController::applyConstraints(
     }
   }
   
-  // Use the lowest of the 2 constraint heuristics, but above the minimum translational speed
-  linear_vel = std::min(cost_vel, curvature_vel);
-  linear_vel = std::max(linear_vel, regulated_linear_scaling_min_speed_);
-
-  // applyApproachVelocityScaling(path, linear_vel);
-
   // Limit linear velocities to be valid
   linear_vel = std::clamp(fabs(linear_vel), 0.0, desired_linear_vel_);
 
   double pid_regulated_vel = 0.0;
-  pid_regulated_vel = find_v_based_on_w(angle_to_heading, 1.0, desired_linear_vel_, 2.0);
+  pid_regulated_vel = find_v_based_on_w(angle_to_heading, pid_scaling_factor_, desired_linear_vel_, pid_steepness_control_);
   // linear_vel = std::min(pid_regulated_vel, linear_vel);
-  linear_vel = pid_regulated_vel;
+  linear_vel = std::min(cost_vel, pid_regulated_vel);
   applyApproachVelocityScaling(path, linear_vel);
   linear_vel = sign * linear_vel;
 }
@@ -1050,8 +1015,6 @@ RegulatedPurePursuitController::dynamicParametersCallback(
         base_desired_linear_vel_ = parameter.as_double();
       } else if (name == plugin_name_ + ".lookahead_dist") {
         lookahead_dist_ = parameter.as_double();
-      } else if (name == plugin_name_ + ".curvature_lookahead_dist") {
-        curvature_lookahead_dist_ = parameter.as_double();
       } else if (name == plugin_name_ + ".max_lookahead_dist") {
         max_lookahead_dist_ = parameter.as_double();
       } else if (name == plugin_name_ + ".min_lookahead_dist") {
@@ -1060,8 +1023,8 @@ RegulatedPurePursuitController::dynamicParametersCallback(
         min_vel_lookahead_ = parameter.as_double();
       } else if (name == plugin_name_ + ".lookahead_time") {
         lookahead_time_ = parameter.as_double();
-      } else if (name == plugin_name_ + ".rotate_to_heading_angular_vel") {
-        rotate_to_heading_angular_vel_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".max_angular_vel") {
+        max_angular_vel = parameter.as_double();
       } else if (name == plugin_name_ + ".min_approach_linear_velocity") {
         min_approach_linear_velocity_ = parameter.as_double();
       } else if (name == plugin_name_ + ".max_allowed_time_to_collision_up_to_carrot") {
@@ -1070,27 +1033,29 @@ RegulatedPurePursuitController::dynamicParametersCallback(
         cost_scaling_dist_ = parameter.as_double();
       } else if (name == plugin_name_ + ".cost_scaling_gain") {
         cost_scaling_gain_ = parameter.as_double();
-      } else if (name == plugin_name_ + ".regulated_linear_scaling_min_radius") {
-        regulated_linear_scaling_min_radius_ = parameter.as_double();
-      }else if (name == plugin_name_ + ".regulated_linear_scaling_radius_factor") {
-        regulated_linear_scaling_radius_factor_ = parameter.as_double();
       } else if (name == plugin_name_ + ".transform_tolerance") {
         double transform_tolerance = parameter.as_double();
         transform_tolerance_ = tf2::durationFromSec(transform_tolerance);
-      } else if (name == plugin_name_ + ".regulated_linear_scaling_min_speed") {
-        regulated_linear_scaling_min_speed_ = parameter.as_double();
       } else if (name == plugin_name_ + ".max_angular_accel") {
         max_angular_accel_ = parameter.as_double();
       } else if (name == plugin_name_ + ".rotate_to_heading_min_angle") {
         rotate_to_heading_min_angle_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".pid_p") {
+        pid_p_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".pid_i") {
+        pid_i_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".pid_d") {
+        pid_d_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".pid_i_max") {
+        pid_i_max_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".pid_scaling_factor") {
+        pid_scaling_factor_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".pid_steepness_control") {
+        pid_steepness_control_ = parameter.as_double();
       }
     } else if (type == ParameterType::PARAMETER_BOOL) {
       if (name == plugin_name_ + ".use_velocity_scaled_lookahead_dist") {
         use_velocity_scaled_lookahead_dist_ = parameter.as_bool();
-      } else if (name == plugin_name_ + ".use_regulated_linear_velocity_scaling") {
-        use_regulated_linear_velocity_scaling_ = parameter.as_bool();
-      } else if (name == plugin_name_ + ".use_fixed_curvature_lookahead") {
-        use_fixed_curvature_lookahead_ = parameter.as_bool();
       } else if (name == plugin_name_ + ".use_cost_regulated_linear_velocity_scaling") {
         use_cost_regulated_linear_velocity_scaling_ = parameter.as_bool();
       } else if (name == plugin_name_ + ".use_rotate_to_heading") {

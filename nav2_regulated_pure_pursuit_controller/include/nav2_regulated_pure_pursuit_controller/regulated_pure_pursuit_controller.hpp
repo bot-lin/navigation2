@@ -34,19 +34,21 @@
 #include "std_msgs/msg/float32.hpp"
 
 class PIDController {
-    double Kp, Ki, Kd;
+    double Kp, Ki, Kd, pid_i_max_;
     double integralError = 0;
     double prevError = 0;
 
 public:
     PIDController(){}
 
-    void setParams(double p, double i, double d)
+    void setParams(double p, double i, double d, double i_max)
     {
         Kp = p;
         Ki = i;
         Kd = d;
+        pid_i_max_ = i_max;
     }
+
 
     void reset_pid()
     {
@@ -57,6 +59,8 @@ public:
     double compute(double setpoint, double actualValue) {
         double error = setpoint - actualValue;
         integralError += error;
+        if (integralError > pid_i_max_) integralError = pid_i_max_;
+        if (integralError < -pid_i_max_) integralError = -pid_i_max_;
         double derivativeError = error - prevError;
         prevError = error;
         return Kp * error + Ki * integralError + Kd * derivativeError;
@@ -371,6 +375,14 @@ protected:
 
   std::unique_ptr<nav2_costmap_2d::FootprintCollisionChecker<nav2_costmap_2d::Costmap2D *>>
   collision_checker_;
+
+  // PID
+  double pid_p_;
+  double pid_i_;
+  double pid_d_;
+  double pid_i_max_;
+  double pid_scaling_factor_;
+  double pid_steepness_control_;
 
   // Dynamic parameters handler
   std::mutex mutex_;
