@@ -389,7 +389,7 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
   // Make sure we're in compliance with basic constraints
   double angle_to_heading;
   getRadToCarrotPose(carrot_pose, angle_to_heading);
-  if (shouldRotateToGoalHeading(transformed_plan.poses.back().pose)) {
+  if (shouldRotateToGoalHeading(carrot_pose)) {
     double angle_to_goal = tf2::getYaw(transformed_plan.poses.back().pose.orientation);
     rotateToHeading(linear_vel, angular_vel, angle_to_goal);
     is_rotating = true;
