@@ -238,7 +238,7 @@ void RegulatedPurePursuitController::changeParamCallback(const zbot_interfaces::
   switch (msg->param_name)
   {
   case "pid_p":
-    pid_p_ = msg->param_value;
+    pid_p_ = msg->param_doule_value;
     angularController_.setParams(pid_p_, pid_i_, pid_d_, pid_i_max_);
     break;
   
