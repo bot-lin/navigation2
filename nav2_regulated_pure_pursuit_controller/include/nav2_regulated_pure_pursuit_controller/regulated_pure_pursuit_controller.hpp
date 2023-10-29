@@ -390,6 +390,7 @@ protected:
   // Dynamic parameters handler
   std::mutex mutex_;
   rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr dyn_params_handler_;
+  void changeParamCallback(const zbot_interfaces::msg::ChangeParam::SharedPtr msg);
 };
 
 }  // namespace nav2_regulated_pure_pursuit_controller
