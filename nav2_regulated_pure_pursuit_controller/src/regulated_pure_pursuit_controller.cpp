@@ -833,7 +833,7 @@ void RegulatedPurePursuitController::applyApproachVelocityScaling(
 }
 
 void RegulatedPurePursuitController::applyConstraints(
-  const double &, const double angle_to_heading, const geometry_msgs::msg::Twist & /*curr_speed*/,
+  const double & curvature, const double angle_to_heading, const geometry_msgs::msg::Twist & /*curr_speed*/,
   const double & pose_cost, const nav_msgs::msg::Path & path, double & linear_vel, double & sign)
 {
   double cost_vel = linear_vel;
