@@ -350,12 +350,6 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
 
   double linear_vel, angular_vel;
 
-  // Find distance^2 to look ahead point (carrot) in robot base frame
-  // This is the chord length of the circle
-  const double carrot_dist2 =
-    (carrot_pose.pose.position.x * carrot_pose.pose.position.x) +
-    (carrot_pose.pose.position.y * carrot_pose.pose.position.y);
-
   // Find curvature of circle (k = 1 / R)
   double curvature = 0.0;
   
@@ -806,7 +800,7 @@ void RegulatedPurePursuitController::applyApproachVelocityScaling(
 }
 
 void RegulatedPurePursuitController::applyConstraints(
-  const double & curvature, const double angle_to_heading, const geometry_msgs::msg::Twist & /*curr_speed*/,
+  const double &, const double angle_to_heading, const geometry_msgs::msg::Twist & /*curr_speed*/,
   const double & pose_cost, const nav_msgs::msg::Path & path, double & linear_vel, double & sign)
 {
   double cost_vel = linear_vel;
