@@ -12,6 +12,7 @@ find_package(nav_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(zbot_interfaces REQUIRED)
 
 nav2_package()
 set(CMAKE_CXX_STANDARD 17)
