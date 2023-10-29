@@ -57,7 +57,6 @@ void RegulatedPurePursuitController::configure(
   clock_ = node->get_clock();
 
   double transform_tolerance = 0.1;
-  double control_frequency = 20.0;
   goal_dist_tol_ = 0.25;  // reasonable default before first update
   
   declare_parameter_if_not_declared(
@@ -106,10 +105,7 @@ void RegulatedPurePursuitController::configure(
     node, plugin_name_ + ".regulated_linear_scaling_min_speed", rclcpp::ParameterValue(0.25));
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".use_rotate_to_heading", rclcpp::ParameterValue(true));
-  declare_parameter_if_not_declared(
-    node, plugin_name_ + ".rotate_to_heading_min_angle", rclcpp::ParameterValue(0.785));
-  declare_parameter_if_not_declared(
-    node, plugin_name_ + ".max_angular_accel", rclcpp::ParameterValue(3.2));
+  
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".allow_reversing", rclcpp::ParameterValue(false));
   declare_parameter_if_not_declared(
@@ -140,7 +136,6 @@ void RegulatedPurePursuitController::configure(
   base_desired_linear_vel_ = desired_linear_vel_;
   node->get_parameter(plugin_name_ + ".lookahead_dist", lookahead_dist_);
   node->get_parameter(plugin_name_ + ".min_lookahead_dist", min_lookahead_dist_);
-  node->get_parameter(plugin_name_ + ".min_vel_lookahead", min_vel_lookahead_);
   node->get_parameter(plugin_name_ + ".max_lookahead_dist", max_lookahead_dist_);
   node->get_parameter(plugin_name_ + ".lookahead_time", lookahead_time_);
   node->get_parameter(
@@ -180,11 +175,8 @@ void RegulatedPurePursuitController::configure(
     inflation_cost_scaling_factor_);
 
   node->get_parameter(plugin_name_ + ".use_rotate_to_heading", use_rotate_to_heading_);
-  node->get_parameter(plugin_name_ + ".rotate_to_heading_min_angle", rotate_to_heading_min_angle_);
-  node->get_parameter(plugin_name_ + ".max_angular_accel", max_angular_accel_);
   node->get_parameter(plugin_name_ + ".allow_reversing", allow_reversing_);
   node->get_parameter(plugin_name_ + ".move_reversing", move_reversing_);
-  node->get_parameter("controller_frequency", control_frequency);
   node->get_parameter(
     plugin_name_ + ".max_robot_pose_search_dist",
     max_robot_pose_search_dist_);
@@ -202,7 +194,6 @@ void RegulatedPurePursuitController::configure(
 
 
   transform_tolerance_ = tf2::durationFromSec(transform_tolerance);
-  control_duration_ = 1.0 / control_frequency;
 
   if (inflation_cost_scaling_factor_ <= 0.0) {
     RCLCPP_WARN(
@@ -264,8 +255,25 @@ void RegulatedPurePursuitController::changeParamCallback(const zbot_interfaces::
   } else if (msg->param_name == "pid_steepness_control")
   {
     pid_steepness_control_ = msg->param_double_value;
+  } else if (msg->param_name == "curvature_lookahead_dist")
+  {
+    curvature_lookahead_dist_ = msg->param_double_value;
+  } else if (msg->param_name == "max_lookahead_dist")
+  {
+    max_lookahead_dist_ = msg->param_double_value;
+  } else if (msg->param_name == "min_lookahead_dist")
+  {
+    min_lookahead_dist_ = msg->param_double_value;
+  } else if (msg->param_name == "lookahead_time")
+  {
+    lookahead_time_ = msg->param_double_value;
+  } else if (msg->param_name == "regulated_linear_scaling_min_radius")
+  {
+    regulated_linear_scaling_min_radius_ = msg->param_double_value;
+  } else if (msg->param_name == "max_angular_vel")
+  {
+    max_angular_vel_ = msg->param_double_value;
   } 
-  
   
 }
 
@@ -548,18 +556,6 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   return cmd_vel;
 }
 
-bool RegulatedPurePursuitController::shouldRotateToPath(
-  const geometry_msgs::msg::PoseStamped & carrot_pose, double & angle_to_path)
-{
-  // Whether we should rotate robot to rough path heading
-  if (move_reversing_){
-    angle_to_path = atan2(-carrot_pose.pose.position.y, -carrot_pose.pose.position.x);
-  }
-  else{
-    angle_to_path = atan2(carrot_pose.pose.position.y, carrot_pose.pose.position.x);
-  }
-  return use_rotate_to_heading_ && fabs(angle_to_path) > rotate_to_heading_min_angle_;
-}
 
 void RegulatedPurePursuitController::getRadToCarrotPose(
   const geometry_msgs::msg::PoseStamped & carrot_pose, double & angle_to_path)
@@ -581,22 +577,7 @@ bool RegulatedPurePursuitController::shouldRotateToGoalHeading(
   return use_rotate_to_heading_ && dist_to_goal < goal_dist_tol_;
 }
 
-void RegulatedPurePursuitController::rotateToHeading(
-  double & linear_vel, double & angular_vel,
-  const double & angle_to_path)
-{
-  // Rotate in place using max angular velocity / acceleration possible
-  linear_vel = 0.0;
-  const double sign = angle_to_path > 0.0 ? 1.0 : -1.0;
-  angular_vel = sign * max_angular_vel_;
 
-  // const double & dt = control_duration_;
-  // const double min_feasible_angular_speed = curr_speed.angular.z - params_->max_angular_accel * dt;
-  // const double max_feasible_angular_speed = curr_speed.angular.z + params_->max_angular_accel * dt;
-  // angular_vel = std::clamp(angular_vel, min_feasible_angular_speed, max_feasible_angular_speed);
-
-  
-}
 
 geometry_msgs::msg::Point RegulatedPurePursuitController::circleSegmentIntersection(
   const geometry_msgs::msg::Point & p1,
@@ -1055,8 +1036,6 @@ RegulatedPurePursuitController::dynamicParametersCallback(
         max_lookahead_dist_ = parameter.as_double();
       } else if (name == plugin_name_ + ".min_lookahead_dist") {
         min_lookahead_dist_ = parameter.as_double();
-      } else if (name == plugin_name_ + ".min_vel_lookahead") {
-        min_vel_lookahead_ = parameter.as_double();
       } else if (name == plugin_name_ + ".lookahead_time") {
         lookahead_time_ = parameter.as_double();
       } else if (name == plugin_name_ + ".max_angular_vel") {
@@ -1072,10 +1051,6 @@ RegulatedPurePursuitController::dynamicParametersCallback(
       } else if (name == plugin_name_ + ".transform_tolerance") {
         double transform_tolerance = parameter.as_double();
         transform_tolerance_ = tf2::durationFromSec(transform_tolerance);
-      } else if (name == plugin_name_ + ".max_angular_accel") {
-        max_angular_accel_ = parameter.as_double();
-      } else if (name == plugin_name_ + ".rotate_to_heading_min_angle") {
-        rotate_to_heading_min_angle_ = parameter.as_double();
       } else if (name == plugin_name_ + ".pid_p") {
         pid_p_ = parameter.as_double();
       } else if (name == plugin_name_ + ".pid_i") {
