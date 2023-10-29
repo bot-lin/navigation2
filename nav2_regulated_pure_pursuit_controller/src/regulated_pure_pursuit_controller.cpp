@@ -1025,7 +1025,7 @@ RegulatedPurePursuitController::dynamicParametersCallback(
       } else if (name == plugin_name_ + ".lookahead_time") {
         lookahead_time_ = parameter.as_double();
       } else if (name == plugin_name_ + ".max_angular_vel") {
-        max_angular_vel = parameter.as_double();
+        max_angular_vel_ = parameter.as_double();
       } else if (name == plugin_name_ + ".min_approach_linear_velocity") {
         min_approach_linear_velocity_ = parameter.as_double();
       } else if (name == plugin_name_ + ".max_allowed_time_to_collision_up_to_carrot") {
