@@ -58,7 +58,7 @@ void PreciseNav::onConfigure()
 
     nav2_util::declare_parameter_if_not_declared(
         node,
-        "angular_velocity", rclcpp::ParameterValue(0.2));
+        "angular_velocity", rclcpp::ParameterValue(0.5));
     node->get_parameter("angular_velocity", angular_velocity_);
 
     nav2_util::declare_parameter_if_not_declared(
@@ -123,7 +123,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     }
     RCLCPP_INFO(this->logger_, "target pose in %s x: %f, y: %f", target_tf_frame_.c_str(), pose_tmp.pose.position.x, pose_tmp.pose.position.y);
 
-    // else{
+    // else{ 
     //     pose_tmp = command->pose;
     // }
     target_x_ = pose_tmp.pose.position.x;
@@ -214,8 +214,9 @@ Status PreciseNav::onCycleUpdate()
     if (is_heading_only_){
         if (std::fabs(heading_error) > heading_tolerance_){
             cmd_vel->linear.x = 0.0;
-            if (heading_error > 0) cmd_vel->angular.z = angular_velocity_;
-            else cmd_vel->angular.z = -angular_velocity_;
+            cmd_vel->angular.z = std::clamp(angularController_.compute(0.0, -heading_error), -max_angular_, max_angular_);
+            // if (heading_error > 0) cmd_vel->angular.z = angular_velocity_;
+            // else cmd_vel->angular.z = -angular_velocity_;
         }
         else{
             this->stopRobot();
