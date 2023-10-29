@@ -212,6 +212,8 @@ Status PreciseNav::onCycleUpdate()
 
     auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
     if (is_heading_only_){
+        RCLCPP_INFO(this->logger_, "reached_distance_goal_: %f", heading_error);
+
         if (std::fabs(heading_error) > heading_tolerance_){
             cmd_vel->linear.x = 0.0;
             cmd_vel->angular.z = std::clamp(angularController_.compute(0.0, -heading_error), -max_angular_, max_angular_);
