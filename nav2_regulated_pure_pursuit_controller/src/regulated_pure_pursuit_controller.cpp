@@ -1080,7 +1080,7 @@ RegulatedPurePursuitController::dynamicParametersCallback(
       }
     }
   }
-
+  
   result.successful = true;
   return result;
 }

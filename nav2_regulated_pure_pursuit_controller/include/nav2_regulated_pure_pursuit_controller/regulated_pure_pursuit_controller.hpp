@@ -32,6 +32,7 @@
 #include "geometry_msgs/msg/pose2_d.hpp"
 #include "std_msgs/msg/bool.hpp"
 #include "std_msgs/msg/float32.hpp"
+#include "zbot_interfaces/msg/change_param.hpp"
 
 class PIDController {
     double Kp, Ki, Kd, pid_i_max_;
@@ -371,6 +372,8 @@ protected:
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<nav_msgs::msg::Path>> carrot_arc_pub_;
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Float32>> turning_radius_pub_;
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Bool>> collision_pub_;
+  rclcpp::Subscription<zbot_interfaces::msg::ChangeParam>::SharedPtr change_param_sub_;
+
   PIDController angularController_;
 
   std::unique_ptr<nav2_costmap_2d::FootprintCollisionChecker<nav2_costmap_2d::Costmap2D *>>

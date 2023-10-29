@@ -30,6 +30,7 @@ set(dependencies
   nav2_core
   tf2
   tf2_geometry_msgs
+  zbot_interfaces
 )
 
 set(library_name nav2_regulated_pure_pursuit_controller)
