@@ -426,21 +426,15 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   // Make sure we're in compliance with basic constraints
   double angle_to_heading;
   getRadToCarrotPose(carrot_pose, angle_to_heading);
-  if (shouldRotateToGoalHeading(carrot_pose)) {
-    double angle_to_goal = tf2::getYaw(transformed_plan.poses.back().pose.orientation);
-    rotateToHeading(linear_vel, angular_vel, angle_to_goal);
-    is_rotating = true;
-    RCLCPP_INFO(logger_, "Rotating to heading %f", angle_to_goal);
-    
-  } else{
-    angular_vel = std::clamp(angularController_.compute(0.0, -angle_to_heading), -max_angular_vel_, max_angular_vel_);
-    applyConstraints(
-      curvature, angle_to_heading, speed,
-      costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
-      linear_vel, sign);
-    RCLCPP_INFO(logger_, "PID: %f, %f", angle_to_heading, sign);
-    
-  }
+ 
+  angular_vel = std::clamp(angularController_.compute(0.0, -angle_to_heading), -max_angular_vel_, max_angular_vel_);
+  applyConstraints(
+    curvature, angle_to_heading, speed,
+    costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
+    linear_vel, sign);
+  RCLCPP_INFO(logger_, "PID: %f, %f", angle_to_heading, sign);
+  
+
   
 
   std_msgs::msg::Bool msg;
