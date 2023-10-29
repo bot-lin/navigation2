@@ -215,6 +215,7 @@ Status PreciseNav::onCycleUpdate()
         if (std::fabs(heading_error) > heading_tolerance_){
             cmd_vel->linear.x = 0.0;
             cmd_vel->angular.z = std::clamp(angularController_.compute(0.0, -heading_error), -max_angular_, max_angular_);
+            RCLCPP_INFO(this->logger_, "pub vel x: %f, w: %f", cmd_vel->linear.x, cmd_vel->angular.z);
             // if (heading_error > 0) cmd_vel->angular.z = angular_velocity_;
             // else cmd_vel->angular.z = -angular_velocity_;
         }
