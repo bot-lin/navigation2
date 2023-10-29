@@ -234,12 +234,32 @@ void RegulatedPurePursuitController::changeParamCallback(const zbot_interfaces::
   int param_type = msg->param_type;
   RCLCPP_INFO(
     logger_,
-    "change Param %d", param_type);
+    "change Param type: %d name: %s value: %f", param_type, msg->param_name.c_str(), msg->param_double_value);
   if (msg->param_name == "pid_p")
   {
-    pid_p_ = msg->param_doule_value;
+    pid_p_ = msg->param_double_value;
     angularController_.setParams(pid_p_, pid_i_, pid_d_, pid_i_max_);
-  }
+  } else if (msg->param_name == "pid_i")
+  {
+    pid_i_ = msg->param_double_value;
+    angularController_.setParams(pid_p_, pid_i_, pid_d_, pid_i_max_);
+  } else if (msg->param_name == "pid_d")
+  {
+    pid_d_ = msg->param_double_value;
+    angularController_.setParams(pid_p_, pid_i_, pid_d_, pid_i_max_);
+  } else if (msg->param_name == "pid_i_max")
+  {
+    pid_i_max_ = msg->param_double_value;
+    angularController_.setParams(pid_p_, pid_i_, pid_d_, pid_i_max_);
+  } else if (msg->param_name == "pid_scaling_factor")
+  {
+    pid_scaling_factor_ = msg->param_double_value;
+  } else if (msg->param_name == "pid_steepness_control")
+  {
+    pid_steepness_control_ = msg->param_double_value;
+  } 
+  
+  
 }
 
 void RegulatedPurePursuitController::cleanup()
