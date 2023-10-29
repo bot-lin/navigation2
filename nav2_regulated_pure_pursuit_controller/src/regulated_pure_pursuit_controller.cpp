@@ -219,7 +219,7 @@ void RegulatedPurePursuitController::configure(
   carrot_arc_pub_ = node->create_publisher<nav_msgs::msg::Path>("lookahead_collision_arc", 1);
   turning_radius_pub_ = node->create_publisher<std_msgs::msg::Float32>("rpp_turning_radius", 1);
   collision_pub_ = node->create_publisher<std_msgs::msg::Bool>("rpp/collision", 1);
-  change_param_sub_ = create_subscription<zbot_interfaces::msg::ChangeParam>(
+  change_param_sub_ = node->create_subscription<zbot_interfaces::msg::ChangeParam>(
     "rpp_pid/change_param", rclcpp::QoS(10),
     std::bind(&RegulatedPurePursuitController::changeParamCallback, this, std::placeholders::_1));
 
