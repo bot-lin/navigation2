@@ -235,15 +235,10 @@ void RegulatedPurePursuitController::changeParamCallback(const zbot_interfaces::
   RCLCPP_INFO(
     logger_,
     "change Param %d", param_type);
-  switch (msg->param_name)
+  if (msg->param_name == "pid_p")
   {
-  case "pid_p":
     pid_p_ = msg->param_doule_value;
     angularController_.setParams(pid_p_, pid_i_, pid_d_, pid_i_max_);
-    break;
-  
-  default:
-    break;
   }
 }
 
