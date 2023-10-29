@@ -63,6 +63,8 @@ void RegulatedPurePursuitController::configure(
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".desired_linear_vel", rclcpp::ParameterValue(0.5));
   declare_parameter_if_not_declared(
+    node, plugin_name_ + ".curvature_lookahead_dist", rclcpp::ParameterValue(2.0));
+  declare_parameter_if_not_declared(
     node, plugin_name_ + ".lookahead_dist", rclcpp::ParameterValue(0.6));
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".min_lookahead_dist", rclcpp::ParameterValue(0.3));
@@ -131,6 +133,9 @@ void RegulatedPurePursuitController::configure(
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".pid_steepness_control", rclcpp::ParameterValue(2.0));
 
+  declare_parameter_if_not_declared(
+    node, plugin_name_ + ".regulated_linear_scaling_min_radius", rclcpp::ParameterValue(10.0));
+  node->get_parameter(plugin_name_ + ".regulated_linear_scaling_min_radius", regulated_linear_scaling_min_radius_);
   node->get_parameter(plugin_name_ + ".desired_linear_vel", desired_linear_vel_);
   base_desired_linear_vel_ = desired_linear_vel_;
   node->get_parameter(plugin_name_ + ".lookahead_dist", lookahead_dist_);
@@ -142,6 +147,8 @@ void RegulatedPurePursuitController::configure(
     plugin_name_ + ".max_angular_vel",
     max_angular_vel_);
   node->get_parameter(plugin_name_ + ".transform_tolerance", transform_tolerance);
+  node->get_parameter(plugin_name_ + ".curvature_lookahead_dist", curvature_lookahead_dist_);
+
   node->get_parameter(
     plugin_name_ + ".use_velocity_scaled_lookahead_dist",
     use_velocity_scaled_lookahead_dist_);
@@ -388,8 +395,14 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
 
   // Find curvature of circle (k = 1 / R)
   double curvature = 0.0;
+  auto curvature_pose = getLookAheadPoint(curvature_lookahead_dist_, transformed_plan);
+  const double curvature_dist2 =
+  (curvature_pose.pose.position.x * curvature_pose.pose.position.x) +
+  (curvature_pose.pose.position.y * curvature_pose.pose.position.y);
+  if (curvature_dist2 > 0.001) {
+  curvature = 2.0 * curvature_pose.pose.position.y / curvature_dist2;
+  }
   
-auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
   // Setting the velocity direction
   double sign = 1.0;
   if (allow_reversing_) {
@@ -421,22 +434,6 @@ auto rotate_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
     
   }
   
-  
-  // else if (shouldRotateToPath(rotate_pose, angle_to_heading)) {
-  //   RCLCPP_INFO(
-  //   logger_,
-  //   "Rotating");
-  //   rotateToHeading(linear_vel, angular_vel, angle_to_heading);
-  //   is_rotating = true;
-  // } else {
-  //   applyConstraints(
-  //     curvature, speed,
-  //     costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
-  //     linear_vel, sign);
-
-  //   // Apply curvature to angular velocity after constraining linear velocity
-  //   angular_vel = linear_vel * curvature;
-  // }
 
   std_msgs::msg::Bool msg;
   // Collision checking on this velocity heading
@@ -840,6 +837,13 @@ void RegulatedPurePursuitController::applyConstraints(
   const double & pose_cost, const nav_msgs::msg::Path & path, double & linear_vel, double & sign)
 {
   double cost_vel = linear_vel;
+  double curvature_vel = linear_vel;
+  const double radius = fabs(1.0 / curvature);
+  const double & min_radius = regulated_linear_scaling_min_radius_;
+  if (radius < min_radius) {
+    curvature_vel *= 1.0 - (fabs(radius - min_radius) / min_radius);
+
+  } 
 
   // limit the linear velocity by proximity to obstacles
   if (use_cost_regulated_linear_velocity_scaling_ &&
@@ -863,6 +867,7 @@ void RegulatedPurePursuitController::applyConstraints(
   RCLCPP_INFO(logger_, "PID params: P %f, I %f, D %f, scaling %f steep %f", pid_p_, pid_i_, pid_d_, pid_scaling_factor_, pid_steepness_control_);
   // linear_vel = std::min(pid_regulated_vel, linear_vel);
   linear_vel = std::min(cost_vel, pid_regulated_vel);
+  linear_vel = std::min(curvature_vel, linear_vel);
   applyApproachVelocityScaling(path, linear_vel);
   linear_vel = sign * linear_vel;
 }
