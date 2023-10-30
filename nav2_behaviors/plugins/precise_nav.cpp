@@ -99,7 +99,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     yaw_goal_tolerance_ = command->yaw_goal_tolerance;
     distance_goal_tolerance_ = command->distance_goal_tolerance;
     angularController_.reset_pid();
-    angularController_.setParams(command->orientation_p, command->orientation_i, command->orientation_d);
+    angularController_.setParams(command->orientation_p, command->orientation_i, command->orientation_d, 0.0);
     max_linear_ = command->max_linear;
     max_angular_ = command->max_angular;
     scale_factor_ = command->scale_factor;
@@ -163,7 +163,7 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     
     is_reverse_ = command->is_reverse;
     angularController_.reset_pid();
-    angularController_.setParams(command->orientation_p, command->orientation_i, command->orientation_d);
+    angularController_.setParams(command->orientation_p, command->orientation_i, command->orientation_d, 0.0);
     max_linear_ = command->max_linear;
     max_angular_ = command->max_angular;
     scale_factor_ = command->scale_factor;
