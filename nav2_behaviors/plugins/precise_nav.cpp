@@ -268,7 +268,7 @@ Status PreciseNav::onCycleUpdate()
         RCLCPP_INFO(this->logger_, "pub vel x: %f, w: %f", cmd_vel->linear.x, cmd_vel->angular.z);
     }
 
-    this->vel_smoothed_pub_->publish(std::move(cmd_vel));
+    this->vel_pub_->publish(std::move(cmd_vel));
     auto collision_monitor_switch = std::make_unique<std_msgs::msg::Bool>();
     collision_monitor_switch->data = false;
     collision_monito_switch_pub_->publish(std::move(collision_monitor_switch));
