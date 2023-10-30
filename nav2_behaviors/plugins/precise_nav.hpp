@@ -90,7 +90,7 @@ protected:
     bool is_reverse_ = false;
     bool is_heading_only_ = false;
     bool pid_reset_ = false;
-    double steepness_ = 4.0
+    double steepness_ = 4.0;
     PIDController angularController_;
     std::string target_tf_frame_ = "odom";
     
