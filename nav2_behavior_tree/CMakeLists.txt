@@ -115,6 +115,9 @@ list(APPEND plugin_libs nav2_find_docking_point_bt_node)
 add_library(nav2_spin_action_bt_node SHARED plugins/action/spin_action.cpp)
 list(APPEND plugin_libs nav2_spin_action_bt_node)
 
+add_library(nav2_roller_colntrol_action_bt_node SHARED plugins/action/roller_control_action.cpp)
+list(APPEND plugin_libs nav2_roller_control_action_bt_node)
+
 add_library(nav2_wait_action_bt_node SHARED plugins/action/wait_action.cpp)
 list(APPEND plugin_libs nav2_wait_action_bt_node)
 

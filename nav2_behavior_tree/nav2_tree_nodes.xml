@@ -207,6 +207,10 @@
       <input_port name="server_timeout">Server timeout</input_port>
     </Action>
 
+    <Action ID="RollerControl">
+      <input_port name="task_id">task id</input_port>
+    </Action>
+
     <Action ID="Wait">
       <input_port name="wait_duration">Wait time</input_port>
       <input_port name="server_name">Service name</input_port>
