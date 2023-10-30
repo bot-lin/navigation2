@@ -34,6 +34,7 @@ void RollerControlAction::on_tick()
 {
     int task_id;
   getInput("task_id", task_id);
+  goal_.task_id = task_id;
 }
 
 }  // namespace nav2_behavior_tree
