@@ -229,7 +229,8 @@ Status PreciseNav::onCycleUpdate()
     else{
         if (distance_to_goal > distance_goal_tolerance_ && !reached_distance_goal_)
         {
-            cmd_vel->linear.x = find_v_based_on_w(heading_error, scale_factor_, max_linear_, distance_to_goal, distance_max_);
+
+            cmd_vel->linear.x = find_v_based_on_w(heading_error, scale_factor_, max_linear_, steepness_, distance_to_goal, distance_max_);
             cmd_vel->angular.z = std::clamp(angularController_.compute(0.0, -heading_error), -max_angular_, max_angular_);
             if (is_reverse_) cmd_vel->linear.x = -cmd_vel->linear.x;
             // if (std::fabs(heading_error) > heading_tolerance_){
@@ -244,24 +245,12 @@ Status PreciseNav::onCycleUpdate()
             //     else cmd_vel->linear.x = linear_velocity_;
             //     cmd_vel->angular.z = orientation_p_ * heading_error;
             // }
-            pid_reset_ = false;
         }
         else if (std::fabs(yaw_goal_error) > yaw_goal_tolerance_)
         {
-            if (!pid_reset_)
-            {
-                angularController_.reset_pid();
-                angularController_.setParams(0.1, 0.001, 0.005);
-                pid_reset_ = true;
-            }
-            cmd_vel->angular.z = angularController_.compute(0.0, -yaw_goal_error);
-            if (cmd_vel->angular.z < 0.1 && cmd_vel->angular.z >0.0){
-                cmd_vel->angular.z = 0.1;
-            }
-            else if (cmd_vel->angular.z > -0.1 && cmd_vel->angular.z <0.0)
-            {
-                cmd_vel->angular.z = -0.1;
-            }
+            cmd_vel->linear.x = 0.0;
+            cmd_vel->angular.z = std::clamp(angularController_.compute(0.0, -yaw_goal_error), -max_angular_, max_angular_);
+          
             
             reached_distance_goal_ = true;
         }

@@ -10,19 +10,21 @@
 #include "geometry_msgs/msg/quaternion.hpp"
 
 class PIDController {
-    double Kp, Ki, Kd;
+    double Kp, Ki, Kd, pid_i_max_;
     double integralError = 0;
     double prevError = 0;
 
 public:
     PIDController(){}
 
-    void setParams(double p, double i, double d)
+    void setParams(double p, double i, double d, double i_max)
     {
         Kp = p;
         Ki = i;
         Kd = d;
+        pid_i_max_ = i_max;
     }
+
 
     void reset_pid()
     {
@@ -33,12 +35,25 @@ public:
     double compute(double setpoint, double actualValue) {
         double error = setpoint - actualValue;
         integralError += error;
+        if (integralError > pid_i_max_) integralError = pid_i_max_;
+        if (integralError < -pid_i_max_) integralError = -pid_i_max_;
         double derivativeError = error - prevError;
         prevError = error;
         return Kp * error + Ki * integralError + Kd * derivativeError;
     }
 };
 
+double find_v_based_on_w(double angleError, double k, double maxLinearVelocity, double scaleFactor, double distanceError, double d_max)
+{      
+    double distanceFactor = std::min(1.0, distanceError / d_max);
+    // double v = maxLinearVelocity * (1 - k * std::abs(angleError)) * distanceFactor;
+    
+    // double v = maxLinearVelocity * (1 - k * std::abs(angleError));
+    double v = maxLinearVelocity * (1 - k * std::tanh(scaleFactor * std::abs(angleError))) * distanceFactor;
+
+    if (v < 0) v = 0;
+    return v;
+}
 namespace nav2_behaviors
 {
 using PreciseNavAction = nav2_msgs::action::PreciseNav;
@@ -75,6 +90,7 @@ protected:
     bool is_reverse_ = false;
     bool is_heading_only_ = false;
     bool pid_reset_ = false;
+    double steepness_ = 4.0
     PIDController angularController_;
     std::string target_tf_frame_ = "odom";
     
