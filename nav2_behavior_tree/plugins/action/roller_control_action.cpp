@@ -24,7 +24,7 @@ RollerControlAction::RollerControlAction(
   const std::string & xml_tag_name,
   const std::string & action_name,
   const BT::NodeConfiguration & conf)
-: BtActionNode<zbot_interfaces::action::RollerControl>(xml_tag_name, action_name, conf)
+: BtActionNode<zbot_interfaces::action::CustomProgramAction>(xml_tag_name, action_name, conf)
 {
 
 
@@ -33,8 +33,12 @@ RollerControlAction::RollerControlAction(
 void RollerControlAction::on_tick()
 {
     int task_id;
+    std::string task_name;
+    
   getInput("task_id", task_id);
+  getInput("task_name", task_name);
   goal_.task_id = task_id;
+  goal_.task_name = task_name;
 }
 
 }  // namespace nav2_behavior_tree
@@ -45,7 +49,7 @@ BT_REGISTER_NODES(factory)
   BT::NodeBuilder builder =
     [](const std::string & name, const BT::NodeConfiguration & config)
     {
-      return std::make_unique<nav2_behavior_tree::RollerControlAction>(name, "roller_control", config);
+      return std::make_unique<nav2_behavior_tree::RollerControlAction>(name, "custom_program_action", config);
     };
 
   factory.registerBuilder<nav2_behavior_tree::RollerControlAction>("RollerControl", builder);

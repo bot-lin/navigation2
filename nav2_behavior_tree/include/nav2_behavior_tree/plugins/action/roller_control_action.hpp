@@ -18,7 +18,7 @@
 #include <string>
 
 #include "nav2_behavior_tree/bt_action_node.hpp"
-#include "zbot_interfaces/action/roller_control.hpp"
+#include "zbot_interfaces/action/custom_program_action.hpp"
 
 namespace nav2_behavior_tree
 {
@@ -26,7 +26,7 @@ namespace nav2_behavior_tree
 /**
  * @brief A nav2_behavior_tree::BtActionNode class that wraps zbot_interfaces::action::RollerControl
  */
-class RollerControlAction : public BtActionNode<zbot_interfaces::action::RollerControl>
+class RollerControlAction : public BtActionNode<zbot_interfaces::action::CustomProgramAction>
 {
 public:
   /**
@@ -53,7 +53,10 @@ public:
   {
     return providedBasicPorts(
       {
-        BT::InputPort<int>("task_id", 0, "task id")
+        BT::InputPort<int>("task_id", 0, "task id"),
+        BT::InputPort<std::string>(
+        "task_name",
+        "task name: eg roller_control"),
       });
   }
 
