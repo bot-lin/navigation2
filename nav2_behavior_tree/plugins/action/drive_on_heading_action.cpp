@@ -36,6 +36,8 @@ void DriveOnHeadingAction::on_tick()
   getInput("speed", speed);
   double time_allowance;
   getInput("time_allowance", time_allowance);
+  getInput("acc", goal_.acc);
+  getInput("dec", goal_.dec);
   double bias;
   if (!getInput("bias", bias)) {
     bias = 0.0;

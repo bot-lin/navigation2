@@ -107,6 +107,22 @@ public:
     command_speed_ = command->speed;
     command_time_allowance_ = command->time_allowance;
 
+    acc_ = command->acc;
+    dec_ = command->dec;
+
+    D_cruise_ = -1.0;
+    while (D_cruise < 0) {
+      command_speed_ = command_speed_ - 0.02;
+      if (command_speed_ < 0) {
+        RCLCPP_ERROR(this->logger_, "Speed and command sign did not match");
+        return Status::FAILED;
+      }
+      D_acc_ = command_speed_ * command_speed_ / (2 * acc_);
+      D_dec_ = command_speed_ * command_speed_ / (2 * dec_);
+      D_cruise_ = command_x_ - (D_acc_ + D_dec_);
+    }
+
+
     end_time_ = this->steady_clock_.now() + command_time_allowance_;
 
     if (!nav2_util::getCurrentPose(
@@ -147,20 +163,32 @@ public:
 
     double diff_x = initial_pose_.pose.position.x - current_pose.pose.position.x;
     double diff_y = initial_pose_.pose.position.y - current_pose.pose.position.y;
-    double distance = hypot(diff_x, diff_y);
+    double distance_moved = hypot(diff_x, diff_y);
 
-    feedback_->distance_traveled = distance;
+    feedback_->distance_traveled = distance_moved;
     this->action_server_->publish_feedback(feedback_);
 
-    if (distance >= std::fabs(command_x_)) {
+    if (distance_moved >= std::fabs(command_x_)) {
       RCLCPP_INFO(this->logger_, "Finished, stopping robot...");
       this->stopRobot();
       return Status::SUCCEEDED;
     }
+    double distance_left = command_x_ - distance_moved;
+    double velocity = 0;
+    if (distance_moved <= D_acc_) {
+        // Accelerate
+        velocity = sqrt(2 * a * distance_moved);
+    } else if (distance_left <= D_dec) {
+        // Decelerate
+        velocity = sqrt(2 * b * distance_left);
+    } else {
+        // Cruise
+        velocity = command_speed_;
+    }
     auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
     cmd_vel->linear.y = 0.0;
     cmd_vel->angular.z = 0.0;
-    cmd_vel->linear.x = command_speed_;
+    cmd_vel->linear.x = velocity;
 
     geometry_msgs::msg::Pose2D pose2d;
     pose2d.x = current_pose.pose.position.x;
@@ -245,6 +273,9 @@ protected:
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
   double simulate_ahead_time_;
+
+  double acc_, dec_;
+  double D_acc_, D_dec_, D_cruise_;
   
 };
 

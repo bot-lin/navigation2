@@ -50,6 +50,8 @@ void on_tick() override;
       {
         BT::InputPort<double>("dist_to_travel", 0.15, "Distance to travel"),
         BT::InputPort<double>("speed", 0.025, "Speed at which to travel"),
+        BT::InputPort<double>("acc", 0.1, "Speed at which to travel"),
+        BT::InputPort<double>("dec", 0.2, "Speed at which to travel"),
         BT::InputPort<double>("bias", 0.0, "Distance to travel bias"),
         BT::InputPort<double>("time_allowance", 10.0, "Allowed time for driving on heading")
       });
