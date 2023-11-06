@@ -111,7 +111,7 @@ public:
     dec_ = command->dec;
 
     D_cruise_ = -1.0;
-    while (D_cruise < 0) {
+    while (D_cruise_ < 0) {
       command_speed_ = command_speed_ - 0.02;
       if (command_speed_ < 0) {
         RCLCPP_ERROR(this->logger_, "Speed and command sign did not match");
@@ -177,10 +177,10 @@ public:
     double velocity = 0;
     if (distance_moved <= D_acc_) {
         // Accelerate
-        velocity = sqrt(2 * a * distance_moved);
-    } else if (distance_left <= D_dec) {
+        velocity = sqrt(2 * acc_ * distance_moved);
+    } else if (distance_left <= D_dec_) {
         // Decelerate
-        velocity = sqrt(2 * b * distance_left);
+        velocity = sqrt(2 * dec_ * distance_left);
     } else {
         // Cruise
         velocity = command_speed_;
