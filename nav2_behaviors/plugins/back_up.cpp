@@ -57,7 +57,7 @@ Status BackUp::onRun(const std::shared_ptr<const BackUpAction::Goal> command)
   command_x_ = -std::fabs(command->target.x);
   command_speed_ = -std::fabs(command->speed);
   command_time_allowance_ = command->time_allowance;
-  sign_ = -1
+  sign_ = -1;
 
   end_time_ = steady_clock_.now() + command_time_allowance_;
 
