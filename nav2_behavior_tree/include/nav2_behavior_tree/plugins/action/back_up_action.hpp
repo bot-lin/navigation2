@@ -55,6 +55,8 @@ public:
       {
         BT::InputPort<double>("backup_dist", 0.15, "Distance to backup"),
         BT::InputPort<double>("backup_speed", 0.025, "Speed at which to backup"),
+        BT::InputPort<double>("acc", 0.1, "Speed at which to travel"),
+        BT::InputPort<double>("dec", 0.2, "Speed at which to travel"),
         BT::InputPort<double>("time_allowance", 10.0, "Allowed time for reversing")
       });
   }

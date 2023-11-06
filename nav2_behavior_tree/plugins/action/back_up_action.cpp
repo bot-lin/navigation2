@@ -32,6 +32,8 @@ BackUpAction::BackUpAction(
   getInput("backup_speed", speed);
   double time_allowance;
   getInput("time_allowance", time_allowance);
+  getInput("acc", goal_.acc);
+  getInput("dec", goal_.dec);
 
   // Populate the input message
   goal_.target.x = dist;
