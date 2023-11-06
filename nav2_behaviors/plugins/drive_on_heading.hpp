@@ -121,7 +121,7 @@ public:
       D_dec_ = command_speed_ * command_speed_ / (2 * dec_);
       D_cruise_ = command_x_ - (D_acc_ + D_dec_);
     }
-
+    sign_ = 1;
 
     end_time_ = this->steady_clock_.now() + command_time_allowance_;
 
@@ -173,7 +173,7 @@ public:
       this->stopRobot();
       return Status::SUCCEEDED;
     }
-    double distance_left = command_x_ - distance_moved;
+    double distance_left =  std::fabs(command_x_) - distance_moved;
     double velocity = 0;
     if (distance_moved <= D_acc_) {
         // Accelerate
@@ -183,12 +183,12 @@ public:
         velocity = sqrt(2 * dec_ * distance_left);
     } else {
         // Cruise
-        velocity = command_speed_;
+        velocity = std::fabs(command_speed_);
     }
     auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
     cmd_vel->linear.y = 0.0;
     cmd_vel->angular.z = 0.0;
-    cmd_vel->linear.x = velocity;
+    cmd_vel->linear.x = sign_ * velocity;
 
     geometry_msgs::msg::Pose2D pose2d;
     pose2d.x = current_pose.pose.position.x;
@@ -276,6 +276,7 @@ protected:
 
   double acc_, dec_;
   double D_acc_, D_dec_, D_cruise_;
+  int sign_;
   
 };
 
