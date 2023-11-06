@@ -54,9 +54,24 @@ Status BackUp::onRun(const std::shared_ptr<const BackUpAction::Goal> command)
   }
  
   // Silently ensure that both the speed and direction are negative.
-  command_x_ = -std::fabs(command->target.x);
-  command_speed_ = -std::fabs(command->speed);
+  command_x_ = std::fabs(command->target.x);
+  command_speed_ = std::fabs(command->speed);
   command_time_allowance_ = command->time_allowance;
+
+  acc_ = command->acc;
+  dec_ = command->dec;
+
+  D_cruise_ = -1.0;
+  while (D_cruise_ < 0) {
+    command_speed_ = command_speed_ - 0.02;
+    if (command_speed_ < 0) {
+      RCLCPP_ERROR(this->logger_, "Speed and command sign did not match");
+      return Status::FAILED;
+    }
+    D_acc_ = command_speed_ * command_speed_ / (2 * acc_);
+    D_dec_ = command_speed_ * command_speed_ / (2 * dec_);
+    D_cruise_ = command_x_ - (D_acc_ + D_dec_);
+  }
   sign_ = -1;
 
   end_time_ = steady_clock_.now() + command_time_allowance_;
