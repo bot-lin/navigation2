@@ -75,6 +75,22 @@ public:
     command_speed_ = command->speed;
     command_time_allowance_ = command->time_allowance;
 
+    acc_ = command->acc;
+    dec_ = command->dec;
+
+    D_cruise_ = -1.0;
+    while (D_cruise_ < 0) {
+      command_speed_ = command_speed_ - 0.02;
+      if (command_speed_ < 0) {
+        RCLCPP_ERROR(this->logger_, "Speed and command sign did not match");
+        return Status::FAILED;
+      }
+      D_acc_ = command_speed_ * command_speed_ / (2 * acc_);
+      D_dec_ = command_speed_ * command_speed_ / (2 * dec_);
+      D_cruise_ = command_x_ - (D_acc_ + D_dec_);
+    }
+    sign_ = 1;
+
     end_time_ = this->steady_clock_.now() + command_time_allowance_;
 
     if (!nav2_util::getCurrentPose(

@@ -87,7 +87,7 @@ Status WaitCommand::onCycleUpdate()
   cmd_vel->linear.y = 0.0;
   cmd_vel->angular.z = vel_z_;
   cmd_vel->linear.x = vel_x_;
-  this->vel_smoothed_pub_->publish(std::move(cmd_vel));
+  this->vel_pub_->publish(std::move(cmd_vel));
   return Status::RUNNING;
 }
 
