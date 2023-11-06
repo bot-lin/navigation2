@@ -65,7 +65,7 @@ Status BackUp::onRun(const std::shared_ptr<const BackUpAction::Goal> command)
   while (D_cruise_ < 0) {
     command_speed_ = command_speed_ - 0.02;
     if (command_speed_ < 0) {
-      RCLCPP_ERROR(this->logger_, "Speed and command sign did not match");
+      RCLCPP_ERROR(this->logger_, "D_cruise_ is negative");
       return Status::FAILED;
     }
     D_acc_ = command_speed_ * command_speed_ / (2 * acc_);
