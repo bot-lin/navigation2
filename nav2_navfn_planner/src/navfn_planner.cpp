@@ -340,7 +340,11 @@ NavfnPlanner::makePlan(
     // Goal is reachable by itself
     best_pose = p;
     found_legal = true;
+  RCLCPP_INFO(logger_, "Goal is reachable by itself");
+
   } else {
+  RCLCPP_INFO(logger_, "Goal is not reachable by itself");
+
     // Goal is not reachable. Trying to find nearest to the goal
     // reachable point within its tolerance region
     double best_sdist = std::numeric_limits<double>::max();
@@ -363,9 +367,11 @@ NavfnPlanner::makePlan(
   }
 
   if (found_legal) {
+    RCLCPP_INFO(logger_, "Found legal point");
     // extract the plan
     if (getPlanFromPotential(best_pose, plan)) {
       smoothApproachToGoal(best_pose, plan);
+      RCLCPP_INFO(logger_, "getPlanFromPotential");
 
       // If use_final_approach_orientation=true, interpolate the last pose orientation from the
       // previous pose to set the orientation to the 'final approach' orientation of the robot so
@@ -398,6 +404,11 @@ NavfnPlanner::makePlan(
         "Failed to create a plan from potential when a legal"
         " potential was found. This shouldn't happen.");
     }
+  }
+  else {
+    RCLCPP_WARN(
+      logger_,
+      "Not found legal point");
   }
 
   return !plan.poses.empty();
