@@ -336,7 +336,6 @@ NavfnPlanner::makePlan(
 
   p = goal;
   double potential = getPointPotential(p.position);
-  potential = 0.0;
   if (potential < POT_HIGH) {
     // Goal is reachable by itself
     best_pose = p;
