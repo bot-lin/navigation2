@@ -431,11 +431,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   applyConstraints(
     curvature, angle_to_heading, speed,
     costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
-    linear_vel, sign);
-  RCLCPP_INFO(logger_, "PID: %f, %f", angle_to_heading, sign);
-  
-
-  
+    linear_vel, sign);  
 
   std_msgs::msg::Bool msg;
   // Collision checking on this velocity heading
@@ -497,49 +493,12 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
       }
       
     }
-    // else{//back
-    //   if (abs(y)>half_width+0.01){
-    //     linear_vel = 0.05;
-    //     angular_vel = 0.0;
-    //   }
-    //   else if (y > 0)
-    //   {
-    //     linear_vel = 0.01;
-    //     angular_vel = 0.1;
-    //   }
-    //   else if (y < 0){
-    //     linear_vel = 0.01;
-    //     angular_vel = -0.1;
-    //   }
-    //   else
-    //   {
-    //     linear_vel = 0.05;
-    //     angular_vel = 0.0;
-    //   }
-    // }
-    
-    //throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
-      
+ 
       
 
-    // RCLCPP_INFO(logger_, "RegulatedPurePursuitController detected collision ahead!");
-    // msg.data = true;
-    // collision_pub_->publish(msg);
-    // if (first_collision){
-    //   first_collision = false;
-    //   angular_vel = 0.1;
-    // }
-    // else{
-    //   angular_vel = -angular_vel;
-    // }
-    // linear_vel -= 0.01;
-    // if (linear_vel < 0.0){
-    //   linear_vel = 0.0;
-    //   throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
-    // }
   }
-  RCLCPP_INFO(logger_, "linear %f", linear_vel);
-  RCLCPP_INFO(logger_, "angular %f", angular_vel);
+  // RCLCPP_INFO(logger_, "linear %f", linear_vel);
+  // RCLCPP_INFO(logger_, "angular %f", angular_vel);
   // populate and return message
   geometry_msgs::msg::TwistStamped cmd_vel;
   cmd_vel.header = pose.header;
@@ -839,7 +798,6 @@ void RegulatedPurePursuitController::applyConstraints(
 
   double pid_regulated_vel = 0.0;
   pid_regulated_vel = find_v_based_on_w(angle_to_heading, pid_scaling_factor_, desired_linear_vel_, pid_steepness_control_);
-  RCLCPP_INFO(logger_, "PID params: P %f, I %f, D %f, scaling %f steep %f", pid_p_, pid_i_, pid_d_, pid_scaling_factor_, pid_steepness_control_);
   // linear_vel = std::min(pid_regulated_vel, linear_vel);
   linear_vel = std::min(cost_vel, pid_regulated_vel);
   linear_vel = std::min(curvature_vel, linear_vel);
