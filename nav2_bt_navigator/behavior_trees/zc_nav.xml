@@ -6,24 +6,46 @@
 <root main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
   <Sequence name="Go to point precisely">
-    
-    <ChargingController>
-      <DriveOnHeading dist_to_travel="0.2" speed="0.1" time_allowance="12"/>
-    </ChargingController>
+  <!--<WaitCommand time_allowance="1.0"/> -->
+  <ForceSuccess>
+        <Sequence>
+                <CloseToPose pose_x="0.0" pose_y="0.0" distance="0.2"/>
+                 <DriveOnHeading dist_to_travel="0.50" speed="0.1" time_allowance="10.0"/>
+        </Sequence>
+  </ForceSuccess>
 
     <RecoveryNode number_of_retries="6" name="NavigateRecovery">
       <PipelineSequence name="NavigateWithReplanning">
-        <RateController hz="1.0">
+        <!-- <RateController hz="1.0">
           <RecoveryNode number_of_retries="1" name="ComputePathToPose">
-            <Sequence name="ComputeAndSmoothPath">
-              <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased" error_code_id="{compute_path_error_code}"/>
-              <SmoothPath unsmoothed_path="{path}" smoothed_path="{path}" error_code_id="{smoother_error_code}"/>
-            </Sequence>
+            <ReactiveSequence>
+              <RemovePassedGoals input_goals="{goals}" output_goals="{goals}" radius="0.5"/>
+              <ComputePathThroughPoses goals="{goals}" path="{path}" planner_id="{planner_id}"/>
+            </ReactiveSequence>
             <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
           </RecoveryNode>
-        </RateController>
+        </RateController> -->
+
+        <RateController hz="1.0">
+        <Fallback> 
+          <ReactiveSequence>
+            <Inverter>
+              <GlobalUpdatedGoal/>
+            </Inverter>
+            <IsPathValid path="{path}"/>
+          </ReactiveSequence>
+          <RecoveryNode number_of_retries="1" name="ComputePathToPose">
+            <ReactiveSequence>
+              <RemovePassedGoals input_goals="{goals}" output_goals="{goals}" radius="0.5"/>
+              <ComputePathThroughPoses goals="{goals}" path="{path}" planner_id="{planner_id}"/>
+            </ReactiveSequence>
+            <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
+          </RecoveryNode>
+        </Fallback>
+      </RateController>
+
         <RecoveryNode number_of_retries="1" name="FollowPath">
-          <FollowPath path="{path}" controller_id="FollowPath"/>
+          <FollowPath path="{path}" controller_id="{controller_id}"/>
           <ClearEntireCostmap name="ClearLocalCostmap-Context" service_name="local_costmap/clear_entirely_local_costmap"/>
         </RecoveryNode>
       </PipelineSequence>
@@ -33,15 +55,15 @@
           <Sequence name="ClearingActions">
             <ClearEntireCostmap name="ClearLocalCostmap-Subtree" service_name="local_costmap/clear_entirely_local_costmap"/>
             <ClearEntireCostmap name="ClearGlobalCostmap-Subtree" service_name="global_costmap/clear_entirely_global_costmap"/>
+           
           </Sequence>
-          <Spin spin_dist="1.57"/>
-          <Wait wait_duration="5"/>
-          <BackUp backup_dist="0.30" backup_speed="0.05"/>
+          
+          <Wait wait_duration="1"/>
+          <!--<BackUp backup_dist="0.30" backup_speed="0.05"/>-->
         </RoundRobin>
       </ReactiveFallback>
     </RecoveryNode>
+    <PreciseNav target_tf_frame="odom"  goal="{goal}" is_reverse="{is_reverse}" distance_goal_tolerance="{distance_goal_tolerance}" yaw_goal_tolerance="{yaw_goal_tolerance}" orientation_p="1.0" orientation_i="0.0" orientation_d="0.1" is_heading_only="true"/>
     </Sequence>
   </BehaviorTree>
 </root>
-
-

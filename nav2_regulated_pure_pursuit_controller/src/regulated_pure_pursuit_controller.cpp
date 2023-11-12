@@ -143,7 +143,9 @@ void RegulatedPurePursuitController::configure(
     max_angular_vel_);
   node->get_parameter(plugin_name_ + ".transform_tolerance", transform_tolerance);
   node->get_parameter(plugin_name_ + ".curvature_lookahead_dist", curvature_lookahead_dist_);
-
+  node->get_parameter(
+    plugin_name_ + ".regulated_linear_scaling_min_speed",
+    regulated_linear_scaling_min_speed_);
   node->get_parameter(
     plugin_name_ + ".use_velocity_scaled_lookahead_dist",
     use_velocity_scaled_lookahead_dist_);
@@ -776,6 +778,7 @@ void RegulatedPurePursuitController::applyConstraints(
   const double & min_radius = regulated_linear_scaling_min_radius_;
   if (radius < min_radius) {
     curvature_vel *= 1.0 - (fabs(radius - min_radius) / min_radius);
+    curvature_vel = std::max(curvature_vel, regulated_linear_scaling_min_speed_);
 
   } 
 
