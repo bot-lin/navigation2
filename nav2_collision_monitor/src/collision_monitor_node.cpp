@@ -566,7 +566,12 @@ CollisionMonitor::dynamicParametersCallback(
 {
   rcl_interfaces::msg::SetParametersResult result;
   // std::lock_guard<std::mutex> lock_reinit(mutex_);
-  RCLCPP_INFO(get_logger(), "SetParameters");
+  for (auto parameter : parameters) {
+    // const auto & type = parameter.get_type();
+    const auto & name = parameter.get_name();
+    RCLCPP_INFO(get_logger(), "SetParameters %s", name.c_str());
+
+  }
 
   
   result.successful = true;
