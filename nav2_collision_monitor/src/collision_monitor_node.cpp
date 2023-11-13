@@ -61,6 +61,7 @@ CollisionMonitor::on_configure(const rclcpp_lifecycle::State & /*state*/)
   if (!getParameters(cmd_vel_in_topic, cmd_vel_out_topic, state_topic)) {
     return nav2_util::CallbackReturn::FAILURE;
   }
+  
   monitor_switch_sub_ = this->create_subscription<std_msgs::msg::Bool>(
     "collision_monitor/switch", 1,
     std::bind(&CollisionMonitor::switchCallback, this, std::placeholders::_1));
@@ -83,6 +84,11 @@ nav2_util::CallbackReturn
 CollisionMonitor::on_activate(const rclcpp_lifecycle::State & /*state*/)
 {
   RCLCPP_INFO(get_logger(), "Activating");
+
+  dyn_params_handler_ = this->add_on_set_parameters_callback(
+    std::bind(
+      &CollisionMonitor::dynamicParametersCallback,
+      this, std::placeholders::_1));
 
   // Activating lifecycle publisher
   cmd_vel_out_pub_->on_activate();
@@ -120,7 +126,7 @@ CollisionMonitor::on_deactivate(const rclcpp_lifecycle::State & /*state*/)
 
   // Reset action type to default after worker deactivating
   robot_action_prev_ = {DO_NOTHING, {-1.0, -1.0, -1.0}, ""};
-
+dyn_params_handler_.reset();
   // Deactivating polygons
   for (std::shared_ptr<Polygon> polygon : polygons_) {
     polygon->deactivate();
@@ -552,6 +558,19 @@ void CollisionMonitor::publishPolygons() const
   for (std::shared_ptr<Polygon> polygon : polygons_) {
     polygon->publish();
   }
+}
+
+rcl_interfaces::msg::SetParametersResult
+CollisionMonitor::dynamicParametersCallback(
+  std::vector<rclcpp::Parameter> parameters)
+{
+  rcl_interfaces::msg::SetParametersResult result;
+  // std::lock_guard<std::mutex> lock_reinit(mutex_);
+  RCLCPP_INFO(get_logger(), "SetParameters");
+
+  
+  result.successful = true;
+  return result;
 }
 
 }  // namespace nav2_collision_monitor
