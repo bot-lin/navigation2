@@ -968,6 +968,11 @@ RegulatedPurePursuitController::dynamicParametersCallback(
 {
   rcl_interfaces::msg::SetParametersResult result;
   std::lock_guard<std::mutex> lock_reinit(mutex_);
+  RCLCPP_INFO(
+    logger_,
+    "Reconfigure Request for controller: %s of type "
+    "regulated_pure_pursuit_controller::RegulatedPurePursuitController",
+    plugin_name_.c_str());
 
   for (auto parameter : parameters) {
     const auto & type = parameter.get_type();
