@@ -586,6 +586,7 @@ Polygon::dynamicParametersCallback(
             polygon_.header.frame_id = base_frame_id_;
             std::vector<Point> poly;
             getPolygon(poly);
+            polygon_.polygon.points.clear();
             for (const Point & p : poly) {
               geometry_msgs::msg::Point32 p_s;
               p_s.x = p.x;
