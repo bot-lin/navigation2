@@ -121,6 +121,7 @@ void Polygon::deactivate()
   if (visualize_) {
     polygon_pub_->on_deactivate();
   }
+  dyn_params_handler_.reset();
 }
 
 std::string Polygon::getName() const

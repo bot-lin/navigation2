@@ -123,7 +123,7 @@ CollisionMonitor::on_deactivate(const rclcpp_lifecycle::State & /*state*/)
 
   // Reset action type to default after worker deactivating
   robot_action_prev_ = {DO_NOTHING, {-1.0, -1.0, -1.0}, ""};
-dyn_params_handler_.reset();
+
   // Deactivating polygons
   for (std::shared_ptr<Polygon> polygon : polygons_) {
     polygon->deactivate();
