@@ -419,7 +419,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   getRadToCarrotPose(carrot_pose, angle_to_heading);
 
   double pid_w = angularController_.compute(0.0, -angle_to_heading);
-  double smooth_w = smoothController_.compute(pid_w);
+  double smooth_w = smoothController_.smooth(pid_w);
  
   angular_vel = std::clamp(smooth_w, -max_angular_vel_, max_angular_vel_);
   applyConstraints(
