@@ -34,6 +34,29 @@
 #include "std_msgs/msg/float32.hpp"
 #include "zbot_interfaces/msg/change_param.hpp"
 
+class SmoothController {
+private:
+    double previousOutput;
+    double smoothingFactor;
+
+public:
+    SmoothController(double initialOutput = 0, double smoothingFactor = 0.1)
+        : previousOutput(initialOutput), smoothingFactor(smoothingFactor) {}
+
+    void setParams(double factor)
+    {
+        smoothingFactor = factor;
+        previousOutput = 0.0;
+    }
+   
+    double smooth(double currentOutput) {
+        double smoothedOutput = (smoothingFactor * currentOutput) + 
+                                ((1 - smoothingFactor) * previousOutput);
+        previousOutput = smoothedOutput;
+        return smoothedOutput;
+    }
+};
+
 class PIDController {
     double Kp, Ki, Kd, pid_i_max_;
     double integralError = 0;
@@ -363,6 +386,7 @@ protected:
   rclcpp::Subscription<zbot_interfaces::msg::ChangeParam>::SharedPtr change_param_sub_;
 
   PIDController angularController_;
+  SmoothController smoothController_;
 
   std::unique_ptr<nav2_costmap_2d::FootprintCollisionChecker<nav2_costmap_2d::Costmap2D *>>
   collision_checker_;

@@ -191,7 +191,7 @@ void RegulatedPurePursuitController::configure(
   node->get_parameter(plugin_name_ + ".pid_scaling_factor", pid_scaling_factor_);
   node->get_parameter(plugin_name_ + ".pid_steepness_control", pid_steepness_control_);
   angularController_.setParams(pid_p_, pid_i_, pid_d_, pid_i_max_);
-
+  smoothController_.setParams(0.7);
 
   transform_tolerance_ = tf2::durationFromSec(transform_tolerance);
 
@@ -417,8 +417,11 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   // Make sure we're in compliance with basic constraints
   double angle_to_heading;
   getRadToCarrotPose(carrot_pose, angle_to_heading);
+
+  double pid_w = angularController_.compute(0.0, -angle_to_heading);
+  double smooth_w = smoothController_.compute(pid_w);
  
-  angular_vel = std::clamp(angularController_.compute(0.0, -angle_to_heading), -max_angular_vel_, max_angular_vel_);
+  angular_vel = std::clamp(smooth_w, -max_angular_vel_, max_angular_vel_);
   applyConstraints(
     curvature, angle_to_heading, speed,
     costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
