@@ -24,7 +24,7 @@
 #include "nav2_util/robot_utils.hpp"
 
 #include "nav2_collision_monitor/kinematics.hpp"
-
+using rcl_interfaces::msg::ParameterType;
 namespace nav2_collision_monitor
 {
 
@@ -549,7 +549,7 @@ Polygon::dynamicParametersCallback(
     // const auto & type = parameter.get_type();
     const auto & name = parameter.get_name();
     const auto & type = parameter.get_type();
-    RCLCPP_INFO(get_logger(), "%s: SetParameters %s", polygon_name_.c_str(), name.c_str());
+    RCLCPP_INFO(logger_, "%s: SetParameters %s", polygon_name_.c_str(), name.c_str());
     if (type == ParameterType::PARAMETER_DOUBLE) {
       if (name == "Limit1.angular_limit") {
         
