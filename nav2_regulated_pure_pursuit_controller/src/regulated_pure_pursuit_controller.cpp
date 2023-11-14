@@ -103,8 +103,6 @@ void RegulatedPurePursuitController::configure(
   
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".regulated_linear_scaling_min_speed", rclcpp::ParameterValue(0.25));
-  declare_parameter_if_not_declared(
-    node, plugin_name_ + ".use_rotate_to_heading", rclcpp::ParameterValue(true));
   
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".allow_reversing", rclcpp::ParameterValue(false));
@@ -176,7 +174,7 @@ void RegulatedPurePursuitController::configure(
     plugin_name_ + ".inflation_cost_scaling_factor",
     inflation_cost_scaling_factor_);
 
-  node->get_parameter(plugin_name_ + ".use_rotate_to_heading", use_rotate_to_heading_);
+  
   node->get_parameter(plugin_name_ + ".allow_reversing", allow_reversing_);
   node->get_parameter(plugin_name_ + ".move_reversing", move_reversing_);
   node->get_parameter(
@@ -204,15 +202,6 @@ void RegulatedPurePursuitController::configure(
     use_cost_regulated_linear_velocity_scaling_ = false;
   }
 
-  /** Possible to drive in reverse direction if and only if
-   "use_rotate_to_heading" parameter is set to false **/
-
-  if (use_rotate_to_heading_ && allow_reversing_) {
-    RCLCPP_WARN(
-      logger_, "Disabling reversing. Both use_rotate_to_heading and allow_reversing "
-      "parameter cannot be set to true. By default setting use_rotate_to_heading true");
-    allow_reversing_ = false;
-  }
 
   global_path_pub_ = node->create_publisher<nav_msgs::msg::Path>("received_global_plan", 1);
   carrot_pub_ = node->create_publisher<geometry_msgs::msg::PointStamped>("lookahead_point", 1);
@@ -523,15 +512,6 @@ void RegulatedPurePursuitController::getRadToCarrotPose(
     angle_to_path = atan2(carrot_pose.pose.position.y, carrot_pose.pose.position.x);
   }
 }
-
-bool RegulatedPurePursuitController::shouldRotateToGoalHeading(
-  const geometry_msgs::msg::PoseStamped & carrot_pose)
-{
-  // Whether we should rotate robot to goal heading
-  double dist_to_goal = std::hypot(carrot_pose.pose.position.x, carrot_pose.pose.position.y);
-  return use_rotate_to_heading_ && dist_to_goal < goal_dist_tol_;
-}
-
 
 
 geometry_msgs::msg::Point RegulatedPurePursuitController::circleSegmentIntersection(
@@ -1023,28 +1003,20 @@ RegulatedPurePursuitController::dynamicParametersCallback(
         pid_scaling_factor_ = parameter.as_double();
       } else if (name == plugin_name_ + ".pid_steepness_control") {
         pid_steepness_control_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".approach_velocity_scaling_dist") {
+        approach_velocity_scaling_dist_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".curvature_lookahead_dist") {
+        curvature_lookahead_dist_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".regulated_linear_scaling_min_speed") {
+        regulated_linear_scaling_min_speed_ = parameter.as_double();
+      } else if (name == plugin_name_ + ".regulated_linear_scaling_min_radius") {
+        regulated_linear_scaling_min_radius_ = parameter.as_double();
       }
     } else if (type == ParameterType::PARAMETER_BOOL) {
       if (name == plugin_name_ + ".use_velocity_scaled_lookahead_dist") {
         use_velocity_scaled_lookahead_dist_ = parameter.as_bool();
       } else if (name == plugin_name_ + ".use_cost_regulated_linear_velocity_scaling") {
         use_cost_regulated_linear_velocity_scaling_ = parameter.as_bool();
-      } else if (name == plugin_name_ + ".use_rotate_to_heading") {
-        if (parameter.as_bool() && allow_reversing_) {
-          RCLCPP_WARN(
-            logger_, "Both use_rotate_to_heading and allow_reversing "
-            "parameter cannot be set to true. Rejecting parameter update.");
-          continue;
-        }
-        use_rotate_to_heading_ = parameter.as_bool();
-      } else if (name == plugin_name_ + ".allow_reversing") {
-        if (use_rotate_to_heading_ && parameter.as_bool()) {
-          RCLCPP_WARN(
-            logger_, "Both use_rotate_to_heading and allow_reversing "
-            "parameter cannot be set to true. Rejecting parameter update.");
-          continue;
-        }
-        allow_reversing_ = parameter.as_bool();
       } else if (name == plugin_name_ + ".move_reversing") {
         if (allow_reversing_ && parameter.as_bool()) {
           RCLCPP_WARN(
