@@ -85,10 +85,7 @@ CollisionMonitor::on_activate(const rclcpp_lifecycle::State & /*state*/)
 {
   RCLCPP_INFO(get_logger(), "Activating");
 
-  dyn_params_handler_ = this->add_on_set_parameters_callback(
-    std::bind(
-      &CollisionMonitor::dynamicParametersCallback,
-      this, std::placeholders::_1));
+  
 
   // Activating lifecycle publisher
   cmd_vel_out_pub_->on_activate();
@@ -560,23 +557,7 @@ void CollisionMonitor::publishPolygons() const
   }
 }
 
-rcl_interfaces::msg::SetParametersResult
-CollisionMonitor::dynamicParametersCallback(
-  std::vector<rclcpp::Parameter> parameters)
-{
-  rcl_interfaces::msg::SetParametersResult result;
-  // std::lock_guard<std::mutex> lock_reinit(mutex_);
-  for (auto parameter : parameters) {
-    // const auto & type = parameter.get_type();
-    const auto & name = parameter.get_name();
-    RCLCPP_INFO(get_logger(), "SetParameters %s", name.c_str());
 
-  }
-
-  
-  result.successful = true;
-  return result;
-}
 
 }  // namespace nav2_collision_monitor
 

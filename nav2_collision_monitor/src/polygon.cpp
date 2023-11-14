@@ -101,6 +101,10 @@ bool Polygon::configure()
     polygon_pub_ = node->create_publisher<geometry_msgs::msg::PolygonStamped>(
       polygon_pub_topic, polygon_qos);
   }
+  dyn_params_handler_ = node->add_on_set_parameters_callback(
+    std::bind(
+      &Polygon::dynamicParametersCallback,
+      this, std::placeholders::_1));
 
   return true;
 }
@@ -533,6 +537,31 @@ inline bool Polygon::isPointInside(const Point & point) const
     i = j;
   }
   return res;
+}
+
+rcl_interfaces::msg::SetParametersResult
+Polygon::dynamicParametersCallback(
+  std::vector<rclcpp::Parameter> parameters)
+{
+  rcl_interfaces::msg::SetParametersResult result;
+  // std::lock_guard<std::mutex> lock_reinit(mutex_);
+  for (auto parameter : parameters) {
+    // const auto & type = parameter.get_type();
+    const auto & name = parameter.get_name();
+    const auto & type = parameter.get_type();
+    RCLCPP_INFO(get_logger(), "%s: SetParameters %s", polygon_name_.c_str(), name.c_str());
+    if (type == ParameterType::PARAMETER_DOUBLE) {
+      if (name == "Limit1.angular_limit") {
+        
+      }
+
+    }
+
+  }
+
+  
+  result.successful = true;
+  return result;
 }
 
 }  // namespace nav2_collision_monitor

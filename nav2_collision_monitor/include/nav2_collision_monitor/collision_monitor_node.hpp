@@ -188,8 +188,7 @@ protected:
    * @brief Polygons publishing routine. Made for visualization.
    */
   void publishPolygons() const;
-  rcl_interfaces::msg::SetParametersResult
-  dynamicParametersCallback(std::vector<rclcpp::Parameter> parameters);
+  
 
   // ----- Variables -----
 

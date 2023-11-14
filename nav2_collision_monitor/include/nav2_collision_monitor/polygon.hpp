@@ -157,6 +157,8 @@ public:
    * @brief Publishes polygon message into a its own topic
    */
   void publish();
+  rcl_interfaces::msg::SetParametersResult
+  dynamicParametersCallback(std::vector<rclcpp::Parameter> parameters);
 
 protected:
   /**
@@ -247,6 +249,7 @@ protected:
 
   /// @brief Polygon points (vertices) in a base_frame_id_
   std::vector<Point> poly_;
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr dyn_params_handler_;
 };  // class Polygon
 
 }  // namespace nav2_collision_monitor
