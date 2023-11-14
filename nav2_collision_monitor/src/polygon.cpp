@@ -552,11 +552,40 @@ Polygon::dynamicParametersCallback(
     const auto & type = parameter.get_type();
     RCLCPP_INFO(logger_, "%s: SetParameters %s", polygon_name_.c_str(), name.c_str());
     if (type == ParameterType::PARAMETER_DOUBLE) {
-      if (name == "Limit1.angular_limit") {
-        
+      if (name == polygon_name_ + ".angular_limit") {
+        angular_limit_ = parameter.as_double();
+      } else if (name == polygon_name_ + ".linear_limit") {
+        linear_limit_ = parameter.as_double();
       }
-
+    } else if (type == ParameterType::PARAMETER_DOUBLE_ARRAY)
+    {
+      if (name == polygon_name_ + ".points") {
+        std::vector<double> poly_row = parameter.as_double_array();
+        if (poly_row.size() <= 6 || poly_row.size() % 2 != 0) {
+          RCLCPP_ERROR(
+            logger_,
+            "[%s]: Polygon has incorrect points description",
+            polygon_name_.c_str());
+          result.successful = false;
+        } else {
+          // Obtain polygon vertices
+          Point point;
+          poly_.clear();
+          bool first = true;
+          for (double val : poly_row) {
+            if (first) {
+              point.x = val;
+            } else {
+              point.y = val;
+              poly_.push_back(point);
+            }
+            first = !first;
+          }
+          result.successful = true;
+        }
+      }
     }
+    
 
   }
 
