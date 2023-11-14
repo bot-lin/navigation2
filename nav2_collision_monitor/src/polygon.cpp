@@ -581,6 +581,19 @@ Polygon::dynamicParametersCallback(
             }
             first = !first;
           }
+          if (visualize_) {
+            // Fill polygon_ for future usage
+            polygon_.header.frame_id = base_frame_id_;
+            std::vector<Point> poly;
+            getPolygon(poly);
+            for (const Point & p : poly) {
+              geometry_msgs::msg::Point32 p_s;
+              p_s.x = p.x;
+              p_s.y = p.y;
+              // p_s.z will remain 0.0
+              polygon_.polygon.points.push_back(p_s);
+            }
+          }
           result.successful = true;
         }
       }
