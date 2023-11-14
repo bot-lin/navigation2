@@ -71,6 +71,9 @@ void PreciseNavAction::on_tick()
   if (!getInput("distance_max", goal_.distance_max)) {
     goal_.distance_max = 1.0;
   }
+  if (!getInput("smoothing_factor", goal_.smoothing_factor)) {
+    goal_.smoothing_factor = 0.7;
+  }
 
   getInput("is_heading_only", goal_.heading_only);
 }

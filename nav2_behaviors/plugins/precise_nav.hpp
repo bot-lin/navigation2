@@ -13,7 +13,6 @@ class PIDController {
     double Kp, Ki, Kd, pid_i_max_;
     double integralError = 0;
     double prevError = 0;
-
 public:
     PIDController(){}
 
@@ -40,6 +39,29 @@ public:
         double derivativeError = error - prevError;
         prevError = error;
         return Kp * error + Ki * integralError + Kd * derivativeError;
+    }
+};
+
+class SmoothController {
+private:
+    double previousOutput;
+    double smoothingFactor;
+
+public:
+    SmoothController(double initialOutput = 0, double smoothingFactor = 0.1)
+        : previousOutput(initialOutput), smoothingFactor(smoothingFactor) {}
+
+    void setParams(double factor)
+    {
+        smoothingFactor = factor;
+        previousOutput = 0.0;
+    }
+   
+    double smooth(double currentOutput) {
+        double smoothedOutput = (smoothingFactor * currentOutput) + 
+                                ((1 - smoothingFactor) * previousOutput);
+        previousOutput = smoothedOutput;
+        return smoothedOutput;
     }
 };
 
@@ -92,6 +114,7 @@ protected:
     bool pid_reset_ = false;
     double steepness_ = 4.0;
     PIDController angularController_;
+    SmoothController smoothController_;
     std::string target_tf_frame_ = "odom";
     
 };

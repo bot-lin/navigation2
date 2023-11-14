@@ -18,6 +18,7 @@ float64 max_linear
 float64 max_angular
 float64 scale_factor
 float64 distance_max
+float64 smoothing_factor
 
 builtin_interfaces/Duration time_allowance
 ---
