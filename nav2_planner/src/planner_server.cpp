@@ -584,6 +584,8 @@ void PlannerServer::isPathValid(
       if (cost == nav2_costmap_2d::LETHAL_OBSTACLE ||
         cost == nav2_costmap_2d::INSCRIBED_INFLATED_OBSTACLE)
       {
+        RCLCPP_INFO(
+          get_logger(), "Path is invalid, found lethal cost: %d", cost);
         response->is_valid = false;
       }
     }
