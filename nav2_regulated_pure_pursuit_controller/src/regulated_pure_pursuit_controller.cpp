@@ -347,7 +347,6 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   const geometry_msgs::msg::Twist & speed,
   nav2_core::GoalChecker * goal_checker)
 {
-  RCLCPP_INFO(logger_, "-------------------------");
 
   std::lock_guard<std::mutex> lock_reinit(mutex_);
 

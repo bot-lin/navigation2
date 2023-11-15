@@ -32,7 +32,10 @@
             <Inverter>
               <GlobalUpdatedGoal/>
             </Inverter>
-            <IsPathValid path="{path}"/>
+            <Sequence name="CheckPath">
+              <IsPathValid path="{path}"/>
+              <RemovePassedGoals input_goals="{goals}" output_goals="{goals}" radius="0.5"/>
+            </Sequence>
           </ReactiveSequence>
           <RecoveryNode number_of_retries="1" name="ComputePathToPose">
             <ReactiveSequence>
