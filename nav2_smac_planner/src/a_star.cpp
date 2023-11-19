@@ -211,9 +211,9 @@ bool AStarAlgorithm<NodeT>::areInputsValid()
   }
 
   // Check if starting point is valid
-  // if (!_start->isNodeValid(_traverse_unknown, _collision_checker)) {
-  //   throw std::runtime_error("Starting point in lethal space! Cannot create feasible plan.");
-  // }
+  if (!_start->isNodeValid(_traverse_unknown, _collision_checker)) {
+    throw std::runtime_error("Starting point in lethal space! Cannot create feasible plan.");
+  }
 
   return true;
 }
