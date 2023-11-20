@@ -37,47 +37,12 @@
 #include "nav2_util/costmap.hpp"
 #include "nav2_util/node_utils.hpp"
 #include "nav2_costmap_2d/cost_values.hpp"
-#include <fstream>
 
 using namespace std::chrono_literals;
 using namespace std::chrono;  // NOLINT
 using nav2_util::declare_parameter_if_not_declared;
 using rcl_interfaces::msg::ParameterType;
 using std::placeholders::_1;
-
-typedef std::pair<double, double> DoublePoint;
-
-double euclideanDistance(const DoublePoint& p1, const DoublePoint& p2) {
-    return std::sqrt(std::pow(p1.first - p2.first, 2) + std::pow(p1.second - p2.second, 2));
-}
-
-DoublePoint findClosestPoint(const DoublePoint& target, const std::vector<Pose>& points) {
-    double minDistance = std::numeric_limits<double>::max();
-    DoublePoint closestPoint = {points[0].x, points[0].y};
-
-    for (const auto& point : points) {
-        double distance = euclideanDistance(target, {point.x,point.y});
-        if (distance < minDistance) {
-            minDistance = distance;
-            closestPoint = {point.x, point.y};
-        }
-    }
-
-    return closestPoint;
-}
-
-std::vector<Pose> readPathsFromFile(const std::string& filename){
-  std::vector<Pose> poses;
-    std::ifstream file(filename);
-    if (file.is_open()) {
-        double x, y;
-        while (file >> x >> y) {
-            poses.push_back({x, y});
-        }
-    }
-    file.close();
-    return poses;
-}
 
 namespace nav2_navfn_planner
 {
@@ -206,25 +171,7 @@ nav_msgs::msg::Path NavfnPlanner::createPlan(
     return path;
   }
 
-  std::string filename_txt = "/data/path.txt";
-  std::vector<Pose> available_poses = readPathsFromFile(filename_txt);
-  DoublePoint closestPoint = findClosestPoint({start.pose.position.x, start.pose.position.y}, available_poses);
-  geometry_msgs::msg::PoseStamped closestPoint_start;
-  closestPoint_start = start;
-  closestPoint_start.pose.position.x = closestPoint.first;
-  closestPoint_start.pose.position.y = closestPoint.second;
-  closestPoint = findClosestPoint({goal.pose.position.x, goal.pose.position.y}, available_poses);
-  geometry_msgs::msg::PoseStamped closestPoint_goal;
-  closestPoint_goal = goal;
-  closestPoint_goal.pose.position.x = closestPoint.first;
-  closestPoint_goal.pose.position.y = closestPoint.second;
-  RCLCPP_INFO(logger_, "Original point to start is: %f, %f", start.pose.position.x, start.pose.position.y);
-  RCLCPP_INFO(logger_, "Original point to end is: %f, %f", goal.pose.position.x, goal.pose.position.y);
-
-  RCLCPP_INFO(logger_, "Closest point to start is: %f, %f", closestPoint_start.pose.position.x, closestPoint_start.pose.position.y);
-  RCLCPP_INFO(logger_, "Closest point to end is: %f, %f", closestPoint_goal.pose.position.x, closestPoint_goal.pose.position.y);
-
-  if (!makePlan(closestPoint_start.pose, closestPoint_goal.pose, tolerance_, path)) {
+  if (!makePlan(start.pose, goal.pose, tolerance_, path)) {
     RCLCPP_WARN(
       logger_, "%s: failed to create plan with "
       "tolerance %.2f.", name_.c_str(), tolerance_);
@@ -239,8 +186,6 @@ nav_msgs::msg::Path NavfnPlanner::createPlan(
 
   return path;
 }
-
-
 
 bool
 NavfnPlanner::isPlannerOutOfDate()
@@ -340,11 +285,7 @@ NavfnPlanner::makePlan(
     // Goal is reachable by itself
     best_pose = p;
     found_legal = true;
-  RCLCPP_INFO(logger_, "Goal is reachable by itself");
-
   } else {
-  RCLCPP_INFO(logger_, "Goal is not reachable by itself");
-
     // Goal is not reachable. Trying to find nearest to the goal
     // reachable point within its tolerance region
     double best_sdist = std::numeric_limits<double>::max();
@@ -367,11 +308,9 @@ NavfnPlanner::makePlan(
   }
 
   if (found_legal) {
-    RCLCPP_INFO(logger_, "Found legal point");
     // extract the plan
     if (getPlanFromPotential(best_pose, plan)) {
       smoothApproachToGoal(best_pose, plan);
-      RCLCPP_INFO(logger_, "getPlanFromPotential");
 
       // If use_final_approach_orientation=true, interpolate the last pose orientation from the
       // previous pose to set the orientation to the 'final approach' orientation of the robot so
@@ -404,11 +343,6 @@ NavfnPlanner::makePlan(
         "Failed to create a plan from potential when a legal"
         " potential was found. This shouldn't happen.");
     }
-  }
-  else {
-    RCLCPP_WARN(
-      logger_,
-      "Not found legal point");
   }
 
   return !plan.poses.empty();

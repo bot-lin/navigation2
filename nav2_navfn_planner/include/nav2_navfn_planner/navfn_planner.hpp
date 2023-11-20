@@ -32,11 +32,6 @@
 #include "nav2_costmap_2d/costmap_2d_ros.hpp"
 #include "nav2_util/geometry_utils.hpp"
 
-struct Pose {
-    double x;
-    double y;
-};
-
 namespace nav2_navfn_planner
 {
 
@@ -191,8 +186,6 @@ protected:
    * @return true if planner object is out of date
    */
   bool isPlannerOutOfDate();
-
-
 
   // Planner based on ROS1 NavFn algorithm
   std::unique_ptr<NavFn> planner_;
