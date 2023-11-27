@@ -60,6 +60,8 @@ public:
         BT::InputPort<double>("time_allowance", 10.0, "Allowed time for reversing")
       });
   }
+private:
+  bool is_recovery_;
 };
 
 }  // namespace nav2_behavior_tree
