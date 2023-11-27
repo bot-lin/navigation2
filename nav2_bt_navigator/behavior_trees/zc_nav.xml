@@ -40,7 +40,10 @@
           <RecoveryNode number_of_retries="1" name="ComputePathToPose">
             <ReactiveSequence>
               <RemovePassedGoals input_goals="{goals}" output_goals="{goals}" radius="0.5"/>
-              <ComputePathThroughPoses goals="{goals}" path="{path}" planner_id="{planner_id}"/>
+              <Sequence>
+                <ComputePathThroughPoses goals="{goals}" path="{path}" planner_id="{planner_id}"/>
+                <SmoothPath unsmoothed_path="{path}" smoothed_path="{path}" error_code_id="{smoother_error_code}"/>
+              </Sequence>
             </ReactiveSequence>
             <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
           </RecoveryNode>

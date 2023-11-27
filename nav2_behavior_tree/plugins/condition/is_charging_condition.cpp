@@ -25,7 +25,7 @@ IsChargingCondition::IsChargingCondition(
   const BT::NodeConfiguration & conf)
 : BT::ConditionNode(condition_name, conf),
   charging_topic_("/charging_status"),
-  is_charging_(true)
+  is_charging_(false)
 {
   getInput("charging_topic", charging_topic_);
   getInput("charging_duration", charing_duration_);
