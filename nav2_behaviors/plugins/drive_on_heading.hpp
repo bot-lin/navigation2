@@ -132,6 +132,13 @@ public:
     acc_ = command->acc;
     dec_ = command->dec;
 
+    RCLCPP_INFO(this->logger_, "command speed: %f", command_speed_);
+    RCLCPP_INFO(this->logger_, "command x: %f", command_x_);
+    RCLCPP_INFO(this->logger_, "command time allowance: %f", command_time_allowance_.seconds());
+    RCLCPP_INFO(this->logger_, "check collision: %d", check_collision_);
+    RCLCPP_INFO(this->logger_, "acc: %f", acc_);
+    RCLCPP_INFO(this->logger_, "dec: %f", dec_);
+
     D_cruise_ = -1.0;
     while (D_cruise_ < 0) {
       command_speed_ = command_speed_ - 0.02;
