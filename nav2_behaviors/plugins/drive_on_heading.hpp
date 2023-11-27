@@ -214,6 +214,9 @@ public:
         // Cruise
         velocity = std::fabs(command_speed_);
     }
+    if (velocity < 0.01) {
+      velocity = 0.01;
+    }
     auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
     cmd_vel->linear.y = 0.0;
     cmd_vel->angular.z = 0.0;
