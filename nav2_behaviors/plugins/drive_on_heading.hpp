@@ -108,6 +108,9 @@ public:
 
   Status onRun(const std::shared_ptr<const typename ActionT::Goal> command) override
   {
+    RCLCPP_INFO(
+        this->logger_,
+        "driving on: on run");
     if (command->target.y != 0.0 || command->target.z != 0.0) {
       RCLCPP_INFO(
         this->logger_,
