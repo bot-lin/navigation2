@@ -222,6 +222,7 @@ public:
       RCLCPP_WARN(this->logger_, "Collision Ahead - Waiting for obstacle to move");
       return Status::RUNNING;
     }
+    RCLCPP_INFO(this->logger_, "Drive on: %f", cmd_vel->linear.x);
 
     this->vel_smoothed_pub_->publish(std::move(cmd_vel));
 
