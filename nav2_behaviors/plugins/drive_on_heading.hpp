@@ -46,7 +46,7 @@ public:
     command_x_(0.0),
     command_speed_(0.0),
     simulate_ahead_time_(0.0),
-    check_collision_(true)
+    check_collision_(false)
   {
 
   }
@@ -214,7 +214,7 @@ public:
     pose2d.y = current_pose.pose.position.y;
     pose2d.theta = tf2::getYaw(current_pose.pose.orientation);
 
-    if (check_collision_ && !isCollisionFree(distance, cmd_vel.get(), pose2d)) {
+    if (check_collision_ && !isCollisionFree(distance_moved, cmd_vel.get(), pose2d)) {
       this->stopRobot();
       RCLCPP_WARN(this->logger_, "Collision Ahead - Waiting for obstacle to move");
       return Status::RUNNING;
