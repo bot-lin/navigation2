@@ -41,6 +41,7 @@ void SpinAction::on_tick()
   getInput("is_recovery", is_recovery_);
   bool check_collision;
   getInput("check_collision", check_collision);
+  goal_.check_collision = check_collision;
   if (is_recovery_) {
     increment_recovery_count();
   }

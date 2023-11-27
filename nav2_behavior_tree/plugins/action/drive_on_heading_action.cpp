@@ -57,6 +57,10 @@ void DriveOnHeadingAction::on_tick()
   goal_.speed = speed;
   goal_.time_allowance = rclcpp::Duration::from_seconds(time_allowance);
 
+  bool check_collision;
+  getInput("check_collision", check_collision);
+  goal_.check_collision = check_collision;
+
 }
 
 }  // namespace nav2_behavior_tree

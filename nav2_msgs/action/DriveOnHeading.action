@@ -4,6 +4,7 @@ float32 speed
 builtin_interfaces/Duration time_allowance
 float64 acc
 float64 dec
+bool check_collision
 ---
 #result definition
 geometry_msgs/PoseStamped docking_point

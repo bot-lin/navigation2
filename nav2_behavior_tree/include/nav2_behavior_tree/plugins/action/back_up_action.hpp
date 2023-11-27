@@ -57,7 +57,8 @@ public:
         BT::InputPort<double>("backup_speed", 0.025, "Speed at which to backup"),
         BT::InputPort<double>("acc", 0.1, "Speed at which to travel"),
         BT::InputPort<double>("dec", 0.2, "Speed at which to travel"),
-        BT::InputPort<double>("time_allowance", 10.0, "Allowed time for reversing")
+        BT::InputPort<double>("time_allowance", 10.0, "Allowed time for reversing"),
+        BT::InputPort<bool>("check_collision", true, "True if check collision")
       });
   }
 private:

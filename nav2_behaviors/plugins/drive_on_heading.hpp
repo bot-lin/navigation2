@@ -45,7 +45,8 @@ public:
     feedback_(std::make_shared<typename ActionT::Feedback>()),
     command_x_(0.0),
     command_speed_(0.0),
-    simulate_ahead_time_(0.0)
+    simulate_ahead_time_(0.0),
+    check_collision_(true)
   {
 
   }
@@ -74,6 +75,7 @@ public:
     command_x_ = command->target.x;
     command_speed_ = command->speed;
     command_time_allowance_ = command->time_allowance;
+    check_collision_ = command->check_collision;
 
     acc_ = command->acc;
     dec_ = command->dec;
@@ -122,6 +124,7 @@ public:
     command_x_ = command->target.x;
     command_speed_ = command->speed;
     command_time_allowance_ = command->time_allowance;
+    check_collision_ = command->check_collision;
 
     acc_ = command->acc;
     dec_ = command->dec;
@@ -211,11 +214,11 @@ public:
     pose2d.y = current_pose.pose.position.y;
     pose2d.theta = tf2::getYaw(current_pose.pose.orientation);
 
-    // if (!isCollisionFree(distance, cmd_vel.get(), pose2d)) {
-    //   this->stopRobot();
-    //   RCLCPP_WARN(this->logger_, "Collision Ahead - Exiting DriveOnHeading");
-    //   return Status::FAILED;
-    // }
+    if (check_collision_ && !isCollisionFree(distance, cmd_vel.get(), pose2d)) {
+      this->stopRobot();
+      RCLCPP_WARN(this->logger_, "Collision Ahead - Waiting for obstacle to move");
+      return Status::RUNNING;
+    }
 
     this->vel_smoothed_pub_->publish(std::move(cmd_vel));
 
@@ -293,6 +296,7 @@ protected:
   double acc_, dec_;
   double D_acc_, D_dec_, D_cruise_;
   int sign_;
+  bool check_collision_;
   
 };
 

@@ -40,6 +40,10 @@ void BackUpAction::on_tick()
   getInput("acc", goal_.acc);
   getInput("dec", goal_.dec);
 
+  bool check_collision;
+  getInput("check_collision", check_collision);
+  goal_.check_collision = check_collision;
+
   // Populate the input message
   goal_.target.x = dist;
   goal_.target.y = 0.0;

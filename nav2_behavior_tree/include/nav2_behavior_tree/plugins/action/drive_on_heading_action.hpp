@@ -53,7 +53,8 @@ void on_tick() override;
         BT::InputPort<double>("acc", 0.1, "Speed at which to travel"),
         BT::InputPort<double>("dec", 0.2, "Speed at which to travel"),
         BT::InputPort<double>("bias", 0.0, "Distance to travel bias"),
-        BT::InputPort<double>("time_allowance", 10.0, "Allowed time for driving on heading")
+        BT::InputPort<double>("time_allowance", 10.0, "Allowed time for driving on heading"),
+        BT::InputPort<bool>("check_collision", true, "True if check collision")
       });
   }
 };
