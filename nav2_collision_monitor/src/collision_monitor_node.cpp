@@ -527,8 +527,8 @@ void CollisionMonitor::notifyActionState(
   } else if (robot_action.action_type == LIMIT) {
     RCLCPP_INFO(
       get_logger(),
-      "Robot to limit speed due to %s polygon",
-      action_polygon->getName().c_str());
+      "Robot to limit speed due to %s polygon, linear limit: %f, angular limit: %f",
+      action_polygon->getName().c_str(), action_polygon->getLinearLimit(), action_polygon->getAngularLimit());
   } else if (robot_action.action_type == APPROACH) {
     RCLCPP_INFO(
       get_logger(),
