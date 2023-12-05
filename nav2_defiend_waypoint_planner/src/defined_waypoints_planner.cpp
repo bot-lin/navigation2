@@ -250,6 +250,13 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   Magick::Image img("/data/path.pgm");
   std::string filename_txt = "/data/path.txt";
   poses_ = readPathsFromFile(filename_txt);
+  nav_msgs::msg::Path global_path;
+  if (poses_.size() == 0)
+  {
+    RCLCPP_INFO(node_->get_logger(), "No available pose in the map, poses size: %d", poses_.size());
+
+    return global_path;
+  }
   int width = img.size().width();
   int height = img.size().height();
   RCLCPP_INFO(
@@ -284,7 +291,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   std::string filename = "/data/validate_grid_map1.png";
   saveBinaryImageAsPNG(grid_map, filename);
   // graph_ = grid_map;
-  nav_msgs::msg::Path global_path;
+  
   RCLCPP_INFO(
       node_->get_logger(), "validate image saved");
   // Checking if the goal and start state is in the global frame
@@ -308,12 +315,8 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   global_path.poses.clear();
   global_path.header.stamp = node_->now();
   global_path.header.frame_id = global_frame_;
-  RCLCPP_INFO(node_->get_logger(), "poses length %d", poses_.size());
   DoublePoint closestPoint = findClosestPoint({start.pose.position.x, start.pose.position.y}, poses_);
-  if (poses_.size() == 0)
-  {
-    return global_path;
-  }
+
   RCLCPP_INFO(node_->get_logger(), "Closest point to start is: %f, %f", closestPoint.first, closestPoint.second);
 
   // origin_y_ = origin_y_ + resolution_ * height;
