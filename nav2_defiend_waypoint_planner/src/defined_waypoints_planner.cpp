@@ -308,7 +308,12 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   global_path.poses.clear();
   global_path.header.stamp = node_->now();
   global_path.header.frame_id = global_frame_;
+  RCLCPP_INFO(node_->get_logger(), "poses length %d", poses_.size());
   DoublePoint closestPoint = findClosestPoint({start.pose.position.x, start.pose.position.y}, poses_);
+  if (poses_.size() == 0)
+  {
+    return global_path;
+  }
   RCLCPP_INFO(node_->get_logger(), "Closest point to start is: %f, %f", closestPoint.first, closestPoint.second);
 
   // origin_y_ = origin_y_ + resolution_ * height;
