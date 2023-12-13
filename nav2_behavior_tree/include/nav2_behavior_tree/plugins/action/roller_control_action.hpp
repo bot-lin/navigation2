@@ -16,6 +16,7 @@
 #define NAV2_BEHAVIOR_TREE__PLUGINS__ACTION__ROLLER_CONTROL_ACTION_HPP_
 
 #include <string>
+#include <vector>
 
 #include "nav2_behavior_tree/bt_action_node.hpp"
 #include "zbot_interfaces/action/custom_program_action.hpp"
@@ -57,7 +58,9 @@ public:
         BT::InputPort<std::string>(
         "task_name",
         "task name: eg roller_control"),
-        BT::InputPort<std::vector>("params", std::vector<double>(), "params"),
+        BT::InputPort<std::vector<double>>(
+          "params",
+          "Destinations to plan through"),
       });
   }
 
