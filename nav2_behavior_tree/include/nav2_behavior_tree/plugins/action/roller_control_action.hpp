@@ -57,7 +57,7 @@ public:
         BT::InputPort<std::string>(
         "task_name",
         "task name: eg roller_control"),
-        BT::InputPort<std::vector<double>>("params", std::vector<double>(), "params"),
+        BT::InputPort<std::vector>("params", std::vector<double>(), "params"),
       });
   }
 
