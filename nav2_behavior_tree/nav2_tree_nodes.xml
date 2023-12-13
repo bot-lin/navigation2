@@ -214,6 +214,7 @@
 
     <Action ID="RollerControl">
       <input_port name="task_id">task id</input_port>
+      <input_port name="task_name">task name</input_port>
     </Action>
 
     <Action ID="Wait">
