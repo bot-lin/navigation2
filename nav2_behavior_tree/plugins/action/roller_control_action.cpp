@@ -34,12 +34,14 @@ void RollerControlAction::on_tick()
 {
     int task_id;
     std::string task_name;
+    std::vector<double> params;
     
   getInput("task_id", task_id);
   getInput("task_name", task_name);
-  getInput("task_param", goal_.params);
+  getInput("task_param", params);
   goal_.task_id = task_id;
   goal_.task_name = task_name;
+  goal_.params = params;
 }
 
 BT::NodeStatus RollerControlAction::on_success()
