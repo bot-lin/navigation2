@@ -45,6 +45,8 @@ public:
    * @brief Function to perform some user-defined operation on tick
    */
   void on_tick() override;
+  BT::NodeStatus on_success() override;
+
 
   /**
    * @brief Creates list of BT ports
@@ -54,6 +56,7 @@ public:
   {
     return providedBasicPorts(
       {
+        BT::OutputPort<geometry_msgs::msg::PoseStamped>("pose", "Path created by ComputePathToPose node"),
         BT::InputPort<int>("task_id", 0, "task id"),
         BT::InputPort<std::string>(
         "task_name",

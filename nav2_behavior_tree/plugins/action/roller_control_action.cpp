@@ -37,8 +37,15 @@ void RollerControlAction::on_tick()
     
   getInput("task_id", task_id);
   getInput("task_name", task_name);
+  getInput("task_param", goal_.params);
   goal_.task_id = task_id;
   goal_.task_name = task_name;
+}
+
+BT::NodeStatus RollerControlAction::on_success()
+{
+  setOutput("pose", result_.pose);
+  return BT::NodeStatus::SUCCESS;
 }
 
 }  // namespace nav2_behavior_tree
