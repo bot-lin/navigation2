@@ -44,7 +44,7 @@ void RollerControlAction::on_tick()
 
 BT::NodeStatus RollerControlAction::on_success()
 {
-  setOutput("pose", result_.pose);
+  setOutput("pose", result_.result->pose);
   return BT::NodeStatus::SUCCESS;
 }
 
