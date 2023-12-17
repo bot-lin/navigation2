@@ -61,7 +61,7 @@ public:
         BT::InputPort<std::string>(
         "task_name",
         "task name: eg roller_control"),
-        BT::InputPort<std::vector<double>>(
+        BT::InputPort<std::string>(
           "task_param",
           "Destinations to plan through"),
       });

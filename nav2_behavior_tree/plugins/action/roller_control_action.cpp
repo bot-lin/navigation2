@@ -34,7 +34,7 @@ void RollerControlAction::on_tick()
 {
     int task_id;
     std::string task_name;
-    std::vector<double> params;
+    std::string params;
     
   getInput("task_id", task_id);
   getInput("task_name", task_name);
