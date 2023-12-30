@@ -81,6 +81,7 @@ protected:
   double prev_yaw_;
   double relative_yaw_;
   double simulate_ahead_time_;
+  double last_vel_;
   bool check_collision_;
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;

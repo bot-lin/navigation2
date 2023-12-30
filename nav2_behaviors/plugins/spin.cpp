@@ -92,6 +92,8 @@ Status Spin::onRun(const std::shared_ptr<const SpinAction::Goal> command)
     logger_, "Turning %0.2f for spin behavior.",
     cmd_yaw_);
 
+  last_vel_ = 0.0;
+
   command_time_allowance_ = command->time_allowance;
   end_time_ = steady_clock_.now() + command_time_allowance_;
 
@@ -117,7 +119,7 @@ Status Spin::change_goal(const std::shared_ptr<const SpinAction::Goal> command)
   RCLCPP_INFO(
     logger_, "Turning %0.2f for spin behavior.",
     cmd_yaw_);
-
+  last_vel_ = 0.0;
   command_time_allowance_ = command->time_allowance;
   end_time_ = steady_clock_.now() + command_time_allowance_;
 
@@ -164,7 +166,9 @@ Status Spin::onCycleUpdate()
   }
 
   double vel = sqrt(2 * rotational_acc_lim_ * remaining_yaw);
+  double vel_with_acc = last_vel_ + 0.1;
   vel = std::min(std::max(vel, min_rotational_vel_), max_rotational_vel_);
+  vel = std::min(vel, vel_with_acc);
 
   auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
   cmd_vel->angular.z = copysign(vel, cmd_yaw_);
