@@ -168,6 +168,7 @@ Status Spin::onCycleUpdate()
     return Status::SUCCEEDED;
   }
   rclcpp::Duration control_time = steady_clock_.now() - last_vel_time_;
+  last_vel_time_ = steady_clock_.now();
   double vel = sqrt(2 * rotational_acc_lim_ * remaining_yaw);
   double vel_with_acc = last_vel_ + 0.1 * control_time.seconds();
   vel = std::min(std::max(vel, min_rotational_vel_), max_rotational_vel_);
