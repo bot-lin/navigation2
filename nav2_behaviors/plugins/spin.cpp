@@ -169,6 +169,7 @@ Status Spin::onCycleUpdate()
   double vel_with_acc = last_vel_ + 0.1;
   vel = std::min(std::max(vel, min_rotational_vel_), max_rotational_vel_);
   vel = std::min(vel, vel_with_acc);
+  last_vel_ = vel;
 
   auto cmd_vel = std::make_unique<geometry_msgs::msg::Twist>();
   cmd_vel->angular.z = copysign(vel, cmd_yaw_);
