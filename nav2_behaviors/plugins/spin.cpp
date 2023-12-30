@@ -93,6 +93,8 @@ Status Spin::onRun(const std::shared_ptr<const SpinAction::Goal> command)
     cmd_yaw_);
 
   last_vel_ = 0.0;
+  last_vel_time_ = steady_clock_.now();
+
 
   command_time_allowance_ = command->time_allowance;
   end_time_ = steady_clock_.now() + command_time_allowance_;
@@ -120,6 +122,7 @@ Status Spin::change_goal(const std::shared_ptr<const SpinAction::Goal> command)
     logger_, "Turning %0.2f for spin behavior.",
     cmd_yaw_);
   last_vel_ = 0.0;
+  last_vel_time_ = steady_clock_.now();
   command_time_allowance_ = command->time_allowance;
   end_time_ = steady_clock_.now() + command_time_allowance_;
 
@@ -164,9 +167,9 @@ Status Spin::onCycleUpdate()
     stopRobot();
     return Status::SUCCEEDED;
   }
-
+  rclcpp::Duration control_time = steady_clock_.now() - last_vel_time_;
   double vel = sqrt(2 * rotational_acc_lim_ * remaining_yaw);
-  double vel_with_acc = last_vel_ + 0.1;
+  double vel_with_acc = last_vel_ + 0.1 * control_time.seconds();
   vel = std::min(std::max(vel, min_rotational_vel_), max_rotational_vel_);
   vel = std::min(vel, vel_with_acc);
   last_vel_ = vel;

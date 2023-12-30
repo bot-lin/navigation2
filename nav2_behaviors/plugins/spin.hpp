@@ -85,6 +85,7 @@ protected:
   bool check_collision_;
   rclcpp::Duration command_time_allowance_{0, 0};
   rclcpp::Time end_time_;
+  rclcpp::Time last_vel_time_;
 };
 
 }  // namespace nav2_behaviors
