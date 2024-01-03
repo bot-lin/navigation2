@@ -28,6 +28,7 @@ PreciseNavAction::PreciseNavAction(
 
 void PreciseNavAction::on_tick()
 {
+  
   if (!getInput("goal", goal_.pose)) {
     RCLCPP_ERROR(
       node_->get_logger(),
@@ -35,6 +36,12 @@ void PreciseNavAction::on_tick()
     return;
   }
   //getInput("goal", goal_.pose);
+
+  double time_allowance;
+  getInput("time_allowance", time_allowance);
+  goal_.time_allowance = rclcpp::Duration::from_seconds(time_allowance);
+
+
   if (!getInput("is_reverse", goal_.is_reverse)) {
     goal_.is_reverse = false;
   }

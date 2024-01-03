@@ -113,6 +113,7 @@ protected:
     bool is_heading_only_ = false;
     bool pid_reset_ = false;
     double steepness_ = 4.0;
+    rclcpp::Duration command_time_allowance_{0, 0};
     PIDController angularController_;
     SmoothController smoothController_;
     std::string target_tf_frame_ = "odom";

@@ -140,6 +140,8 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     if (command->reverse_yaw){
         target_yaw_ = -target_yaw_;
     }
+    command_time_allowance_ = command->time_allowance;
+    end_time_ = steady_clock_.now() + command_time_allowance_;
     return Status::SUCCEEDED;
 }
 
@@ -197,10 +199,20 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     m.getRPY(roll, pitch, yaw);
     target_yaw_ = yaw;
     reached_distance_goal_ = false;
+    command_time_allowance_ = command->time_allowance;
+    end_time_ = steady_clock_.now() + command_time_allowance_;
     return Status::SUCCEEDED;
 }
 Status PreciseNav::onCycleUpdate()
 {
+    rclcpp::Duration time_remaining = end_time_ - steady_clock_.now();
+    if (time_remaining.seconds() < 0.0 && command_time_allowance_.seconds() > 0.0) {
+        stopRobot();
+        RCLCPP_WARN(
+        logger_,
+        "Exceeded time allowance before reaching the Precise goal - Exiting Precise moving");
+        return Status::FAILED;
+    }
     geometry_msgs::msg::PoseStamped current_pose;
     if (!nav2_util::getCurrentPose(
         current_pose, *this->tf_, target_tf_frame_.c_str(), this->robot_base_frame_,
