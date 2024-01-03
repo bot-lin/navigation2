@@ -111,8 +111,8 @@ Status FindDockingPoint::onCycleUpdate()
 }
 
 Point FindDockingPoint::findClockwisePerpendicularVector(const Point& A, const Point& B) {
-    double x = B.x - A.x;
-    double y = B.y - A.y;
+    double x = A.x - B.x;
+    double y = A.y - B.y;
     return Point(y, -x);
 }
 
@@ -174,7 +174,7 @@ bool FindDockingPoint::find_docking_spot()
         double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
         double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
 
-        Point A, B;
+        Point A, B; //A left, B right
         A.x = x2;
         A.y = y2;
         B.x = x1;
