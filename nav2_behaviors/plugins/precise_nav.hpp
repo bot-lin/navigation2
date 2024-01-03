@@ -117,6 +117,7 @@ protected:
     PIDController angularController_;
     SmoothController smoothController_;
     std::string target_tf_frame_ = "odom";
+    rclcpp::Time end_time_;
     
 };
 }
