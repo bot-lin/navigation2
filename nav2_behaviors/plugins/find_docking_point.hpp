@@ -23,6 +23,55 @@ struct Quaternion {
     double w, x, y, z;
     Quaternion(double w, double x, double y, double z) : w(w), x(x), y(y), z(z) {}
 };
+
+std::pair<float, float> findIntersection(float xs1, float ys1, float xe1, float ye1, 
+                                         float xs2, float ys2, float xe2, float ye2) {
+    // Calculate slopes (m1, m2) and y-intercepts (c1, c2)
+    float m1 = (ye1 - ys1) / (xe1 - xs1);
+    float c1 = ys1 - m1 * xs1;
+    float m2 = (ye2 - ys2) / (xe2 - xs2);
+    float c2 = ys2 - m2 * xs2;
+
+    if (m1 == m2) {
+        std::cout << "Lines are parallel or coincident." << std::endl;
+        return {0, 0}; // No intersection
+    }
+
+    float x = (c2 - c1) / (m1 - m2);
+    float y = m1 * x + c1;
+
+    return {x, y};
+}
+
+std::pair<double, double> findCircleLineIntersectionWithSmallerX(double x0, double y0, double r, 
+                                                                 double xs, double ys, double xe, double ye) {
+    double dx = xe - xs;
+    double dy = ye - ys;
+    double A = dx * dx + dy * dy;
+    double B = 2 * (dx * (xs - x0) + dy * (ys - y0));
+    double C = (xs - x0) * (xs - x0) + (ys - y0) * (ys - y0) - r * r;
+
+    double det = B * B - 4 * A * C;
+
+    if (A <= 0.0000001 || det < 0) {
+        // No real solutions.
+        throw std::runtime_error("No intersection or circle is tangent to the line.");
+    } else if (det == 0) {
+        // One solution.
+        double t = -B / (2 * A);
+        return {xs + t * dx, ys + t * dy};
+    } else {
+        // Two solutions.
+        double t1 = (-B + std::sqrt(det)) / (2 * A);
+        double t2 = (-B - std::sqrt(det)) / (2 * A);
+        auto p1 = std::make_pair(xs + t1 * dx, ys + t1 * dy);
+        auto p2 = std::make_pair(xs + t2 * dx, ys + t2 * dy);
+
+        // Return the point with the smaller x value.
+        return (p1.first < p2.first) ? p1 : p2;
+    }
+}
+
 using FindDockingPointAction = nav2_msgs::action::FindDockingPoint;
 
 class FindDockingPoint : public TimedBehavior<FindDockingPointAction>

@@ -152,11 +152,22 @@ bool FindDockingPoint::find_docking_spot()
         // float start = lines[0].start;
 
         // auto end = lines[1].end;
-        double x2 = lines[0].start[0];
+        // double x2 = lines[0].start[0];
 
-        double y2 = lines[0].start[1];
-        double x1 = lines[1].end[0];
-        double y1 = lines[1].end[1];
+        // double y2 = lines[0].start[1];
+        // double x1 = lines[1].end[0];
+        // double y1 = lines[1].end[1];
+
+        auto [x, y] = findIntersection(lines[0].start[0], lines[0].start[1], lines[0].end[0], lines[0].end[1], 
+                                        lines[1].start[0], lines[1].start[1], lines[1].end[0], lines[1].end[1]);
+        auto intersection1 = findCircleLineIntersections(x, y, r, lines[0].start[0], lines[0].start[1], lines[0].end[0], lines[0].end[1]);
+        auto intersection2 = findCircleLineIntersections(x, y, r, lines[1].start[0], lines[1].start[1], lines[1].end[0], lines[1].end[1]);
+        double x2 = intersection1.first;
+        double y2 = intersection1.second;
+        double x1 = intersection2.first;
+        double y1 = intersection2.second;
+        double r = 0.15;
+
 
         double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));
 
