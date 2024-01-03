@@ -69,7 +69,7 @@ public:
         BT::InputPort<double>("scale_factor", "scale_factor"),
         BT::InputPort<double>("distance_max", "distance_max"),
         BT::InputPort<double>("smoothing_factor", "smoothing_factor"),
-        BT::InputPort<double>("time_allowance", 10.0, "Allowed time for spinning")
+        BT::InputPort<double>("time_allowance", 10.0, "Allowed time for spinning"),
 
         BT::InputPort<std::string>("target_tf_frame", "The target frame for the goal pose"),
       });
