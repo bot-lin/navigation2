@@ -174,11 +174,11 @@ bool FindDockingPoint::find_docking_spot()
         double middle_y = (y1 + y2) /2;
         Point A(x, y);
         Point B(middle_x, middle_y);
-        Point C = findThirdPoint(A, B);
+        Point C = findThirdPoint(B, A, distance_to_point_); // B--->A--->C
 
         double x3 = C.x;
         double y3 = C.y;
-        Point perpendicularVector(B.x-A.x, B.y-A.y);
+        Point perpendicularVector(A.x-B.x, A.y-B.y); // B--->A
         Quaternion q = vectorToQuaternion(perpendicularVector);
 
         // double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));

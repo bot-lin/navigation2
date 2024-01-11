@@ -29,10 +29,21 @@ struct Point {
     }
 };
 
-// Function to find the third point C on the line AB
-Point findThirdPoint(const Point& A, const Point& B) {
+// Function to calculate the distance between two points
+double distance(const Point& A, const Point& B) {
+    return std::sqrt(std::pow(B.x - A.x, 2) + std::pow(B.y - A.y, 2));
+}
+
+// Function to find the third point C on the line AB with a specified distance from B
+Point findThirdPoint(const Point& A, const Point& B, double distBC) {
     Point AB = B - A; // Vector from A to B
-    Point C = B + AB; // Extending AB beyond B to find C
+    double distAB = distance(A, B);
+
+    // Scale the AB vector to have the length of distBC
+    Point scaledAB = AB * (distBC / distAB);
+
+    // Calculate C as B plus the scaled AB vector
+    Point C = B + scaledAB;
     return C;
 }
 
