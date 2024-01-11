@@ -166,21 +166,41 @@ bool FindDockingPoint::find_docking_spot()
         double y2 = intersection1.second;
         double x1 = intersection2.first;
         double y1 = intersection2.second;
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Intersection point x: %f, y:%f.", x,y);
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Intersection point1 x: %f, y:%f.", x1,y1);
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Intersection point2 x: %f, y:%f.", x2,y2);
         
+        double middle_x = (x1 + x2) /2;
+        double middle_y = (y1 + y2) /2;
+        Point A(x, y);
+        Point B(middle_x, middle_y);
+        Point C = findThirdPoint(A, B);
 
-
-        double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));
-
-        double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
-        double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
-
-        Point A, B; //A left, B right
-        A.x = x2;
-        A.y = y2;
-        B.x = x1;
-        B.y = y1;
-        Point perpendicularVector = findClockwisePerpendicularVector(A, B);
+        double x3 = C.x;
+        double y3 = C.y;
+        Point perpendicularVector = (B.x - A.x, B.y-A.y);
         Quaternion q = vectorToQuaternion(perpendicularVector);
+
+        // double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));
+
+        // double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
+        // double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
+
+        // Point A, B; //A left, B right
+        // A.x = x2;
+        // A.y = y2;
+        // B.x = x1;
+        // B.y = y1;
+        // Point perpendicularVector1 = findClockwisePerpendicularVector(A, B);
+        // Point perpendicularVector2 = findClockwisePerpendicularVector(B, A);
+        // if (perpendicularVector1.x < perpendicularVector2.x)
+        // {
+        //     Quaternion q = vectorToQuaternion(perpendicularVector1);
+        // }
+        // else
+        // {
+        //     Quaternion q = vectorToQuaternion(perpendicularVector2);
+        // }
 
         geometry_msgs::msg::PoseStamped pose_laser;
 

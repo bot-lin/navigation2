@@ -17,7 +17,24 @@ namespace nav2_behaviors
 struct Point {
     double x, y;
     Point(double x = 0, double y = 0) : x(x), y(y) {}
+
+        // Function to add two points
+    Point operator+(const Point& other) const {
+        return Point(x + other.x, y + other.y);
+    }
+
+    // Function to subtract two points
+    Point operator-(const Point& other) const {
+        return Point(x - other.x, y - other.y);
+    }
 };
+
+// Function to find the third point C on the line AB
+Point findThirdPoint(const Point& A, const Point& B) {
+    Point AB = B - A; // Vector from A to B
+    Point C = B + AB; // Extending AB beyond B to find C
+    return C;
+}
 
 struct Quaternion {
     double w, x, y, z;
