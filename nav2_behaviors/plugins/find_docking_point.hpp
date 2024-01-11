@@ -16,9 +16,11 @@ namespace nav2_behaviors
 {
 struct Point {
     double x, y;
-    Point(double x = 0, double y = 0) : x(x), y(y) {}
 
-        // Function to add two points
+    // Constructor to initialize the point
+    Point(double x_val = 0.0, double y_val = 0.0) : x(x_val), y(y_val) {}
+
+    // Function to add two points
     Point operator+(const Point& other) const {
         return Point(x + other.x, y + other.y);
     }
@@ -26,6 +28,11 @@ struct Point {
     // Function to subtract two points
     Point operator-(const Point& other) const {
         return Point(x - other.x, y - other.y);
+    }
+
+    // Function to scale a point by a factor
+    Point operator*(double factor) const {
+        return Point(x * factor, y * factor);
     }
 };
 
