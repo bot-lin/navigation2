@@ -106,54 +106,6 @@ bool isValid(int x, int y, int rows, int cols, const std::vector<std::vector<boo
     return x >= 0 && x < rows && y >= 0 && y < cols && !visited[x][y];
 }
 
-int heuristic(MapNode a, MapNode b) {
-    return std::abs(a.x - b.x) + std::abs(a.y - b.y);
-}
-
-std::vector<MapNode> a_star_search(std::vector<std::vector<int>>& grid, MapNode start, MapNode end) {
-    int rows = grid.size(), cols = grid[0].size();
-    std::vector<std::vector<int>> cost(rows, std::vector<int>(cols, INT_MAX));
-    std::vector<std::vector<MapNode>> parent(rows, std::vector<MapNode>(cols, MapNode(-1, -1)));
-    std::priority_queue<std::pair<int, MapNode>, std::vector<std::pair<int, MapNode>>, std::greater<>> pq;
-
-    pq.push({0, start});
-    cost[start.x][start.y] = 0;
-
-    while (!pq.empty()) {
-        MapNode current = pq.top().second;
-        pq.pop();
-
-        if (current == end) break;
-
-        for (int i = 0; i < 4; ++i) {
-            int newX = current.x + dx[i];
-            int newY = current.y + dy[i];
-
-            if (isValid(newX, newY, rows, cols, grid)) {
-                int newCost = cost[current.x][current.y] + 1; // Assuming each step costs 1
-                if (newCost < cost[newX][newY]) {
-                    cost[newX][newY] = newCost;
-                    int priority = newCost + heuristic(MapNode(newX, newY), end);
-                    pq.push({priority, MapNode(newX, newY)});
-                    parent[newX][newY] = current;
-                }
-            }
-        }
-    }
-
-    // Reconstruct the path
-    std::vector<MapNode> path;
-    if (cost[end.x][end.y] == INT_MAX) {
-        return path; // No path found
-    }
-    for (MapNode current = end; !(current == start); current = parent[current.x][current.y]) {
-        path.push_back(current);
-    }
-    path.push_back(start);
-    std::reverse(path.begin(), path.end());
-    return path;
-}
-
 std::vector<MapNode> bfs(std::vector<std::vector<int>>& grid, MapNode start, MapNode end) {
     int rows = grid.size();
     int cols = grid[0].size();
@@ -384,7 +336,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   RCLCPP_INFO(node_->get_logger(), "start x: %d, y: %d", start_x_index, start_y_index);
   RCLCPP_INFO(node_->get_logger(), "end x: %d, y: %d", end_x_index, end_y_index);
   
-  std::vector<MapNode> shortest_path = a_star_search(grid_map, start_node, end_node);
+  std::vector<MapNode> shortest_path = bfs(grid_map, start_node, end_node);
   for (const auto& point : shortest_path) {
         std::cout << "(" << point.x << ", " << point.y << ") "; //point.x is actually the y, and point.y is the x
     }
