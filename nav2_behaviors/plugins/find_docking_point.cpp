@@ -139,7 +139,7 @@ bool FindDockingPoint::find_docking_spot()
     processing_ = true;
     // auto result = client_->async_send_request(request);
     using ServiceResponseFuture =
-	    rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedFuture;
+            rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedFuture;
     auto response_received_callback = [this](ServiceResponseFuture result) {
         std::vector<zbot_interfaces::msg::LineSegment> lines = result.get()->line_segments;
         if (lines.size() == 0)
@@ -149,58 +149,43 @@ bool FindDockingPoint::find_docking_spot()
             pose_map_.header.frame_id = "none";
             return false;
         }
-        // float start = lines[0].start;
+        //float start = lines[0].start;
+         //auto end = lines[1].end;
+         double x2 = lines[0].start[0];
+         double y2 = lines[0].start[1];
+         double x1 = lines[1].end[0];
+         double y1 = lines[1].end[1];
+        //double r = 0.15;
+        //auto [x, y] = findIntersection(lines[0].start[0], lines[0].start[1], lines[0].end[0], lines[0].end[1], 
+         //                               lines[1].start[0], lines[1].start[1], lines[1].end[0], lines[1].end[1]);
+        //auto intersection1 = findCircleLineIntersectionWithSmallerX(x, y, r, lines[0].start[0], lines[0].start[1], lines[0].end[0], lines[0].end[1]);
+        //auto intersection2 = findCircleLineIntersectionWithSmallerX(x, y, r, lines[1].start[0], lines[1].start[1], lines[1].end[0], lines[1].end[1]);
+        //double x2 = intersection1.first;
+        //double y2 = intersection1.second;
+        //double x1 = intersection2.first;
+       // double y1 = intersection2.second;
 
-        // auto end = lines[1].end;
-        // double x2 = lines[0].start[0];
+        double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));
 
-        // double y2 = lines[0].start[1];
-        // double x1 = lines[1].end[0];
-        // double y1 = lines[1].end[1];
-        double r = 0.15;
-        auto [x, y] = findIntersection(lines[0].start[0], lines[0].start[1], lines[0].end[0], lines[0].end[1], 
-                                        lines[1].start[0], lines[1].start[1], lines[1].end[0], lines[1].end[1]);
-        auto intersection1 = findCircleLineIntersectionWithSmallerX(x, y, r, lines[0].start[0], lines[0].start[1], lines[0].end[0], lines[0].end[1]);
-        auto intersection2 = findCircleLineIntersectionWithSmallerX(x, y, r, lines[1].start[0], lines[1].start[1], lines[1].end[0], lines[1].end[1]);
-        double x2 = intersection1.first;
-        double y2 = intersection1.second;
-        double x1 = intersection2.first;
-        double y1 = intersection2.second;
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Intersection point x: %f, y:%f.", x,y);
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Intersection point1 x: %f, y:%f.", x1,y1);
-        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Intersection point2 x: %f, y:%f.", x2,y2);
-        
-        double middle_x = (x1 + x2) /2;
-        double middle_y = (y1 + y2) /2;
-        Point A(x, y);
-        Point B(middle_x, middle_y);
-        Point C = findThirdPoint(B, A, distance_to_point_); // B--->A--->C
+        double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
+        double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
 
-        double x3 = C.x;
-        double y3 = C.y;
-        Point perpendicularVector(A.x-B.x, A.y-B.y); // B--->A
+        double x4 = (x1 + x2) / 2 + tmp * (y1 - y2);
+        double y4 = (y1 + y2) / 2 + tmp * (x2 - x1);
+
+        if (x3 > x4)
+        {
+            x3 = x4;
+            y3 = y4;
+        }
+
+        Point A, B; //A left, B right
+        A.x = x2;
+        A.y = y2;
+        B.x = x1;
+        B.y = y1;
+        Point perpendicularVector = findClockwisePerpendicularVector(A, B);
         Quaternion q = vectorToQuaternion(perpendicularVector);
-
-        // double tmp = distance_to_point_ /std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2));
-
-        // double x3 = (x1 + x2) /2 - tmp * (y1 -y2);
-        // double y3 = (y1 + y2) /2 - tmp * (x2 - x1);
-
-        // Point A, B; //A left, B right
-        // A.x = x2;
-        // A.y = y2;
-        // B.x = x1;
-        // B.y = y1;
-        // Point perpendicularVector1 = findClockwisePerpendicularVector(A, B);
-        // Point perpendicularVector2 = findClockwisePerpendicularVector(B, A);
-        // if (perpendicularVector1.x < perpendicularVector2.x)
-        // {
-        //     Quaternion q = vectorToQuaternion(perpendicularVector1);
-        // }
-        // else
-        // {
-        //     Quaternion q = vectorToQuaternion(perpendicularVector2);
-        // }
 
         geometry_msgs::msg::PoseStamped pose_laser;
 
@@ -235,7 +220,7 @@ bool FindDockingPoint::find_docking_spot()
         publisher_->publish(markers_msg);
         processing_ = false;
         return true;
-	    };
+            };
     auto future_result = client_->async_send_request(request, response_received_callback);
     while (processing_) sleep(0.1);
     return true;
