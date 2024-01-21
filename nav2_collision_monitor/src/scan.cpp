@@ -111,6 +111,16 @@ void Scan::getData(
         data_->ranges[i] * std::sin(angle),
         0.0);
       tf2::Vector3 p_v3_b = tf_transform * p_v3_s;
+      RCLCPP_INFO(logger_, "[%s]: p_v3_s.x() = %f", source_name_.c_str(), p_v3_s.x());
+      RCLCPP_INFO(logger_, "[%s]: p_v3_s.y() = %f", source_name_.c_str(), p_v3_s.y());
+      RCLCPP_INFO(logger_, "[%s]: p_v3_s.z() = %f", source_name_.c_str(), p_v3_s.z());
+
+      RCLCPP_INFO(logger_, "[%s]: p_v3_b.x() = %f", source_name_.c_str(), p_v3_b.x());
+      RCLCPP_INFO(logger_, "[%s]: p_v3_b.y() = %f", source_name_.c_str(), p_v3_b.y());
+      RCLCPP_INFO(logger_, "[%s]: p_v3_b.z() = %f", source_name_.c_str(), p_v3_b.z());
+
+
+
 
       // Refill data array
       data.push_back({p_v3_b.x(), p_v3_b.y()});
