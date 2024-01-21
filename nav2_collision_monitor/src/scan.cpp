@@ -100,6 +100,14 @@ void Scan::getData(
       return;
     }
   }
+  RCLCPP_INFO(logger_, "[%s]: tf_transform.x() = %f", source_name_.c_str(), tf_transform.getOrigin.getX());
+  RCLCPP_INFO(logger_, "[%s]: tf_transform.y() = %f", source_name_.c_str(), tf_transform.getOrigin.getY());
+  RCLCPP_INFO(logger_, "[%s]: tf_transform.z() = %f", source_name_.c_str(), tf_transform.getOrigin.getZ());
+  RCLCPP_INFO(logger_, "[%s]: tf_transform.rotation.w() = %f", source_name_.c_str(), tf_transform.getRotation().getW());
+  RCLCPP_INFO(logger_, "[%s]: tf_transform.rotation.x() = %f", source_name_.c_str(), tf_transform.getRotation().getX());
+  RCLCPP_INFO(logger_, "[%s]: tf_transform.rotation.y() = %f", source_name_.c_str(), tf_transform.getRotation().getY());
+  RCLCPP_INFO(logger_, "[%s]: tf_transform.rotation.z() = %f", source_name_.c_str(), tf_transform.getRotation().getZ());
+
 
   // Calculate poses and refill data array
   float angle = data_->angle_min;
