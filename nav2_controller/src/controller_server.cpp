@@ -592,9 +592,9 @@ bool ControllerServer::isGoalReached()
       dy = pose.pose.position.y - transformed_end_pose.pose.position.y;
 
 
-  RCLCPP_INFO(
-        get_logger(),
-        "goal check: %f", dx * dx + dy * dy);
+  // RCLCPP_INFO(
+  //       get_logger(),
+  //       "goal check: %f", dx * dx + dy * dy);
 
   return goal_checkers_[current_goal_checker_]->isGoalReached(
     pose.pose, transformed_end_pose.pose,
