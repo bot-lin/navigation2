@@ -588,8 +588,8 @@ bool ControllerServer::isGoalReached()
     costmap_ros_->getTfBuffer(), costmap_ros_->getGlobalFrameID(),
     end_pose_, transformed_end_pose, tolerance);
 
-  double dx = pose.pose.position.x - transformed_end_pose.pose.position.x,
-      dy = pose.pose.position.y - transformed_end_pose.pose.position.y;
+  // double dx = pose.pose.position.x - transformed_end_pose.pose.position.x,
+  //     dy = pose.pose.position.y - transformed_end_pose.pose.position.y;
 
 
   // RCLCPP_INFO(
