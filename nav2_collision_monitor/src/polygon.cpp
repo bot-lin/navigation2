@@ -577,7 +577,7 @@ Polygon::dynamicParametersCallback(
               logger_,
               "[%s]: Polygon value before changed: %f %f",
               polygon_name_.c_str(), i->x, i->y
-            )
+            );
           }
           poly_.clear();
           bool first = true;
@@ -596,7 +596,7 @@ Polygon::dynamicParametersCallback(
               logger_,
               "[%s]: Polygon value after changed: %f %f",
               polygon_name_.c_str(), i->x, i->y
-            )
+            );
           }
           if (visualize_) {
             // Fill polygon_ for future usage
