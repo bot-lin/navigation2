@@ -570,6 +570,15 @@ Polygon::dynamicParametersCallback(
         } else {
           // Obtain polygon vertices
           Point point;
+
+          //print values in poly_
+          for (auto i = poly_.begin(); i != poly_.end(); ++i) {
+            RCLCPP_INFO(
+              logger_,
+              "[%s]: Polygon value before changed: %f %f",
+              polygon_name_.c_str(), i->x, i->y
+            )
+          }
           poly_.clear();
           bool first = true;
           for (double val : poly_row) {
@@ -580,6 +589,14 @@ Polygon::dynamicParametersCallback(
               poly_.push_back(point);
             }
             first = !first;
+          }
+          //print values in poly_
+          for (auto i = poly_.begin(); i != poly_.end(); ++i) {
+            RCLCPP_INFO(
+              logger_,
+              "[%s]: Polygon value after changed: %f %f",
+              polygon_name_.c_str(), i->x, i->y
+            )
           }
           if (visualize_) {
             // Fill polygon_ for future usage
