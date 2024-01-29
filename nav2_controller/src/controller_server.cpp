@@ -128,6 +128,8 @@ ControllerServer::on_configure(const rclcpp_lifecycle::State & /*state*/)
   get_parameter("failure_tolerance", failure_tolerance_);
 
   costmap_ros_->configure();
+  //print global_frame of  costmap_ros_
+  RCLCPP_INFO(get_logger(), "Creating costmap_ros_ with global_frame: %s", costmap_ros_->getGlobalFrameID().c_str());
 
   try {
     progress_checker_type_ = nav2_util::get_plugin_type_param(node, progress_checker_id_);
