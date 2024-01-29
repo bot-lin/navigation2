@@ -67,8 +67,7 @@ ControllerServer::ControllerServer(const rclcpp::NodeOptions & options)
   
   // Launch a thread to run the costmap node
   costmap_thread_ = std::make_unique<nav2_util::NodeThread>(costmap_ros_);
-  //print global_frame of  costmap_ros_
-  RCLCPP_INFO(get_logger(), "Creating costmap_ros_ with global_frame: %s", costmap_ros_->getGlobalFrameID().c_str());
+  
 }
 
 ControllerServer::~ControllerServer()
@@ -85,6 +84,8 @@ ControllerServer::on_configure(const rclcpp_lifecycle::State & /*state*/)
   auto node = shared_from_this();
 
   RCLCPP_INFO(get_logger(), "Configuring controller interface");
+  //print global_frame of  costmap_ros_
+  RCLCPP_INFO(get_logger(), "Creating costmap_ros_ with global_frame: %s", costmap_ros_->getGlobalFrameID().c_str());
 
   get_parameter("progress_checker_plugin", progress_checker_id_);
   if (progress_checker_id_ == default_progress_checker_id_) {
