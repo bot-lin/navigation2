@@ -404,8 +404,8 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
     pose.header.stamp = node_->now();
     pose.header.frame_id = global_frame_;
     global_path.poses.push_back(pose);
-
   }  
+  global_path.poses.back().pose.orientation = goal.pose.orientation;
   // global_path.poses.push_back(goal);
 
   return global_path;
