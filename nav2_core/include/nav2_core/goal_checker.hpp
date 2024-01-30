@@ -100,6 +100,8 @@ public:
   virtual bool getTolerances(
     geometry_msgs::msg::Pose & pose_tolerance,
     geometry_msgs::msg::Twist & vel_tolerance) = 0;
+  virtual void changeXYTolerance(double new_tolerance) = 0;
+  virtual void changeYawTolerance(double new_tolerance) = 0;
 };
 
 }  // namespace nav2_core
