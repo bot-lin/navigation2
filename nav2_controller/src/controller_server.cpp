@@ -403,22 +403,27 @@ void ControllerServer::computeControl()
       updateGlobalPath();
 
       computeAndPublishVelocity();
-      if (start_precision_control_){
-        if (isGoalReachedPrecise()) 
-        {
+      // if (start_precision_control_){
+      //   if (isGoalReachedPrecise()) 
+      //   {
+      //   RCLCPP_INFO(get_logger(), "Reached the goal!");
+      //   break;
+      //   }
+      // }
+      // else{
+      //   if (isGoalReached()) {
+      //     RCLCPP_INFO(get_logger(), "Start Precise move!");
+      //     start_precision_control_ = true;
+      //     goal_checkers_[current_goal_checker_]->changeXYTolerance(xy_precise_tolerance_);
+      //     goal_checkers_[current_goal_checker_]->changeYawTolerance(yaw_precise_tolerance_);
+      //     goal_checkers_[current_goal_checker_]->changeStateful(true);
+      //   break;
+      //   }
+      // }
+
+      if (isGoalReached()) {
         RCLCPP_INFO(get_logger(), "Reached the goal!");
         break;
-        }
-      }
-      else{
-        if (isGoalReached()) {
-          RCLCPP_INFO(get_logger(), "Start Precise move!");
-          start_precision_control_ = true;
-          goal_checkers_[current_goal_checker_]->changeXYTolerance(xy_precise_tolerance_);
-          goal_checkers_[current_goal_checker_]->changeYawTolerance(yaw_precise_tolerance_);
-          goal_checkers_[current_goal_checker_]->changeStateful(true);
-        // break;
-        }
       }
 
 
