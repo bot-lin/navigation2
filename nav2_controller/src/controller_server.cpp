@@ -493,11 +493,17 @@ void ControllerServer::computeAndPublishVelocity()
   geometry_msgs::msg::TwistStamped cmd_vel_2d;
 
   try {
-    cmd_vel_2d =
-      controllers_[current_controller_]->computeVelocityCommands(
-      pose,
-      nav_2d_utils::twist2Dto3D(twist),
-      goal_checkers_[current_goal_checker_].get());
+    if (controllers_[current_controller_]->getCheckXY())
+    {
+      cmd_vel_2d =
+        controllers_[current_controller_]->computeVelocityCommands(
+        pose,
+        nav_2d_utils::twist2Dto3D(twist),
+        goal_checkers_[current_goal_checker_].get());
+    } else {
+      cmd_vel_2d.twist.angular.z = 0.1;
+    }
+    
     last_valid_cmd_time_ = now();
   } catch (nav2_core::PlannerException & e) {
     if (failure_tolerance_ > 0 || failure_tolerance_ == -1.0) {
