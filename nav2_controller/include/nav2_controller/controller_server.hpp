@@ -170,6 +170,7 @@ protected:
    * @return true or false
    */
   bool isGoalReached();
+  bool isGoalReachedPrecise();
   /**
    * @brief Obtain current pose of the robot
    * @param pose To store current pose of the robot
@@ -265,6 +266,8 @@ protected:
 
   // Current path container
   nav_msgs::msg::Path current_path_;
+  bool start_precision_control_;
+  geometry_msgs::msg::PoseStamped precise_end_pose_;
 
 private:
   /**

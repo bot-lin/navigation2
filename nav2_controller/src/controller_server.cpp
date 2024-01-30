@@ -84,9 +84,7 @@ ControllerServer::on_configure(const rclcpp_lifecycle::State & /*state*/)
   auto node = shared_from_this();
 
   RCLCPP_INFO(get_logger(), "Configuring controller interface");
-  //print global_frame of  costmap_ros_
-  RCLCPP_INFO(get_logger(), "Creating costmap_ros_ with global_frame: %s", costmap_ros_->getGlobalFrameID().c_str());
-
+  
   get_parameter("progress_checker_plugin", progress_checker_id_);
   if (progress_checker_id_ == default_progress_checker_id_) {
     nav2_util::declare_parameter_if_not_declared(
@@ -126,7 +124,7 @@ ControllerServer::on_configure(const rclcpp_lifecycle::State & /*state*/)
   std::string speed_limit_topic;
   get_parameter("speed_limit_topic", speed_limit_topic);
   get_parameter("failure_tolerance", failure_tolerance_);
-
+·
   costmap_ros_->configure();
   //print global_frame of  costmap_ros_
   RCLCPP_INFO(get_logger(), "Creating costmap_ros_ with global_frame: %s", costmap_ros_->getGlobalFrameID().c_str());
@@ -378,6 +376,7 @@ void ControllerServer::computeControl()
 
     last_valid_cmd_time_ = now();
     rclcpp::WallRate loop_rate(controller_frequency_);
+    start_precision_control_ = false;
     while (rclcpp::ok()) {
       if (action_server_ == nullptr || !action_server_->is_server_active()) {
         RCLCPP_DEBUG(get_logger(), "Action server unavailable or inactive. Stopping.");
@@ -400,11 +399,23 @@ void ControllerServer::computeControl()
       updateGlobalPath();
 
       computeAndPublishVelocity();
-
-      if (isGoalReached()) {
+      if (start_precision_control_){
+        if (isGoalReachedPrecise()) 
+        {
         RCLCPP_INFO(get_logger(), "Reached the goal!");
         break;
+        }
       }
+      else{
+        if (isGoalReached()) {
+          RCLCPP_INFO(get_logger(), "Start Precise move!");
+          start_precision_control_ = true;
+          goal_checkers_[current_goal_checker_]->changeXYTolerance(0.02);
+          goal_checkers_[current_goal_checker_]->changeYawTolerance(0.02);
+        // break;
+        }
+      }
+
 
       if (!loop_rate.sleep()) {
         RCLCPP_WARN(
@@ -593,6 +604,8 @@ bool ControllerServer::isGoalReached()
     costmap_ros_->getTfBuffer(), costmap_ros_->getGlobalFrameID(),
     end_pose_, transformed_end_pose, tolerance);
 
+  precise_end_pose_ = transformed_end_pose;
+
   // double dx = pose.pose.position.x - transformed_end_pose.pose.position.x,
   //     dy = pose.pose.position.y - transformed_end_pose.pose.position.y;
 
@@ -603,6 +616,23 @@ bool ControllerServer::isGoalReached()
 
   return goal_checkers_[current_goal_checker_]->isGoalReached(
     pose.pose, transformed_end_pose.pose,
+    velocity);
+}
+
+bool ControllerServer::isGoalReachedPrecise()
+{
+  geometry_msgs::msg::PoseStamped pose;
+
+  if (!getRobotPose(pose)) {
+    return false;
+  }
+
+
+  nav_2d_msgs::msg::Twist2D twist = getThresholdedTwist(odom_sub_->getTwist());
+  geometry_msgs::msg::Twist velocity = nav_2d_utils::twist2Dto3D(twist);
+
+  return goal_checkers_[current_goal_checker_]->isGoalReached(
+    pose.pose, precise_end_pose_.pose,
     velocity);
 }
 

@@ -70,6 +70,14 @@ public:
   bool getTolerances(
     geometry_msgs::msg::Pose & pose_tolerance,
     geometry_msgs::msg::Twist & vel_tolerance) override;
+  
+  void changeXYTolerance(double new_tolerance){
+    xy_goal_tolerance_ = new_tolerance;
+    xy_goal_tolerance_sq_ = xy_goal_tolerance_ * xy_goal_tolerance_;
+  }
+  void changeYawTolerance(double new_tolerance){
+    yaw_goal_tolerance_ = new_tolerance;
+  }
 
 protected:
   double xy_goal_tolerance_, yaw_goal_tolerance_;
