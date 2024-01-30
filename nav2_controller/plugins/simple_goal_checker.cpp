@@ -109,10 +109,6 @@ bool SimpleGoalChecker::isGoalReached(
     double dx = query_pose.position.x - goal_pose.position.x,
       dy = query_pose.position.y - goal_pose.position.y;
     if (dx * dx + dy * dy > xy_goal_tolerance_sq_) {
-      RCLCPP_INFO(
-        rclcpp::get_logger("SimpleGoalChecker"),
-        "Goal not reached yet (xy position difference of %.2f m)",
-        sqrt(dx * dx + dy * dy));
       return false;
     }
     // We are within the window
@@ -124,6 +120,12 @@ bool SimpleGoalChecker::isGoalReached(
   double dyaw = angles::shortest_angular_distance(
     tf2::getYaw(query_pose.orientation),
     tf2::getYaw(goal_pose.orientation));
+  //print target yaw and current yaw
+  RCLCPP_INFO(
+    rclcpp::get_logger("SimpleGoalChecker"),
+    "Target yaw: %.2f degrees, Current yaw: %.2f degrees",
+    angles::to_degrees(tf2::getYaw(goal_pose.orientation)),
+    angles::to_degrees(tf2::getYaw(query_pose.orientation)));
   RCLCPP_INFO(
     rclcpp::get_logger("SimpleGoalChecker"),
     "Goal not reached yet (yaw difference of %.2f degrees)",
