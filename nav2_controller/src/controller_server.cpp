@@ -30,6 +30,7 @@ using namespace std::chrono_literals;
 using rcl_interfaces::msg::ParameterType;
 using std::placeholders::_1;
 
+
 namespace nav2_controller
 {
 
@@ -56,8 +57,9 @@ ControllerServer::ControllerServer(const rclcpp::NodeOptions & options)
   declare_parameter("min_travel_time_threshold", rclcpp::ParameterValue(0.0));
   declare_parameter("min_y_velocity_threshold", rclcpp::ParameterValue(0.0001));
   declare_parameter("min_theta_velocity_threshold", rclcpp::ParameterValue(0.0001));
-  declare_parameter("xy_precise_tolerance", rclcpp::ParameterValue(0.01));
-  declare_parameter("yaw_precise_tolerance", rclcpp::ParameterValue(0.01));
+  declare_parameter("rotate_pid_p", rclcpp::ParameterValue(0.01));
+  declare_parameter("rotate_pid_i", rclcpp::ParameterValue(0.01));
+  declare_parameter("rotate_pid_d", rclcpp::ParameterValue(0.01));
 
   declare_parameter("speed_limit_topic", rclcpp::ParameterValue("speed_limit"));
 
@@ -121,8 +123,9 @@ ControllerServer::on_configure(const rclcpp_lifecycle::State & /*state*/)
   get_parameter("min_y_velocity_threshold", min_y_velocity_threshold_);
   get_parameter("min_theta_velocity_threshold", min_theta_velocity_threshold_);
   get_parameter("min_travel_time_threshold", min_travel_time_threshold_);
-  get_parameter("xy_precise_tolerance", xy_precise_tolerance_);
-  get_parameter("yaw_precise_tolerance", yaw_precise_tolerance_);
+  get_parameter("rotate_pid_p", rotate_pid_p_);
+  get_parameter("rotate_pid_i", rotate_pid_i_);
+  get_parameter("rotate_pid_d", rotate_pid_d_);
   RCLCPP_INFO(get_logger(), "Controller frequency set to %.4fHz", controller_frequency_);
 
   std::string speed_limit_topic;
@@ -501,7 +504,12 @@ void ControllerServer::computeAndPublishVelocity()
         nav_2d_utils::twist2Dto3D(twist),
         goal_checkers_[current_goal_checker_].get());
     } else {
-      cmd_vel_2d.twist.angular.z = goal_checkers_[current_goal_checker_]->getDYaw() * 0.2;
+      double angular_vel = goal_checkers_[current_goal_checker_]->getDYaw() * rotate_pid_p_;
+      //make sure the abs of vel is greater than 0.05
+      if (angular_vel > 0.0 && angular_vel < 0.05) angular_vel = 0.05;
+      if (angular_vel < 0.0 && angular_vel > -0.05) angular_vel = -0.05;
+      cmd_vel_2d.twist.angular.z = angular_vel;
+
     }
     
     last_valid_cmd_time_ = now();
@@ -718,10 +726,12 @@ ControllerServer::dynamicParametersCallback(std::vector<rclcpp::Parameter> param
         failure_tolerance_ = parameter.as_double();
       } else if (name == "min_travel_time_threshold") {
         min_travel_time_threshold_ = parameter.as_double();
-      } else if (name == "xy_precise_tolerance") {
-        xy_precise_tolerance_ = parameter.as_double();
-      } else if (name == "yaw_precise_tolerance") {
-        yaw_precise_tolerance_ = parameter.as_double();
+      } else if (name == "rotate_pid_p") {
+        rotate_pid_p_ = parameter.as_double();
+      } else if (name == "rotate_pid_i") {
+        rotate_pid_i_ = parameter.as_double();
+      } else if (name == "rotate_pid_d") {
+        rotate_pid_d_ = parameter.as_double();
       } else {
         RCLCPP_WARN(
           get_logger(),
