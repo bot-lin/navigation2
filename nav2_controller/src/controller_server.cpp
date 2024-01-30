@@ -56,6 +56,8 @@ ControllerServer::ControllerServer(const rclcpp::NodeOptions & options)
   declare_parameter("min_travel_time_threshold", rclcpp::ParameterValue(0.0));
   declare_parameter("min_y_velocity_threshold", rclcpp::ParameterValue(0.0001));
   declare_parameter("min_theta_velocity_threshold", rclcpp::ParameterValue(0.0001));
+  declare_parameter("xy_precise_tolerance", rclcpp::ParameterValue(0.01));
+  declare_parameter("yaw_precise_tolerance", rclcpp::ParameterValue(0.01));
 
   declare_parameter("speed_limit_topic", rclcpp::ParameterValue("speed_limit"));
 
@@ -119,6 +121,8 @@ ControllerServer::on_configure(const rclcpp_lifecycle::State & /*state*/)
   get_parameter("min_y_velocity_threshold", min_y_velocity_threshold_);
   get_parameter("min_theta_velocity_threshold", min_theta_velocity_threshold_);
   get_parameter("min_travel_time_threshold", min_travel_time_threshold_);
+  get_parameter("xy_precise_tolerance", xy_precise_tolerance_);
+  get_parameter("yaw_precise_tolerance", yaw_precise_tolerance_);
   RCLCPP_INFO(get_logger(), "Controller frequency set to %.4fHz", controller_frequency_);
 
   std::string speed_limit_topic;
@@ -410,8 +414,9 @@ void ControllerServer::computeControl()
         if (isGoalReached()) {
           RCLCPP_INFO(get_logger(), "Start Precise move!");
           start_precision_control_ = true;
-          goal_checkers_[current_goal_checker_]->changeXYTolerance(0.02);
-          goal_checkers_[current_goal_checker_]->changeYawTolerance(0.02);
+          goal_checkers_[current_goal_checker_]->changeXYTolerance(xy_precise_tolerance_);
+          goal_checkers_[current_goal_checker_]->changeYawTolerance(yaw_precise_tolerance_);
+          goal_checkers_[current_goal_checker_]->changeStateful(true);
         // break;
         }
       }
@@ -692,6 +697,14 @@ ControllerServer::dynamicParametersCallback(std::vector<rclcpp::Parameter> param
         failure_tolerance_ = parameter.as_double();
       } else if (name == "min_travel_time_threshold") {
         min_travel_time_threshold_ = parameter.as_double();
+      } else if (name == "xy_precise_tolerance") {
+        xy_precise_tolerance_ = parameter.as_double();
+      } else if (name == "yaw_precise_tolerance") {
+        yaw_precise_tolerance_ = parameter.as_double();
+      } else {
+        RCLCPP_WARN(
+          get_logger(),
+          "Parameter %s not handled by Controller Server", name.c_str());
       }
     }
 

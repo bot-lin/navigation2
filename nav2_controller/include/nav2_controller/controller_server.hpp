@@ -254,6 +254,8 @@ protected:
   double min_y_velocity_threshold_;
   double min_theta_velocity_threshold_;
   double min_travel_time_threshold_;
+  double xy_precise_tolerance_;
+  double yaw_precise_tolerance_;
 
   double failure_tolerance_;
 

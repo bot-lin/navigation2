@@ -78,6 +78,9 @@ public:
   void changeYawTolerance(double new_tolerance){
     yaw_goal_tolerance_ = new_tolerance;
   }
+  void changeStateful(bool new_state){
+    stateful_ = new_state;
+  }
 
 protected:
   double xy_goal_tolerance_, yaw_goal_tolerance_;
