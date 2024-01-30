@@ -466,6 +466,12 @@ void ControllerServer::setPlannerPath(const nav_msgs::msg::Path & path)
   RCLCPP_DEBUG(
     get_logger(), "Path end point is (%.2f, %.2f)",
     end_pose_.pose.position.x, end_pose_.pose.position.y);
+  
+  //print end pose orientation
+  RCLCPP_INFO(
+    get_logger(), "Path end point orientation is (%.2f, %.2f, %.2f, %.2f)",
+    end_pose_.pose.orientation.x, end_pose_.pose.orientation.y, end_pose_.pose.orientation.z, end_pose_.pose.orientation.w
+  );
 
   current_path_ = path;
 }
