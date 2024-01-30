@@ -124,7 +124,7 @@ ControllerServer::on_configure(const rclcpp_lifecycle::State & /*state*/)
   std::string speed_limit_topic;
   get_parameter("speed_limit_topic", speed_limit_topic);
   get_parameter("failure_tolerance", failure_tolerance_);
-·
+
   costmap_ros_->configure();
   //print global_frame of  costmap_ros_
   RCLCPP_INFO(get_logger(), "Creating costmap_ros_ with global_frame: %s", costmap_ros_->getGlobalFrameID().c_str());
