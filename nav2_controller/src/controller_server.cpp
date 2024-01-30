@@ -501,7 +501,7 @@ void ControllerServer::computeAndPublishVelocity()
         nav_2d_utils::twist2Dto3D(twist),
         goal_checkers_[current_goal_checker_].get());
     } else {
-      cmd_vel_2d.twist.angular.z = 0.1;
+      cmd_vel_2d.twist.angular.z = goal_checkers_[current_goal_checker_]->getDYaw() * 0.2;
     }
     
     last_valid_cmd_time_ = now();
