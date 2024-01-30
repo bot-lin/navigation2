@@ -493,7 +493,7 @@ void ControllerServer::computeAndPublishVelocity()
   geometry_msgs::msg::TwistStamped cmd_vel_2d;
 
   try {
-    if (controllers_[current_controller_]->getCheckXY())
+    if (goal_checkers_[current_goal_checker_]->getCheckXY())
     {
       cmd_vel_2d =
         controllers_[current_controller_]->computeVelocityCommands(
