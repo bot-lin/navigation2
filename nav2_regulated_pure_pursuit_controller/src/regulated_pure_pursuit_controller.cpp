@@ -359,6 +359,9 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
     goal_dist_tol_ = pose_tolerance.position.x;
   }
 
+
+
+
   // Transform path to robot base frame
   auto transformed_plan = transformGlobalPlan(pose);
 
@@ -496,6 +499,11 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   geometry_msgs::msg::TwistStamped cmd_vel;
   cmd_vel.header = pose.header;
   cmd_vel.twist.linear.x = linear_vel;
+  if (!goal_check->getCheckXY())
+  {
+    cmd_vel.twist.linear.x = 0.0;
+  }
+  
   cmd_vel.twist.angular.z = angular_vel;
   msg.data = false;
   collision_pub_->publish(msg);

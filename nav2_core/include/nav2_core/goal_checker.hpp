@@ -103,6 +103,7 @@ public:
   virtual void changeXYTolerance(double new_tolerance) = 0;
   virtual void changeYawTolerance(double new_tolerance) = 0;
   virtual void changeStateful(bool new_state) = 0;
+  virtual bool getCheckXY() = 0;
 };
 
 }  // namespace nav2_core

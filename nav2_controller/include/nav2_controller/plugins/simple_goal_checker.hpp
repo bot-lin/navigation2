@@ -82,6 +82,10 @@ public:
     stateful_ = new_state;
   }
 
+  bool getCheckXY(){
+    return check_xy_;
+  }
+
 protected:
   double xy_goal_tolerance_, yaw_goal_tolerance_;
   bool stateful_, check_xy_;
