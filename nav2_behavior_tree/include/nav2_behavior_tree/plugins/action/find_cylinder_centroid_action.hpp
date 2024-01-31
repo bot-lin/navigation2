@@ -71,6 +71,10 @@ public:
       BT::InputPort<bool>(
         "is_reverse",
         "is reverse"),
+
+      BT::InputPort<double>(
+        "timeout",
+        "timeout"),
       
 
       BT::InputPort<std::chrono::milliseconds>("server_timeout"),

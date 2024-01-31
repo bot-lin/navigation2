@@ -47,14 +47,16 @@ FindCylinderCentroid::FindCylinderCentroid(
 
 BT::NodeStatus FindCylinderCentroid::tick()
 {
+  double timeout;
   auto request = std::make_shared<zbot_interfaces::srv::FindCylinderSrv::Request>();
   getInput("radius_limits", request->radius_limits);
   getInput("vel_z", request->vel_z);
   getInput("diff_threshold", request->diff_threshold);
   getInput("is_reverse", request->is_reverse);
+  getInput("timeout", timeout);
 
   auto result = client_->async_send_request(request);
-  std::chrono::milliseconds mscond(20000);
+  std::chrono::milliseconds mscond(timeout*1000);
 
   if (rclcpp::spin_until_future_complete(node_, result, mscond) ==
     rclcpp::FutureReturnCode::SUCCESS)
