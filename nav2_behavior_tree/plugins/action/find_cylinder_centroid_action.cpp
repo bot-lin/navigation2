@@ -47,7 +47,7 @@ FindCylinderCentroid::FindCylinderCentroid(
 
 BT::NodeStatus FindCylinderCentroid::tick()
 {
-  double timeout;
+  int timeout;
   auto request = std::make_shared<zbot_interfaces::srv::FindCylinderSrv::Request>();
   getInput("radius_limits", request->radius_limits);
   getInput("vel_z", request->vel_z);

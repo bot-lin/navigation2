@@ -72,7 +72,7 @@ public:
         "is_reverse",
         "is reverse"),
 
-      BT::InputPort<double>(
+      BT::InputPort<int>(
         "timeout",
         "timeout"),
       
