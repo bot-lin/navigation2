@@ -105,11 +105,6 @@ bool SimpleGoalChecker::isGoalReached(
   const geometry_msgs::msg::Pose & query_pose, const geometry_msgs::msg::Pose & goal_pose,
   const geometry_msgs::msg::Twist &)
 {
-  RCLCPP_INFO(
-    rclcpp::get_logger("SimpleGoalChecker"),
-    "Target yaw: %.2f degrees, Current yaw: %.2f degrees",
-    angles::to_degrees(tf2::getYaw(goal_pose.orientation)),
-    angles::to_degrees(tf2::getYaw(query_pose.orientation)));
 
   if (check_xy_) {
     double dx = query_pose.position.x - goal_pose.position.x,

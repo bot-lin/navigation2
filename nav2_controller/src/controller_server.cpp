@@ -634,9 +634,7 @@ bool ControllerServer::isGoalReached()
     costmap_ros_->getTfBuffer(), costmap_ros_->getGlobalFrameID(),
     end_pose_, transformed_end_pose, tolerance);
   
-  RCLCPP_INFO(
-        get_logger(),
-        "goal check: %f", angles::to_degrees(tf2::getYaw(end_pose_.pose.orientation)));
+  
 
   precise_end_pose_ = transformed_end_pose;
 
