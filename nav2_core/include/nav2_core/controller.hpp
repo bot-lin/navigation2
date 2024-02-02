@@ -115,6 +115,9 @@ public:
     const geometry_msgs::msg::PoseStamped & pose,
     const geometry_msgs::msg::Twist & velocity,
     nav2_core::GoalChecker * goal_checker) = 0;
+  
+  virtual geometry_msgs::msg::TwistStamped computeRotateCommands(
+    const double & yaw_diff) = 0;
 
   /**
    * @brief Limits the maximum linear speed of the robot.

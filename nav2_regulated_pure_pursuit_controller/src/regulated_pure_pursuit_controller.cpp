@@ -341,6 +341,21 @@ double RegulatedPurePursuitController::getLookAheadDistance(
 
   return lookahead_dist;
 }
+geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeRotateCommands(
+  const double & yaw_diff)
+{
+  double pid_w = angularController_.compute(0.0, -yaw_diff);
+  double smooth_w = smoothController_.smooth(pid_w);
+ 
+  angular_vel = std::clamp(smooth_w, -max_angular_vel_, max_angular_vel_);
+
+  geometry_msgs::msg::TwistStamped cmd_vel;
+  cmd_vel.header.stamp = clock_->now();
+  cmd_vel.header.frame_id = costmap_ros_->getBaseFrameID();
+  cmd_vel.twist.linear.x = 0.0;
+  cmd_vel.twist.angular.z = angular_vel;
+  return cmd_vel;
+}
 
 geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocityCommands(
   const geometry_msgs::msg::PoseStamped & pose,

@@ -504,11 +504,8 @@ void ControllerServer::computeAndPublishVelocity()
         nav_2d_utils::twist2Dto3D(twist),
         goal_checkers_[current_goal_checker_].get());
     } else {
-      double angular_vel = goal_checkers_[current_goal_checker_]->getDYaw() * rotate_pid_p_;
-      //make sure the abs of vel is greater than 0.05
-      if (angular_vel > 0.0 && angular_vel < 0.05) angular_vel = 0.05;
-      if (angular_vel < 0.0 && angular_vel > -0.05) angular_vel = -0.05;
-      cmd_vel_2d.twist.angular.z = angular_vel;
+      cmd_vel_2d = controllers_[current_controller_]->computeRotateCommands(goal_checkers_[current_goal_checker_]->getDYaw());
+
 
     }
     

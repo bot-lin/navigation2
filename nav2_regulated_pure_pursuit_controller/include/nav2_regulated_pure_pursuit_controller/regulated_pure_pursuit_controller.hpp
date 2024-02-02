@@ -167,6 +167,9 @@ public:
     const geometry_msgs::msg::Twist & velocity,
     nav2_core::GoalChecker * /*goal_checker*/) override;
 
+    geometry_msgs::msg::TwistStamped computeRotateCommands(
+    const double & yaw_diff) override;
+
   /**
    * @brief nav2_core setPlan - Sets the global plan
    * @param path The global plan

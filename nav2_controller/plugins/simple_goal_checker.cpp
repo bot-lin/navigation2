@@ -127,10 +127,7 @@ bool SimpleGoalChecker::isGoalReached(
     tf2::getYaw(goal_pose.orientation));
   //print target yaw and current yaw
   
-  RCLCPP_INFO(
-    rclcpp::get_logger("SimpleGoalChecker"),
-    "Goal not reached yet (yaw difference of %.2f degrees)",
-    angles::to_degrees(fabs(dyaw_)));
+
   return fabs(dyaw_) < yaw_goal_tolerance_;
 }
 
