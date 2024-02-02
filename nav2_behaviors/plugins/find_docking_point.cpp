@@ -127,6 +127,7 @@ bool FindDockingPoint::find_docking_spot()
 {
     auto request = std::make_shared<zbot_interfaces::srv::LineSegmentListSrv::Request>();
     request->request = true;
+    request->task_name = "find_v_shape";
     while (!client_->wait_for_service(1s)) {
         if (!rclcpp::ok()) {
         RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
