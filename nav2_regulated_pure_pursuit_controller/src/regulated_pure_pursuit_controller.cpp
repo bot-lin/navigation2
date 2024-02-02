@@ -344,6 +344,7 @@ double RegulatedPurePursuitController::getLookAheadDistance(
 geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeRotateCommands(
   const double & yaw_diff)
 {
+  double angular_vel;
   double pid_w = angularController_.compute(0.0, -yaw_diff);
   double smooth_w = smoothController_.smooth(pid_w);
  
