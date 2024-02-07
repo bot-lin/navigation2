@@ -358,8 +358,8 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
     global_path.poses.push_back(pose);
 
   }  
-  // global_path.poses.push_back(goal);
-  global_path.poses.back().pose.orientation = goal.pose.orientation;
+  global_path.poses.push_back(goal);
+  // global_path.poses.back().pose.orientation = goal.pose.orientation;
   return global_path;
 }
 
