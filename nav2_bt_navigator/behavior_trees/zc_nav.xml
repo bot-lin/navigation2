@@ -7,12 +7,18 @@
   <BehaviorTree ID="MainTree">
   <Sequence name="Go to point precisely">
   <!--<WaitCommand time_allowance="1.0"/> -->
-  <ForceSuccess>
+  <!-- <ForceSuccess>
         <Sequence>
                 <CloseToPose pose_x="0.0" pose_y="0.0" distance="0.2"/>
                  <DriveOnHeading dist_to_travel="0.50" speed="0.1" time_allowance="10.0"/>
         </Sequence>
-  </ForceSuccess>
+  </ForceSuccess> -->
+     <ForceSuccess>
+      <Sequence>
+  <IsCharging charging_duration="0.00000001" />
+        <DriveOnHeading dist_to_travel="0.6" speed="0.2" time_allowance="60.0" check_collision="false"/>
+        </Sequence>
+ </ForceSuccess>
 
     <RecoveryNode number_of_retries="6" name="NavigateRecovery">
       <PipelineSequence name="NavigateWithReplanning">
@@ -26,24 +32,24 @@
           </RecoveryNode>
         </RateController> -->
 
-        <RateController hz="1.0">
+        <RateController hz="5.0">
         <Fallback> 
           <ReactiveSequence>
             <Inverter>
-              <GlobalUpdatedGoal/>
+              <GlobalUpdatedGoal/>  
             </Inverter>
             <Sequence name="CheckPath">
               <IsPathValid path="{path}"/>
-              <RemovePassedGoals input_goals="{goals}" output_goals="{goals}" radius="0.5"/>
+              <RemovePassedGoals input_goals="{goals}" output_goals="{goals}" radius="1.5"/>
             </Sequence>
           </ReactiveSequence>
           <RecoveryNode number_of_retries="1" name="ComputePathToPose">
             <ReactiveSequence>
-              <RemovePassedGoals input_goals="{goals}" output_goals="{goals}" radius="0.5"/>
-              <Sequence>
-                <ComputePathThroughPoses goals="{goals}" path="{path}" planner_id="{planner_id}"/>
-                <SmoothPath unsmoothed_path="{path}" smoothed_path="{path}" error_code_id="{smoother_error_code}"/>
-              </Sequence>
+              <RemovePassedGoals input_goals="{goals}" output_goals="{goals}" radius="1.2"/>
+                <Sequence>
+                  <ComputePathThroughPoses goals="{goals}" path="{path}" planner_id="{planner_id}"/>
+                  <SmoothPath unsmoothed_path="{path}" smoothed_path="{path}"/>
+                </Sequence>
             </ReactiveSequence>
             <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
           </RecoveryNode>
@@ -69,7 +75,7 @@
         </RoundRobin>
       </ReactiveFallback>
     </RecoveryNode>
-    <PreciseNav target_tf_frame="odom"  goal="{goal}" is_reverse="{is_reverse}" distance_goal_tolerance="{distance_goal_tolerance}" yaw_goal_tolerance="{yaw_goal_tolerance}" orientation_p="1.0" orientation_i="0.0" orientation_d="0.1" is_heading_only="true"/>
+    <!--<PreciseNav target_tf_frame="odom"  goal="{goal}" is_reverse="{is_reverse}" distance_goal_tolerance="{distance_goal_tolerance}" yaw_goal_tolerance="{yaw_goal_tolerance}" orientation_p="1.2" orientation_i="0.1" orientation_d="0.1" max_linear="0.8" is_heading_only="true"/>-->
     </Sequence>
   </BehaviorTree>
 </root>
