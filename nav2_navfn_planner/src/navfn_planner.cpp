@@ -280,11 +280,11 @@ NavfnPlanner::makePlan(
   bool found_legal = false;
 
   p = goal;
-  double potential = getPointPotential(p.position);
-  //print potential
-  RCLCPP_INFO(
-    logger_,
-    "Potential: %.2f", potential);
+  bool care_about_goal = false;
+  if (care_about_goal)
+  {
+    double potential = getPointPotential(p.position);
+
   if (potential < POT_HIGH) {
     // Goal is reachable by itself
     RCLCPP_INFO(
@@ -317,6 +317,12 @@ NavfnPlanner::makePlan(
       p.position.y += resolution;
     }
   }
+  } else
+  {
+    best_pose = p;
+    found_legal = true;
+  }
+  
   //print found_legal
   RCLCPP_INFO(
     logger_,
