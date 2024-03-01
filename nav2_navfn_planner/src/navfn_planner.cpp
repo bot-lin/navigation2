@@ -283,6 +283,9 @@ NavfnPlanner::makePlan(
   double potential = getPointPotential(p.position);
   if (potential < POT_HIGH) {
     // Goal is reachable by itself
+    RCLCPP_INFO(
+      logger_,
+      "Goal is reachable by itself.");
     best_pose = p;
     found_legal = true;
   } else {
@@ -300,6 +303,10 @@ NavfnPlanner::makePlan(
           best_sdist = sdist;
           best_pose = p;
           found_legal = true;
+          RCLCPP_INFO(
+            logger_,
+            "Found legal point near goal: %.2f, %.2f",
+            best_pose.position.x, best_pose.position.y);
         }
         p.position.x += resolution;
       }
