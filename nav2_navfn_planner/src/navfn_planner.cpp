@@ -313,6 +313,11 @@ NavfnPlanner::makePlan(
       p.position.y += resolution;
     }
   }
+  //print found_legal
+  RCLCPP_INFO(
+    logger_,
+    "Found legal: %d", found_legal);
+
 
   if (found_legal) {
     // extract the plan
