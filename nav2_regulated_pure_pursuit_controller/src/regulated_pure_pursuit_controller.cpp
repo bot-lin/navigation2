@@ -385,15 +385,15 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   double lookahead_dist = getLookAheadDistance(speed);
 
   // Check for reverse driving
-  // if (allow_reversing_) {
-  //   // Cusp check
-  //   double dist_to_cusp = findVelocitySignChange(transformed_plan);
+  if (allow_reversing_) {
+    // Cusp check
+    double dist_to_cusp = findVelocitySignChange(transformed_plan);
 
-  //   // if the lookahead distance is further than the cusp, use the cusp distance instead
-  //   if (dist_to_cusp < lookahead_dist) {
-  //     lookahead_dist = dist_to_cusp;
-  //   }
-  // }
+    // if the lookahead distance is further than the cusp, use the cusp distance instead
+    if (dist_to_cusp < lookahead_dist) {
+      lookahead_dist = dist_to_cusp;
+    }
+  }
 
 
   auto carrot_pose = getLookAheadPoint(lookahead_dist, transformed_plan);
@@ -414,17 +414,17 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   
   // Setting the velocity direction
   double sign = 1.0;
-  // if (allow_reversing_) {
-  //   sign = carrot_pose.pose.position.x >= 0.0 ? 1.0 : -1.0;
-  // }
+  if (allow_reversing_) {
+    sign = carrot_pose.pose.position.x >= 0.0 ? 1.0 : -1.0;
+  }
 
   if (move_reversing_) {
     sign = -1.0;
   }
 
-    if (allow_reversing_) {
-    sign = -1.0;
-  }
+  //   if (allow_reversing_) {
+  //   sign = -1.0;
+  // }
 
   linear_vel = desired_linear_vel_;
   bool is_rotating = false;
@@ -535,11 +535,9 @@ void RegulatedPurePursuitController::getRadToCarrotPose(
   }
 
     if (allow_reversing_) {
-    angle_to_path = atan2(-carrot_pose.pose.position.y, -carrot_pose.pose.position.x);
+    angle_to_path = carrot_pose.pose.position.x<0 ? atan2(-carrot_pose.pose.position.y, -carrot_pose.pose.position.x) : atan2(carrot_pose.pose.position.y, carrot_pose.pose.position.x);
   }
-  else{
-    angle_to_path = atan2(carrot_pose.pose.position.y, carrot_pose.pose.position.x);
-  }
+
 }
 
 
