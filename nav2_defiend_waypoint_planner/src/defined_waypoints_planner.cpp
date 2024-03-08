@@ -113,37 +113,64 @@ bool isValid(int x, int y, int rows, int cols, const std::vector<std::vector<boo
     return x >= 0 && x < rows && y >= 0 && y < cols && !visited[x][y];
 }
 
-std::vector<MapNode> a_star(std::vector<std::vector<int>>& grid_map, MapNode start_node, MapNode end_node) {
-    std::priority_queue<std::pair<MapNode, double>, std::vector<std::pair<MapNode, double>>, Compare> open_list;
-    std::unordered_map<MapNode, MapNode> came_from;
-    std::unordered_map<MapNode, double> g_score;
-    std::unordered_map<MapNode, double> f_score;
+std::vector<MapNode> a_star(std::vector<std::vector<int>>& grid, MapNode start, MapNode end) {
+    int rows = grid.size();
+    int cols = grid[0].size();
 
-    open_list.push({start_node, 0});
-    g_score[start_node] = 0;
-    f_score[start_node] = heuristic(start_node, end_node);
+    std::priority_queue<std::pair<MapNode, double>, std::vector<std::pair<MapNode, double>>, Compare> open_list;
+    std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
+    std::vector<std::vector<MapNode>> parent(rows, std::vector<MapNode>(cols, MapNode(-1, -1)));
+    std::vector<std::vector<double>> g_score(rows, std::vector<double>(cols, std::numeric_limits<double>::max()));
+    std::vector<std::vector<double>> f_score(rows, std::vector<double>(cols, std::numeric_limits<double>::max()));
+
+    open_list.push({start, 0});
+    visited[start.x][start.y] = true;
+    g_score[start.x][start.y] = 0;
+    f_score[start.x][start.y] = heuristic(start, end);
 
     while (!open_list.empty()) {
         MapNode current = open_list.top().first;
         open_list.pop();
 
-        if (current == end_node) {
-            return reconstruct_path(came_from, current);
+        if (current == end) {
+            break;
         }
 
-        for (MapNode neighbor : get_neighbors(grid_map, current)) {
-            double tentative_g_score = g_score[current] + distance(current, neighbor);
+        for (int i = 0; i < 4; ++i) {
+            int newX = current.x + dx[i];
+            int newY = current.y + dy[i];
 
-            if (!g_score.count(neighbor) || tentative_g_score < g_score[neighbor]) {
-                came_from[neighbor] = current;
-                g_score[neighbor] = tentative_g_score;
-                f_score[neighbor] = g_score[neighbor] + heuristic(neighbor, end_node);
-                open_list.push({neighbor, f_score[neighbor]});
+            if (isValid(newX, newY, rows, cols, visited) && grid[newX][newY] == 1) {
+                double tentative_g_score = g_score[current.x][current.y] + distance(current, MapNode(newX, newY));
+
+                if (tentative_g_score < g_score[newX][newY]) {
+                    parent[newX][newY] = current;
+                    g_score[newX][newY] = tentative_g_score;
+                    f_score[newX][newY] = g_score[newX][newY] + heuristic(MapNode(newX, newY), end);
+                    if (!visited[newX][newY]) {
+                        open_list.push({MapNode(newX, newY), f_score[newX][newY]});
+                        visited[newX][newY] = true;
+                    }
+                }
             }
         }
     }
 
-    return {};  // 如果没有找到路径，返回空向量
+    std::vector<MapNode> path;
+    if (!visited[end.x][end.y]) {
+        return path;  // Empty path if end point not visited
+    }
+
+    // Reconstruct the path from the parent matrix
+    MapNode current = end;
+    while (!(current == start)) {
+        path.push_back(current);
+        current = parent[current.x][current.y];
+    }
+    path.push_back(start);
+
+    std::reverse(path.begin(), path.end());
+    return path;
 }
 
 std::vector<MapNode> bfs(std::vector<std::vector<int>>& grid, MapNode start, MapNode end) {
