@@ -427,7 +427,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   // }
 
   linear_vel = desired_linear_vel_;
-  bool is_rotating = false;
+
   // Make sure we're in compliance with basic constraints
   double angle_to_heading;
   getRadToCarrotPose(carrot_pose, angle_to_heading);
@@ -445,65 +445,10 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   // Collision checking on this velocity heading
   // bool first_collision = true;
   const double & carrot_dist = hypot(carrot_pose.pose.position.x, carrot_pose.pose.position.y);
-  if (!is_rotating && use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
+  if (use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
     msg.data = true;
     collision_pub_->publish(msg);
-    // Current pose and Collision pose
-    //transformPose find pose to base_link
-    //if y > width/2 or y < -width/2
-    //move forward
-    //elif  y > 0
-    //turn right
-    //else
-    //turn left
-    RCLCPP_INFO(logger_, "RegulatedPurePursuitController detected collision ahead!");
-    geometry_msgs::msg::PoseStamped transformed_pose;
-    // geometry_msgs::msg::Pose2D collision_point = collision_checker_->getCurrentCollisionPoint();
-    // geometry_msgs::msg::PoseStamped collision_pose_msg;
-    // collision_pose_msg.header.stamp = pose.header.stamp;
-    // collision_pose_msg.header.frame_id = costmap_ros_->getGlobalFrameID();
-    // collision_pose_msg.pose.position.x = collision_point.x;
-    // collision_pose_msg.pose.position.y = collision_point.y;
-
-    transformPose("base_link", collision_pose_msg_, transformed_pose);
-    double x = transformed_pose.pose.position.x;
-    double y = transformed_pose.pose.position.y;
-    std::vector<geometry_msgs::msg::Point> footprint = costmap_ros_->getRobotFootprint();
-    double half_width = footprint[0].y;
-    double half_length = footprint[0].x;
-    RCLCPP_INFO(logger_, "x %f", x);
-    RCLCPP_INFO(logger_, "y %f", y);
-    RCLCPP_INFO(logger_, "half_width %f", half_width);
-    RCLCPP_INFO(logger_, "half_length %f", half_length);
-    if (x > 0){//front
-
-      // double x_distance = x - half_length;
-      // double l_v = x_distance * 0.1;
-      // if (l_v > 0.1) l_v = 0.1;
-      double l_v = 0.05;
-      if (abs(y)>half_width+0.01){
-        linear_vel = 0.15;
-        angular_vel = 0.0;
-      }
-      else if (y > 0)
-      {
-        linear_vel = l_v;
-        angular_vel = -0.1;
-      }
-      else if (y < 0){
-        linear_vel = l_v;
-        angular_vel = 0.1;
-      }
-      else
-      {
-        linear_vel = -0.05;
-        angular_vel = 0.0;
-      }
-      
-    }
- 
-      
-
+    throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
   }
   // RCLCPP_INFO(logger_, "linear %f", linear_vel);
   // RCLCPP_INFO(logger_, "angular %f", angular_vel);
