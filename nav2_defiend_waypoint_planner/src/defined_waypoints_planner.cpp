@@ -109,7 +109,9 @@ double heuristic(MapNode a, MapNode b) {
 }
 
 double distance(MapNode a, MapNode b) {
-    return 1;
+    double dx = a.x - b.x;
+    double dy = a.y - b.y;
+    return std::sqrt(dx * dx + dy * dy);
 }
 
 const int dx[] = {-1, 1, 0, 0};
@@ -121,7 +123,7 @@ bool isValid(int x, int y, int rows, int cols, const std::vector<std::vector<boo
     return x >= 0 && x < rows && y >= 0 && y < cols && !visited[x][y];
 }
 
-std::vector<MapNode> a_star(std::vector<std::vector<int>>& grid, MapNode start, MapNode end) {
+std::vector<MapNode> a_star(std::vector<std::vector<int>>& grid, MapNode start, MapNode end, double search_radius) {
     int rows = grid.size();
     int cols = grid[0].size();
 
@@ -149,14 +151,21 @@ std::vector<MapNode> a_star(std::vector<std::vector<int>>& grid, MapNode start, 
             int newY = current.y + dy[i];
 
             if (isValid(newX, newY, rows, cols, visited) && grid[newX][newY] == 1) {
-                double tentative_g_score = g_score[current.x][current.y] + distance(current, MapNode(newX, newY));
+                MapNode neighbor(newX, newY);
+
+                // Skip this neighbor if it's outside the search radius
+                if (distance(start, neighbor) > search_radius || distance(end, neighbor) > search_radius) {
+                    continue;
+                }
+
+                double tentative_g_score = g_score[current.x][current.y] + distance(current, neighbor);
 
                 if (tentative_g_score < g_score[newX][newY]) {
                     parent[newX][newY] = current;
                     g_score[newX][newY] = tentative_g_score;
-                    f_score[newX][newY] = g_score[newX][newY] + heuristic(MapNode(newX, newY), end);
+                    f_score[newX][newY] = g_score[newX][newY] + heuristic(neighbor, end);
                     if (!visited[newX][newY]) {
-                        open_list.push({MapNode(newX, newY), f_score[newX][newY]});
+                        open_list.push({neighbor, f_score[newX][newY]});
                         visited[newX][newY] = true;
                     }
                 }
@@ -410,7 +419,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   MapNode end_node = MapNode(end_y_index, end_x_index);
   RCLCPP_INFO(node_->get_logger(), "start x: %d, y: %d", start_x_index, start_y_index);
   RCLCPP_INFO(node_->get_logger(), "end x: %d, y: %d", end_x_index, end_y_index);
-  
+  double search_radius = 10 / resolution_;
   std::vector<MapNode> shortest_path = a_star(grid_map, start_node, end_node);
   for (const auto& point : shortest_path) {
         std::cout << "(" << point.x << ", " << point.y << ") "; //point.x is actually the y, and point.y is the x
