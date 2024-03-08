@@ -51,7 +51,7 @@
 #include <queue>
 #include "Magick++.h"
 #include <limits>
-
+#include <unordered_map>
 typedef std::pair<double, double> DoublePoint;
 using BinaryImage = std::vector<std::vector<int>>;
 
@@ -97,6 +97,13 @@ struct MapNode {
     MapNode(int x, int y) : x(x), y(y) {}
 };
 
+// 定义一个比较函数对象，用于优先队列
+struct Compare {
+    bool operator()(const std::pair<MapNode, double>& p1, const std::pair<MapNode, double>& p2) {
+        return p1.second > p2.second;
+    }
+};
+
 const int dx[] = {-1, 1, 0, 0};
 const int dy[] = {0, 0, -1, 1};
 bool operator==(const MapNode& a, const MapNode& b) {
@@ -104,6 +111,39 @@ bool operator==(const MapNode& a, const MapNode& b) {
 }
 bool isValid(int x, int y, int rows, int cols, const std::vector<std::vector<bool>>& visited) {
     return x >= 0 && x < rows && y >= 0 && y < cols && !visited[x][y];
+}
+
+std::vector<MapNode> a_star(GridMap grid_map, MapNode start_node, MapNode end_node) {
+    std::priority_queue<std::pair<MapNode, double>, std::vector<std::pair<MapNode, double>>, Compare> open_list;
+    std::unordered_map<MapNode, MapNode> came_from;
+    std::unordered_map<MapNode, double> g_score;
+    std::unordered_map<MapNode, double> f_score;
+
+    open_list.push({start_node, 0});
+    g_score[start_node] = 0;
+    f_score[start_node] = heuristic(start_node, end_node);
+
+    while (!open_list.empty()) {
+        MapNode current = open_list.top().first;
+        open_list.pop();
+
+        if (current == end_node) {
+            return reconstruct_path(came_from, current);
+        }
+
+        for (MapNode neighbor : grid_map.get_neighbors(current)) {
+            double tentative_g_score = g_score[current] + distance(current, neighbor);
+
+            if (!g_score.count(neighbor) || tentative_g_score < g_score[neighbor]) {
+                came_from[neighbor] = current;
+                g_score[neighbor] = tentative_g_score;
+                f_score[neighbor] = g_score[neighbor] + heuristic(neighbor, end_node);
+                open_list.push({neighbor, f_score[neighbor]});
+            }
+        }
+    }
+
+    return {};  // 如果没有找到路径，返回空向量
 }
 
 std::vector<MapNode> bfs(std::vector<std::vector<int>>& grid, MapNode start, MapNode end) {
@@ -336,7 +376,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   RCLCPP_INFO(node_->get_logger(), "start x: %d, y: %d", start_x_index, start_y_index);
   RCLCPP_INFO(node_->get_logger(), "end x: %d, y: %d", end_x_index, end_y_index);
   
-  std::vector<MapNode> shortest_path = bfs(grid_map, start_node, end_node);
+  std::vector<MapNode> shortest_path = a_star(grid_map, start_node, end_node);
   for (const auto& point : shortest_path) {
         std::cout << "(" << point.x << ", " << point.y << ") "; //point.x is actually the y, and point.y is the x
     }
