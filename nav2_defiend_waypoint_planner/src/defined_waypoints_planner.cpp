@@ -104,6 +104,14 @@ struct Compare {
     }
 };
 
+double heuristic(MapNode a, MapNode b) {
+    return abs(a.x - b.x) + abs(a.y - b.y);
+}
+
+double distance(MapNode a, MapNode b) {
+    return 1;
+}
+
 const int dx[] = {-1, 1, 0, 0};
 const int dy[] = {0, 0, -1, 1};
 bool operator==(const MapNode& a, const MapNode& b) {
