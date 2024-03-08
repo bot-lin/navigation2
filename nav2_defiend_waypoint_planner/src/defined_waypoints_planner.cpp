@@ -113,7 +113,7 @@ bool isValid(int x, int y, int rows, int cols, const std::vector<std::vector<boo
     return x >= 0 && x < rows && y >= 0 && y < cols && !visited[x][y];
 }
 
-std::vector<MapNode> a_star(GridMap grid_map, MapNode start_node, MapNode end_node) {
+std::vector<MapNode> a_star(std::vector<std::vector<int>>& grid_map, MapNode start_node, MapNode end_node) {
     std::priority_queue<std::pair<MapNode, double>, std::vector<std::pair<MapNode, double>>, Compare> open_list;
     std::unordered_map<MapNode, MapNode> came_from;
     std::unordered_map<MapNode, double> g_score;
@@ -131,7 +131,7 @@ std::vector<MapNode> a_star(GridMap grid_map, MapNode start_node, MapNode end_no
             return reconstruct_path(came_from, current);
         }
 
-        for (MapNode neighbor : grid_map.get_neighbors(current)) {
+        for (MapNode neighbor : get_neighbors(grid_map, current)) {
             double tentative_g_score = g_score[current] + distance(current, neighbor);
 
             if (!g_score.count(neighbor) || tentative_g_score < g_score[neighbor]) {
