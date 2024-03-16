@@ -148,7 +148,7 @@ protected:
   std::string waypoint_task_executor_id_;
   std::string waypoint_task_executor_type_;
   std::string current_map_uri_;
-  rclcpp::Client<nav2_msgs::srv::LoadMap>::SharedPtr load_map_client_;
+  
 };
 
 }  // namespace nav2_waypoint_follower

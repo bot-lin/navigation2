@@ -68,8 +68,7 @@ WaypointFollower::on_configure(const rclcpp_lifecycle::State & /*state*/)
     rclcpp::CallbackGroupType::MutuallyExclusive,
     false);
   callback_group_executor_.add_callback_group(callback_group_, get_node_base_interface());
-  std::shared_ptr<rclcpp::Node> node1 = rclcpp::Node::make_shared("add_two_ints_client");
-  load_map_client_ = node1->create_client<nav2_msgs::srv::LoadMap>("/filter_mask_server/load_map");
+  
   nav_through_poses_client_ = rclcpp_action::create_client<ClientT>(
     get_node_base_interface(),
     get_node_graph_interface(),
@@ -126,7 +125,6 @@ WaypointFollower::on_cleanup(const rclcpp_lifecycle::State & /*state*/)
 
   action_server_.reset();
   nav_through_poses_client_.reset();
-  load_map_client_.reset();
   return nav2_util::CallbackReturn::SUCCESS;
 }
 
@@ -236,18 +234,19 @@ WaypointFollower::followWaypoints()
 
         //Load map
         if (current_map_uri_ != goal->waypoints[goal_index].map_uri  && !goal->waypoints[goal_index].map_uri.empty()) {
+          std::shared_ptr<rclcpp::Node> node1 = rclcpp::Node::make_shared("add_two_ints_client");
+          rclcpp::Client<nav2_msgs::srv::LoadMap>::SharedPtr load_map_client =  node1->create_client<nav2_msgs::srv::LoadMap>("/filter_mask_server/load_map");
           current_map_uri_ = goal->waypoints[goal_index].map_uri;
           auto request = std::make_shared<nav2_msgs::srv::LoadMap::Request>();
           request->map_url = current_map_uri_;
-          while (!load_map_client_->wait_for_service(std::chrono::seconds(1))) {
+          while (!load_map_client->wait_for_service(std::chrono::seconds(1))) {
           if (!rclcpp::ok()) {
             RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
             return;
           }
           RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
         }
-        auto result = load_map_client_->async_send_request(request);
-        std::shared_ptr<rclcpp::Node> node1 = rclcpp::Node::make_shared("add_two_ints_client");
+        auto result = load_map_client->async_send_request(request);
 
           if (rclcpp::spin_until_future_complete(node1, result) ==
             rclcpp::FutureReturnCode::SUCCESS)
