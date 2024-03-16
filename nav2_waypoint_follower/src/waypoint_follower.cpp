@@ -45,6 +45,9 @@ WaypointFollower::WaypointFollower(const rclcpp::NodeOptions & options)
   nav2_util::declare_parameter_if_not_declared(
     this, std::string("wait_at_waypoint.plugin"),
     rclcpp::ParameterValue(std::string("nav2_waypoint_follower::WaitAtWaypoint")));
+    auto node = shared_from_this();
+
+  load_map_client_ = node->create_client<nav2_msgs::srv::LoadMap>("/filter_mask_server/load_map");
 }
 
 WaypointFollower::~WaypointFollower()
@@ -230,6 +233,32 @@ WaypointFollower::followWaypoints()
         client_goal.is_reverse = goal->waypoints[goal_index].is_reverse; 
         client_goal.goal_checker_id = "goal_checker_id";
         // std::vector<float> my_vector = {1.2f, 3.4f, 5.6f, 7.8f};
+
+        //Load map
+        if (current_map_uri_ != goal->waypoints[goal_index].map_uri  && !goal->waypoints[goal_index].map_uri.empty()) {
+          current_map_uri_ = goal->waypoints[goal_index].map_uri;
+          auto request = std::make_shared<nav2_msgs::srv::LoadMap::Request>();
+          request->map_url = current_map_uri_;
+          while (!load_map_client_->wait_for_service(1s)) {
+          if (!rclcpp::ok()) {
+            RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
+            return 0;
+          }
+          RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
+        }
+        auto result = load_map_client_->async_send_request(request);
+        auto node = shared_from_this();
+
+          if (rclcpp::spin_until_future_complete(node, result) ==
+            rclcpp::FutureReturnCode::SUCCESS)
+          {
+            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Map loaded successfully");
+          } else {
+            RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Load map service failed");
+          }
+
+        }
+        //end load map
         client_goal.distance_goal_tolerance = goal->waypoints[goal_index].distance_goal_tolerance;
         client_goal.yaw_goal_tolerance = goal->waypoints[goal_index].yaw_goal_tolerance;
         RCLCPP_INFO(
