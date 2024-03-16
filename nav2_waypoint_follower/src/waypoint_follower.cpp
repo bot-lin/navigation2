@@ -242,7 +242,7 @@ WaypointFollower::followWaypoints()
           while (!load_map_client_->wait_for_service(1.0)) {
           if (!rclcpp::ok()) {
             RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
-            return 0;
+            return;
           }
           RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
         }
