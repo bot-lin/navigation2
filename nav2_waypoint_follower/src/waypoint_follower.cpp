@@ -47,7 +47,7 @@ WaypointFollower::WaypointFollower(const rclcpp::NodeOptions & options)
     rclcpp::ParameterValue(std::string("nav2_waypoint_follower::WaitAtWaypoint")));
     auto node = shared_from_this();
 
-  load_map_client_ = node->create_client<nav2_msgs::srv::LoadMap>("/filter_mask_server/load_map");
+  
 }
 
 WaypointFollower::~WaypointFollower()
@@ -69,7 +69,7 @@ WaypointFollower::on_configure(const rclcpp_lifecycle::State & /*state*/)
     rclcpp::CallbackGroupType::MutuallyExclusive,
     false);
   callback_group_executor_.add_callback_group(callback_group_, get_node_base_interface());
-
+  load_map_client_ = node->create_client<nav2_msgs::srv::LoadMap>("/filter_mask_server/load_map");
   nav_through_poses_client_ = rclcpp_action::create_client<ClientT>(
     get_node_base_interface(),
     get_node_graph_interface(),
@@ -126,7 +126,7 @@ WaypointFollower::on_cleanup(const rclcpp_lifecycle::State & /*state*/)
 
   action_server_.reset();
   nav_through_poses_client_.reset();
-
+  load_map_client_.reset();
   return nav2_util::CallbackReturn::SUCCESS;
 }
 
