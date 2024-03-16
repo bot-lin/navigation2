@@ -239,7 +239,7 @@ WaypointFollower::followWaypoints()
           current_map_uri_ = goal->waypoints[goal_index].map_uri;
           auto request = std::make_shared<nav2_msgs::srv::LoadMap::Request>();
           request->map_url = current_map_uri_;
-          while (!load_map_client_->wait_for_service(1s)) {
+          while (!load_map_client_->wait_for_service(1.0)) {
           if (!rclcpp::ok()) {
             RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
             return 0;
