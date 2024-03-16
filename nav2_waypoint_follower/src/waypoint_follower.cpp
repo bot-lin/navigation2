@@ -45,7 +45,6 @@ WaypointFollower::WaypointFollower(const rclcpp::NodeOptions & options)
   nav2_util::declare_parameter_if_not_declared(
     this, std::string("wait_at_waypoint.plugin"),
     rclcpp::ParameterValue(std::string("nav2_waypoint_follower::WaitAtWaypoint")));
-    auto node = shared_from_this();
 
   
 }
@@ -69,7 +68,8 @@ WaypointFollower::on_configure(const rclcpp_lifecycle::State & /*state*/)
     rclcpp::CallbackGroupType::MutuallyExclusive,
     false);
   callback_group_executor_.add_callback_group(callback_group_, get_node_base_interface());
-  load_map_client_ = node->create_client<nav2_msgs::srv::LoadMap>("/filter_mask_server/load_map");
+  std::shared_ptr<rclcpp::Node> node1 = rclcpp::Node::make_shared("add_two_ints_client");
+  load_map_client_ = node1->create_client<nav2_msgs::srv::LoadMap>("/filter_mask_server/load_map");
   nav_through_poses_client_ = rclcpp_action::create_client<ClientT>(
     get_node_base_interface(),
     get_node_graph_interface(),
