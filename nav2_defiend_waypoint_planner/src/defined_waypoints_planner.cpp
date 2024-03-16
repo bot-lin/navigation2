@@ -420,7 +420,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   RCLCPP_INFO(node_->get_logger(), "start x: %d, y: %d", start_x_index, start_y_index);
   RCLCPP_INFO(node_->get_logger(), "end x: %d, y: %d", end_x_index, end_y_index);
   double search_radius = 10 / resolution_;
-  std::vector<MapNode> shortest_path = a_star(grid_map, start_node, end_node, search_radius);
+  std::vector<MapNode> shortest_path = a_star(grid_map, start_node, end_node);
   for (const auto& point : shortest_path) {
         std::cout << "(" << point.x << ", " << point.y << ") "; //point.x is actually the y, and point.y is the x
     }
