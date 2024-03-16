@@ -32,7 +32,7 @@
 #include "pluginlib/class_loader.hpp"
 #include "pluginlib/class_list_macros.hpp"
 
-#include "nav2_amcl_msgs/srv/load_map.hpp"
+#include "nav2_msgs/srv/load_map.hpp"
 
 namespace nav2_waypoint_follower
 {
