@@ -247,9 +247,9 @@ WaypointFollower::followWaypoints()
           RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
         }
         auto result = load_map_client_->async_send_request(request);
-        auto node = shared_from_this();
+        std::shared_ptr<rclcpp::Node> node1 = rclcpp::Node::make_shared("add_two_ints_client");
 
-          if (rclcpp::spin_until_future_complete(node, result) ==
+          if (rclcpp::spin_until_future_complete(node1, result) ==
             rclcpp::FutureReturnCode::SUCCESS)
           {
             RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Map loaded successfully");
