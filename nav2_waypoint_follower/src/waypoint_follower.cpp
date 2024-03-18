@@ -45,8 +45,6 @@ WaypointFollower::WaypointFollower(const rclcpp::NodeOptions & options)
   nav2_util::declare_parameter_if_not_declared(
     this, std::string("wait_at_waypoint.plugin"),
     rclcpp::ParameterValue(std::string("nav2_waypoint_follower::WaitAtWaypoint")));
-
-  
 }
 
 WaypointFollower::~WaypointFollower()
@@ -68,7 +66,7 @@ WaypointFollower::on_configure(const rclcpp_lifecycle::State & /*state*/)
     rclcpp::CallbackGroupType::MutuallyExclusive,
     false);
   callback_group_executor_.add_callback_group(callback_group_, get_node_base_interface());
-  
+
   nav_through_poses_client_ = rclcpp_action::create_client<ClientT>(
     get_node_base_interface(),
     get_node_graph_interface(),
@@ -125,6 +123,7 @@ WaypointFollower::on_cleanup(const rclcpp_lifecycle::State & /*state*/)
 
   action_server_.reset();
   nav_through_poses_client_.reset();
+
   return nav2_util::CallbackReturn::SUCCESS;
 }
 
@@ -231,33 +230,6 @@ WaypointFollower::followWaypoints()
         client_goal.is_reverse = goal->waypoints[goal_index].is_reverse; 
         client_goal.goal_checker_id = "goal_checker_id";
         // std::vector<float> my_vector = {1.2f, 3.4f, 5.6f, 7.8f};
-
-        //Load map
-        if (current_map_uri_ != goal->waypoints[goal_index].map_uri  && !goal->waypoints[goal_index].map_uri.empty()) {
-          std::shared_ptr<rclcpp::Node> node1 = rclcpp::Node::make_shared("add_two_ints_client");
-          rclcpp::Client<nav2_msgs::srv::LoadMap>::SharedPtr load_map_client =  node1->create_client<nav2_msgs::srv::LoadMap>("/filter_mask_server/load_map");
-          current_map_uri_ = goal->waypoints[goal_index].map_uri;
-          auto request = std::make_shared<nav2_msgs::srv::LoadMap::Request>();
-          request->map_url = current_map_uri_;
-          while (!load_map_client->wait_for_service(std::chrono::seconds(1))) {
-          if (!rclcpp::ok()) {
-            RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Interrupted while waiting for the service. Exiting.");
-            return;
-          }
-          RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "service not available, waiting again...");
-        }
-        auto result = load_map_client->async_send_request(request);
-
-          if (rclcpp::spin_until_future_complete(node1, result) ==
-            rclcpp::FutureReturnCode::SUCCESS)
-          {
-            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Map loaded successfully");
-          } else {
-            RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Load map service failed");
-          }
-
-        }
-        //end load map
         client_goal.distance_goal_tolerance = goal->waypoints[goal_index].distance_goal_tolerance;
         client_goal.yaw_goal_tolerance = goal->waypoints[goal_index].yaw_goal_tolerance;
         RCLCPP_INFO(

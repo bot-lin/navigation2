@@ -32,7 +32,6 @@
 #include "pluginlib/class_loader.hpp"
 #include "pluginlib/class_list_macros.hpp"
 
-#include "nav2_msgs/srv/load_map.hpp"
 
 namespace nav2_waypoint_follower
 {
@@ -147,7 +146,6 @@ protected:
   waypoint_task_executor_;
   std::string waypoint_task_executor_id_;
   std::string waypoint_task_executor_type_;
-  std::string current_map_uri_;
   
 };
 
