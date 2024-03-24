@@ -635,8 +635,8 @@ bool ControllerServer::isGoalReached()
 
   precise_end_pose_ = transformed_end_pose;
 
-  // double dx = pose.pose.position.x - transformed_end_pose.pose.position.x,
-  //     dy = pose.pose.position.y - transformed_end_pose.pose.position.y;
+  double dx = pose.pose.position.x - transformed_end_pose.pose.position.x,
+      dy = pose.pose.position.y - transformed_end_pose.pose.position.y;
 
   auto& clk = *this->get_clock();
 
