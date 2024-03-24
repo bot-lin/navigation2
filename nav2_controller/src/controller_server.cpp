@@ -638,10 +638,12 @@ bool ControllerServer::isGoalReached()
   // double dx = pose.pose.position.x - transformed_end_pose.pose.position.x,
   //     dy = pose.pose.position.y - transformed_end_pose.pose.position.y;
 
+  auto& clk = *this->get_clock();
 
-  // RCLCPP_INFO(
-  //       get_logger(),
-  //       "goal check: %f", dx * dx + dy * dy);
+  RCLCPP_INFO_THROTTLE(
+        get_logger(),
+        clk, 5000,
+        "goal check: %f", dx * dx + dy * dy);
 
   return goal_checkers_[current_goal_checker_]->isGoalReached(
     pose.pose, transformed_end_pose.pose,
