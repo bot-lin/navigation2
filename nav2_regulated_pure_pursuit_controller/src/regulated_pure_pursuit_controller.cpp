@@ -448,7 +448,43 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   if (use_collision_detection_ && isCollisionImminent(pose, linear_vel, angular_vel, carrot_dist)) {
     msg.data = true;
     collision_pub_->publish(msg);
-    throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
+    // throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
+    auto& clk = *this->get_clock();
+
+    RCLCPP_INFO_THROTTLE(
+          logger_,
+          clk, 5000,
+          "RegulatedPurePursuitController detected collision ahead!");
+    // RCLCPP_INFO(logger_, "RegulatedPurePursuitController detected collision ahead!");
+    geometry_msgs::msg::PoseStamped transformed_pose;
+    transformPose("base_link", collision_pose_msg_, transformed_pose);
+    double x = transformed_pose.pose.position.x;
+    double y = transformed_pose.pose.position.y;
+    std::vector<geometry_msgs::msg::Point> footprint = costmap_ros_->getRobotFootprint();
+    double half_width = footprint[0].y;
+    double half_length = footprint[0].x;
+    if (x > 0){//front
+    double l_v = 0.05;
+      if (abs(y)>half_width+0.01){
+        linear_vel = 0.15;
+        angular_vel = 0.0;
+      }
+      else if (y > 0)
+      {
+        linear_vel = l_v;
+        angular_vel = -0.1;
+      }
+      else if (y < 0){
+        linear_vel = l_v;
+        angular_vel = 0.1;
+      }
+      else
+      {
+        linear_vel = -0.05;
+        angular_vel = 0.0;
+      }
+      
+    }
   }
   // RCLCPP_INFO(logger_, "linear %f", linear_vel);
   // RCLCPP_INFO(logger_, "angular %f", angular_vel);
