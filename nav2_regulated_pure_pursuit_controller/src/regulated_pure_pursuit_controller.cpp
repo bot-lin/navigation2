@@ -449,7 +449,6 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
     msg.data = true;
     collision_pub_->publish(msg);
     // throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
-    auto& clk = *this->get_clock();
 
     RCLCPP_INFO(logger_, "RegulatedPurePursuitController detected collision ahead!");
     geometry_msgs::msg::PoseStamped transformed_pose;
