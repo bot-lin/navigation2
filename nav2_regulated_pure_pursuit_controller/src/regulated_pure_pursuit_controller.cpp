@@ -451,18 +451,13 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
     // throw nav2_core::PlannerException("RegulatedPurePursuitController detected collision ahead!");
     auto& clk = *this->get_clock();
 
-    RCLCPP_INFO_THROTTLE(
-          logger_,
-          clk, 5000,
-          "RegulatedPurePursuitController detected collision ahead!");
-    // RCLCPP_INFO(logger_, "RegulatedPurePursuitController detected collision ahead!");
+    RCLCPP_INFO(logger_, "RegulatedPurePursuitController detected collision ahead!");
     geometry_msgs::msg::PoseStamped transformed_pose;
     transformPose("base_link", collision_pose_msg_, transformed_pose);
     double x = transformed_pose.pose.position.x;
     double y = transformed_pose.pose.position.y;
     std::vector<geometry_msgs::msg::Point> footprint = costmap_ros_->getRobotFootprint();
     double half_width = footprint[0].y;
-    double half_length = footprint[0].x;
     if (x > 0){//front
     double l_v = 0.05;
       if (abs(y)>half_width+0.01){
