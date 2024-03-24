@@ -342,9 +342,8 @@ WaypointFollower::followWaypoints()
         return;
       }
     } else {
-      RCLCPP_INFO_EXPRESSION(
+      RCLCPP_INFO_ONCE(
         get_logger(),
-        (static_cast<int>(now().seconds()) % 30 == 0),
         "Processing waypoint %i...", goal_index);
     }
 
