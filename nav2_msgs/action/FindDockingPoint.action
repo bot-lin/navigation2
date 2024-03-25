@@ -1,5 +1,6 @@
 #goal definition
 float32 distance_to_point
+bool do_reverse
 
 builtin_interfaces/Duration time_allowance
 ---

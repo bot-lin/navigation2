@@ -132,6 +132,7 @@ protected:
     rclcpp::Client<zbot_interfaces::srv::LineSegmentListSrv>::SharedPtr client_;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr publisher_;
     bool processing_;
+    bool do_reverse_;
     
 };
 }

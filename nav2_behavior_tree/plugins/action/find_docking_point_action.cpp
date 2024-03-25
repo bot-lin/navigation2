@@ -26,8 +26,12 @@ FindDockingPointAction::FindDockingPointAction(
 : BtActionNode<nav2_msgs::action::FindDockingPoint>(xml_tag_name, action_name, conf)
 {
   double distance_to_point;
+  bool do_reverse;
   getInput("distance_to_point", distance_to_point);
+  getInput("do_reverse", do_reverse);
+
   goal_.distance_to_point = distance_to_point;
+  goal_.do_reverse = do_reverse;
 }
 
 void FindDockingPointAction::on_tick()

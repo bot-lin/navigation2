@@ -50,6 +50,7 @@ void FindDockingPoint::onConfigure()
 Status FindDockingPoint::onRun(const std::shared_ptr<const FindDockingPointAction::Goal> command)
 {
     distance_to_point_ = command->distance_to_point;
+    do_reverse_ = command->do_reverse;
 
     return Status::SUCCEEDED;
 }
@@ -57,6 +58,7 @@ Status FindDockingPoint::onRun(const std::shared_ptr<const FindDockingPointActio
 Status FindDockingPoint::change_goal(const std::shared_ptr<const FindDockingPointAction::Goal> command)
 {
     distance_to_point_ = command->distance_to_point;
+    do_reverse_ = command->do_reverse;
 
     return Status::SUCCEEDED;
 }
@@ -174,11 +176,23 @@ bool FindDockingPoint::find_docking_spot()
         double x4 = (x1 + x2) / 2 + tmp * (y1 - y2);
         double y4 = (y1 + y2) / 2 + tmp * (x2 - x1);
 
-        if (x3 < x4)
+        if (do_reverse_)
         {
-            x3 = x4;
-            y3 = y4;
+            if (x3 < x4)
+            {
+                x3 = x4;
+                y3 = y4;
+            }
         }
+        else
+        {
+            if (x3 > x4)
+            {
+                x3 = x4;
+                y3 = y4;
+            }
+        }
+
 
         Point A, B; //A left, B right
         A.x = x2;

@@ -53,6 +53,7 @@ public:
     return providedBasicPorts(
       {
         BT::InputPort<double>("distance_to_point", 0.35, "Distance to point"),
+        BT::InputPort<bool>("do_reverse", false, "Reverse the direction"),
         BT::OutputPort<geometry_msgs::msg::PoseStamped>("docking_point", "docking point coordinate to map"),
       });
   }
