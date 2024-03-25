@@ -174,7 +174,7 @@ bool FindDockingPoint::find_docking_spot()
         double x4 = (x1 + x2) / 2 + tmp * (y1 - y2);
         double y4 = (y1 + y2) / 2 + tmp * (x2 - x1);
 
-        if (x3 > x4)
+        if (x3 < x4)
         {
             x3 = x4;
             y3 = y4;
