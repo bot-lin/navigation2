@@ -286,15 +286,17 @@ NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr goal)
   blackboard->set<geometry_msgs::msg::PoseStamped>(goal_blackboard_id_, goal->pose);
   blackboard->set<std::string>(planner_blackboard_id_, goal->planner_id);
   blackboard->set<std::string>(controller_blackboard_id_, goal->controller_id);
-  blackboard->set<float>(precise_distance_blackboard_id_, goal->distance_goal_tolerance);
-  blackboard->set<float>(precise_yaw_blackboard_id_, goal->yaw_goal_tolerance);
-  blackboard->set<bool>(is_reverse_blackboard_id_, goal->is_reverse);
-  blackboard->set<double>(docker_x_id_, goal->docker_x);
-  blackboard->set<double>(docker_y_id_, goal->docker_y);
-  blackboard->set<double>(docker_z_id_, goal->docker_z);
-  blackboard->set<double>(docker_w_id_, goal->docker_w);
-  blackboard->set<float>(precise_xy_id_, goal->precise_xy);
-  blackboard->set<float>(precise_yaw_id_, goal->precise_yaw);
+  // blackboard->set<float>(precise_distance_blackboard_id_, goal->distance_goal_tolerance);
+  // blackboard->set<float>(precise_yaw_blackboard_id_, goal->yaw_goal_tolerance);
+  // blackboard->set<bool>(is_reverse_blackboard_id_, goal->is_reverse);
+  // blackboard->set<double>(docker_x_id_, goal->docker_x);
+  // blackboard->set<double>(docker_y_id_, goal->docker_y);
+  // blackboard->set<double>(docker_z_id_, goal->docker_z);
+  // blackboard->set<double>(docker_w_id_, goal->docker_w);
+  // blackboard->set<float>(precise_xy_id_, goal->precise_xy);
+  // blackboard->set<float>(precise_yaw_id_, goal->precise_yaw);
+  RCLCPP_INFO(
+    logger_, "navigating parameters has been set");
 }
 
 void
