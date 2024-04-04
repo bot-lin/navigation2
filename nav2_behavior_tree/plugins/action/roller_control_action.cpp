@@ -35,19 +35,19 @@ void RollerControlAction::on_tick()
     int task_id;
     std::string task_name;
     std::string params;
-    std::string param_json;
+    std::string param_json_;
     
   getInput("task_id", task_id);
   getInput("task_name", task_name);
   getInput("task_param", params);
-  getInput("param_json", param_json);
+  getInput("param_json", param_json_);
   RCLCPP_INFO(
         config().blackboard->get<rclcpp::Node::SharedPtr>("node")->get_logger(),
-        "input task_id: %d, task_name: %s, params: %s, param_json: %s", task_id, task_name.c_str(), params.c_str(), param_json.c_str());
+        "input task_id: %d, task_name: %s, params: %s, param_json: %s", task_id, task_name.c_str(), params.c_str(), param_json_.c_str());
   goal_.task_id = task_id;
   goal_.task_name = task_name;
   goal_.params = params;
-  goal_.param_json = param_json;
+  goal_.param_json = param_json_;
 }
 
 BT::NodeStatus RollerControlAction::on_success()
