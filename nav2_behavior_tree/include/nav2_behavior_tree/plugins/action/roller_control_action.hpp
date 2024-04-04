@@ -62,6 +62,9 @@ public:
         "task_name",
         "task name: eg roller_control"),
         BT::InputPort<std::string>(
+        "param_json",
+        "parameter in json string"),
+        BT::InputPort<std::string>(
           "task_param",
           "Destinations to plan through"),
       });
