@@ -219,11 +219,11 @@ NavfnPlanner::makePlan(
 
   bool found_legal_start = false;
 
-  p_start = strcasestr;
+  p_start = start;
 
   double potential_start = getPointPotential(p_start.position);
 
-  if (potential < POT_HIGH) {
+  if (potential_start < POT_HIGH) {
     // Goal is reachable by itself
     RCLCPP_INFO(
       logger_,
