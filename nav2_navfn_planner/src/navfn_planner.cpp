@@ -252,7 +252,7 @@ NavfnPlanner::makePlan(
     "Test goal: %.2f", test_goal);
 
 
-  if (potential_start < POT_HIGH) {
+  if (potential_start < 100) {
     // Goal is reachable by itself
     RCLCPP_INFO(
       logger_,
@@ -268,9 +268,9 @@ NavfnPlanner::makePlan(
     while (p_start.position.y <= start.position.y + tolerance) {
       p_start.position.x = start.position.x - tolerance;
       while (p_start.position.x <= start.position.x + tolerance) {
-        potential_start = getPointPotential(p_start.position);
+        potential_start = getPointCost(p_start.position);
         double sdist = squared_distance(p_start, start);
-        if (potential_start < POT_HIGH && sdist < best_sdist) {
+        if (potential_start < 100 && sdist < best_sdist) {
           best_sdist = sdist;
           best_start = p_start;
           found_legal_start = true;
