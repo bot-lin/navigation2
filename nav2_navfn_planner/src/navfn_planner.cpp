@@ -213,8 +213,53 @@ NavfnPlanner::makePlan(
 
   // TODO(orduno): add checks for start and goal reference frame -- should be in global frame
 
-  double wx = start.position.x;
-  double wy = start.position.y;
+  //
+  double resolution = costmap_->getResolution();
+  geometry_msgs::msg::Pose p_start, best_start;
+
+  bool found_legal_start = false;
+
+  p_start = strcasestr;
+
+  double potential_start = getPointPotential(p_start.position);
+
+  if (potential < POT_HIGH) {
+    // Goal is reachable by itself
+    RCLCPP_INFO(
+      logger_,
+      "Start is reachable by itself.");
+    best_start = p_start;
+    found_legal_start = true;
+  } else {
+    // Goal is not reachable. Trying to find nearest to the goal
+    // reachable point within its tolerance region
+    double best_sdist = std::numeric_limits<double>::max();
+
+    p_start.position.y = start.position.y - tolerance;
+    while (p_start.position.y <= start.position.y + tolerance) {
+      p_start.position.x = start.position.x - tolerance;
+      while (p_start.position.x <= start.position.x + tolerance) {
+        potential_start = getPointPotential(p_start.position);
+        double sdist = squared_distance(p_start, start);
+        if (potential_start < POT_HIGH && sdist < best_sdist) {
+          best_sdist = sdist;
+          best_start = p_start;
+          found_legal_start = true;
+          RCLCPP_INFO(
+            logger_,
+            "Found legal point near start: %.2f, %.2f",
+            best_start.position.x, best_start.position.y);
+        }
+        p_start.position.x += resolution;
+      }
+      p_start.position.y += resolution;
+    }
+  }
+
+
+  //
+  double wx = best_start.position.x;
+  double wy = best_start.position.y;
 
   RCLCPP_DEBUG(
     logger_, "Making plan from (%.2f,%.2f) to (%.2f,%.2f)",
@@ -274,16 +319,14 @@ NavfnPlanner::makePlan(
     planner_->calcNavFnDijkstra(true);
   }
 
-  double resolution = costmap_->getResolution();
+  // double resolution = costmap_->getResolution();
   geometry_msgs::msg::Pose p, best_pose;
 
   bool found_legal = false;
 
   p = goal;
-  bool care_about_goal = false;
-  if (care_about_goal)
-  {
-    double potential = getPointPotential(p.position);
+
+  double potential = getPointPotential(p.position);
 
   if (potential < POT_HIGH) {
     // Goal is reachable by itself
@@ -317,11 +360,7 @@ NavfnPlanner::makePlan(
       p.position.y += resolution;
     }
   }
-  } else
-  {
-    best_pose = p;
-    found_legal = true;
-  }
+ 
   
   //print found_legal
   RCLCPP_INFO(
