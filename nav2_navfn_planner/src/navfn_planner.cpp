@@ -218,17 +218,8 @@ NavfnPlanner::makePlan(
   geometry_msgs::msg::Pose p_start, best_start;
 
   bool found_legal_start = false;
-  RCLCPP_INFO(
-    logger_,
-    "Start: %.2f, %.2f", start.position.x, start.position.y);
-  RCLCPP_INFO(
-    logger_,
-    "Goal: %.2f, %.2f", goal.position.x, goal.position.y);
-  RCLCPP_INFO(
-    logger_,
-    "Tolerance: %.2f", tolerance);
 
-    std::unique_lock<nav2_costmap_2d::Costmap2D::mutex_t> lock(*(costmap_->getMutex()));
+  std::unique_lock<nav2_costmap_2d::Costmap2D::mutex_t> lock(*(costmap_->getMutex()));
 
   // make sure to resize the underlying array that Navfn uses
   planner_->setNavArr(
@@ -242,17 +233,7 @@ NavfnPlanner::makePlan(
   p_start = start;
 
   double potential_start = getPointCost(p_start.position);
-  RCLCPP_INFO(
-    logger_,
-    "potential_start: %.2f", potential_start);
-
-  double test_goal = getPointCost(goal.position);
-  RCLCPP_INFO(
-    logger_,
-    "Test goal: %.2f", test_goal);
-
-
-  if (potential_start < 100) {
+  if (potential_start < COST_OBS_ROS) {
     // Goal is reachable by itself
     RCLCPP_INFO(
       logger_,
@@ -270,7 +251,7 @@ NavfnPlanner::makePlan(
       while (p_start.position.x <= start.position.x + tolerance) {
         potential_start = getPointCost(p_start.position);
         double sdist = squared_distance(p_start, start);
-        if (potential_start < 100 && sdist < best_sdist) {
+        if (potential_start < COST_OBS_ROS && sdist < best_sdist) {
           best_sdist = sdist;
           best_start = p_start;
           found_legal_start = true;
@@ -358,10 +339,6 @@ NavfnPlanner::makePlan(
   RCLCPP_INFO(
     logger_,
     "Potential: %.2f", potential);
-  double test = getPointCost(start.position);
-  RCLCPP_INFO(
-    logger_,
-    "Test: %.2f", test);
 
   if (potential < POT_HIGH) {
     // Goal is reachable by itself
