@@ -218,6 +218,15 @@ NavfnPlanner::makePlan(
   geometry_msgs::msg::Pose p_start, best_start;
 
   bool found_legal_start = false;
+  RCLCPP_INFO(
+    logger_,
+    "Start: %.2f, %.2f", start.position.x, start.position.y);
+  RCLCPP_INFO(
+    logger_,
+    "Goal: %.2f, %.2f", goal.position.x, goal.position.y);
+  RCLCPP_INFO(
+    logger_,
+    "Tolerance: %.2f", tolerance);
 
   p_start = start;
 
