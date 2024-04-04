@@ -575,7 +575,7 @@ void PlannerServer::isPathValid(
      */
     unsigned int mx = 0;
     unsigned int my = 0;
-    for (unsigned int i = closest_point_index; i < request->path.poses.size(); ++i) {
+    for (unsigned int i = closest_point_index; i < request->path.poses.size()-1; ++i) {
       costmap_->worldToMap(
         request->path.poses[i].pose.position.x,
         request->path.poses[i].pose.position.y, mx, my);
