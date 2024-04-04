@@ -41,6 +41,9 @@ void RollerControlAction::on_tick()
   getInput("task_name", task_name);
   getInput("task_param", params);
   getInput("param_json", param_json);
+  RCLCPP_INFO(
+        config().blackboard->get<rclcpp::Node::SharedPtr>("node")->get_logger(),
+        "input task_id: %d, task_name: %s, params: %s, param_json: %s", task_id, task_name.c_str(), params.c_str(), param_json.c_str());
   goal_.task_id = task_id;
   goal_.task_name = task_name;
   goal_.params = params;
