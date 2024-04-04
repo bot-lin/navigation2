@@ -242,7 +242,9 @@ NavfnPlanner::makePlan(
   p_start = start;
 
   double potential_start = getPointPotential(p_start.position);
-
+  RCLCPP_INFO(
+    logger_,
+    "potential_start: %.2f", potential_start);
   if (potential_start < POT_HIGH) {
     // Goal is reachable by itself
     RCLCPP_INFO(
@@ -346,6 +348,9 @@ NavfnPlanner::makePlan(
   p = goal;
 
   double potential = getPointPotential(p.position);
+  RCLCPP_INFO(
+    logger_,
+    "Potential: %.2f", potential);
 
   if (potential < POT_HIGH) {
     // Goal is reachable by itself
