@@ -256,6 +256,14 @@ NavfnPlanner::makePlan(
     }
   }
 
+  if (!found_legal_start) {
+    RCLCPP_WARN(
+      logger_,
+      "The start sent to the planner is off the global costmap."
+      " Planning will always fail to this start.");
+    return false;
+  }
+
 
   //
   double wx = best_start.position.x;
