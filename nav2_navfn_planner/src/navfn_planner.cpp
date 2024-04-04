@@ -241,12 +241,12 @@ NavfnPlanner::makePlan(
 
   p_start = start;
 
-  double potential_start = getPointPotential(p_start.position);
+  double potential_start = getPointCost(p_start.position);
   RCLCPP_INFO(
     logger_,
     "potential_start: %.2f", potential_start);
 
-  double test_goal = getPointPotential(goal.position);
+  double test_goal = getPointCost(goal.position);
   RCLCPP_INFO(
     logger_,
     "Test goal: %.2f", test_goal);
@@ -358,7 +358,7 @@ NavfnPlanner::makePlan(
   RCLCPP_INFO(
     logger_,
     "Potential: %.2f", potential);
-  double test = getPointPotential(start.position);
+  double test = getPointCost(start.position);
   RCLCPP_INFO(
     logger_,
     "Test: %.2f", test);
@@ -542,6 +542,18 @@ NavfnPlanner::getPointPotential(const geometry_msgs::msg::Point & world_point)
 
   unsigned int index = my * planner_->nx + mx;
   return planner_->potarr[index];
+}
+
+double
+NavfnPlanner::getPointCost(const geometry_msgs::msg::Point & world_point)
+{
+  unsigned int mx, my;
+  if (!worldToMap(world_point.x, world_point.y, mx, my)) {
+    return std::numeric_limits<double>::max();
+  }
+
+  unsigned int index = my * planner_->nx + mx;
+  return planner_->costarr[index];
 }
 
 // bool

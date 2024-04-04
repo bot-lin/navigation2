@@ -133,6 +133,7 @@ protected:
    * @return double point potential (navigation cost)
    */
   double getPointPotential(const geometry_msgs::msg::Point & world_point);
+  double getPointCost(const geometry_msgs::msg::Point & world_point);
 
   // Check for a valid potential value at a given point in the world
   // - must call computePotential first
