@@ -255,10 +255,6 @@ NavfnPlanner::makePlan(
           best_sdist = sdist;
           best_start = p_start;
           found_legal_start = true;
-          RCLCPP_INFO(
-            logger_,
-            "Found legal point near start: %.2f, %.2f",
-            best_start.position.x, best_start.position.y);
         }
         p_start.position.x += resolution;
       }
