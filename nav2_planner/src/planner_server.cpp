@@ -586,6 +586,8 @@ void PlannerServer::isPathValid(
       {
         RCLCPP_INFO(
           get_logger(), "Path is invalid, found lethal cost: %d", cost);
+        RCLCPP_INFO(
+          get_logger(), "Position: %.2f, %.2f", request->path.poses[i].pose.position.x, request->path.poses[i].pose.position.y);
         response->is_valid = false;
       }
     }
