@@ -265,6 +265,8 @@ NavigateThroughPosesNavigator::initializeGoalPoses(ActionT::Goal::ConstSharedPtr
   blackboard->set<float>(precise_distance_blackboard_id_, goal->distance_goal_tolerance);
   blackboard->set<float>(precise_yaw_blackboard_id_, goal->yaw_goal_tolerance);
   blackboard->set<bool>(is_reverse_blackboard_id_, goal->is_reverse);
+  RCLCPP_INFO(
+      logger_, "End of initializing goal poses");
 }
 
 }  // namespace nav2_bt_navigator
