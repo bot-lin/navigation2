@@ -78,6 +78,10 @@ BT::NodeStatus FindCylinderCentroid::tick()
       RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Cylinder centroid failed");
     }
   }
+  else
+  {
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Cylinder centroid failed");
+  }
   return BT::NodeStatus::FAILURE;
 
   // while (!client_->wait_for_service(1s)) {
