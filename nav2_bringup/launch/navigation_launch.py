@@ -47,7 +47,7 @@ def generate_launch_description():
                        'bt_navigator',
                        'waypoint_follower',
                        'collision_monitor',
-                       'velocity_smoother']
+                       'posepublisher']
 
     # Map fully qualified names to relative ones so the node's namespace can be prepended.
     # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
@@ -250,12 +250,10 @@ def generate_launch_description():
                              'autostart': autostart,
                              'node_names': lifecycle_nodes}]),
             ComposableNode(
-                package='nav2_velocity_smoother',
-                plugin='nav2_velocity_smoother::VelocitySmoother',
-                name='velocity_smoother',
-                parameters=[configured_params],
-                remappings=remappings +
-                           [('cmd_vel', 'cmd_vel_collision')]),
+                    package='tf_to_pose_cpp',
+                    plugin='PosePublisher',
+                    name='posepublisher',
+                    extra_arguments=[{'use_intra_process_comms': True}]),
             ComposableNode(
                 package='nav2_collision_monitor',
                 plugin='nav2_collision_monitor::CollisionMonitor',
