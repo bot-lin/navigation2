@@ -246,6 +246,7 @@ Status PreciseNav::onCycleUpdate()
         {
 
             cmd_vel->linear.x = find_v_based_on_w(heading_error, scale_factor_, max_linear_, steepness_, distance_to_goal, distance_max_);
+            if (cmd_vel->linear.x > 0 && cmd_vel->linear.x < 0.015) cmd_vel->linear.x = 0.015;
             double pid_w = angularController_.compute(0.0, -heading_error);
             double smoothed_w = smoothController_.smooth(pid_w);
             cmd_vel->angular.z = std::clamp(smoothed_w, -max_angular_, max_angular_);
