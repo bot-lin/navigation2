@@ -109,6 +109,8 @@ void RegulatedPurePursuitController::configure(
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".move_reversing", rclcpp::ParameterValue(false));
   declare_parameter_if_not_declared(
+    node, plugin_name_ + ".diff_model", rclcpp::ParameterValue(false));
+  declare_parameter_if_not_declared(
     node, plugin_name_ + ".max_robot_pose_search_dist",
     rclcpp::ParameterValue(getCostmapMaxExtent()));
   declare_parameter_if_not_declared(
@@ -177,6 +179,7 @@ void RegulatedPurePursuitController::configure(
   
   node->get_parameter(plugin_name_ + ".allow_reversing", allow_reversing_);
   node->get_parameter(plugin_name_ + ".move_reversing", move_reversing_);
+  node->get_parameter(plugin_name_ + ".diff_model", diff_model_);
   node->get_parameter(
     plugin_name_ + ".max_robot_pose_search_dist",
     max_robot_pose_search_dist_);
@@ -400,7 +403,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
 
   carrot_pub_->publish(createCarrotMsg(carrot_pose));
 
-  double linear_vel, angular_vel;
+  double linear_vel, angular_vel, linear_y;
 
   // Find curvature of circle (k = 1 / R)
   double curvature = 0.0;
@@ -432,14 +435,23 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   double angle_to_heading;
   getRadToCarrotPose(carrot_pose, angle_to_heading);
 
-  double pid_w = angularController_.compute(0.0, -angle_to_heading);
-  double smooth_w = smoothController_.smooth(pid_w);
- 
-  angular_vel = std::clamp(smooth_w, -max_angular_vel_, max_angular_vel_);
+  
   applyConstraints(
     curvature, angle_to_heading, speed,
     costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
     linear_vel, sign);  
+  
+  if (diff_model_){
+    double pid_w = angularController_.compute(0.0, -angle_to_heading);
+    double smooth_w = smoothController_.smooth(pid_w);
+    angular_vel = std::clamp(smooth_w, -max_angular_vel_, max_angular_vel_);
+    linear_y = 0.0;
+  }else{
+    linear_y = linear_vel * sin(angle_to_heading);
+    linear_vel = linear_vel * cos(angle_to_heading);
+    angular_vel = 0.0;
+
+  }
 
   std_msgs::msg::Bool msg;
   // Collision checking on this velocity heading
@@ -486,6 +498,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   geometry_msgs::msg::TwistStamped cmd_vel;
   cmd_vel.header = pose.header;
   cmd_vel.twist.linear.x = linear_vel;
+  cmd_vel.twist.linear.y = linear_y;
   // if (!goal_checker->getCheckXY())
   // {
   //   cmd_vel.twist.linear.x = 0.0;

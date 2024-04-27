@@ -378,6 +378,7 @@ protected:
   bool move_reversing_;
   double max_robot_pose_search_dist_;
   bool use_interpolation_;
+  bool diff_model_;
   geometry_msgs::msg::PoseStamped collision_pose_msg_;
   nav_msgs::msg::Path global_plan_;
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<nav_msgs::msg::Path>> global_path_pub_;
