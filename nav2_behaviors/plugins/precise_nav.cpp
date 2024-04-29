@@ -111,6 +111,9 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     RCLCPP_INFO(this->logger_, "yaw_goal_tolerance %f", yaw_goal_tolerance_);
     RCLCPP_INFO(this->logger_, "is heading only  %d", is_heading_only_);
 
+    RCLCPP_INFO(this->logger_, "Received pose x: %f, y: %f", pose_tmp.pose.position.x, pose_tmp.pose.position.y);
+    RCLCPP_INFO(this->logger_, "Received pose z: %f, w: %f", pose_tmp.pose.orientation.z, pose_tmp.pose.orientation.w);
+
     if (command->pose.header.frame_id != target_tf_frame_)
     {
         bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, target_tf_frame_, this->transform_tolerance_);
