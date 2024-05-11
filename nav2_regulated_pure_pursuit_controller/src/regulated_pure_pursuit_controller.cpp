@@ -109,7 +109,7 @@ void RegulatedPurePursuitController::configure(
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".move_reversing", rclcpp::ParameterValue(false));
   declare_parameter_if_not_declared(
-    node, plugin_name_ + ".diff_model", rclcpp::ParameterValue(false));
+    node, plugin_name_ + ".allow_y", rclcpp::ParameterValue(false));
   declare_parameter_if_not_declared(
     node, plugin_name_ + ".max_robot_pose_search_dist",
     rclcpp::ParameterValue(getCostmapMaxExtent()));
@@ -179,7 +179,7 @@ void RegulatedPurePursuitController::configure(
   
   node->get_parameter(plugin_name_ + ".allow_reversing", allow_reversing_);
   node->get_parameter(plugin_name_ + ".move_reversing", move_reversing_);
-  node->get_parameter(plugin_name_ + ".diff_model", diff_model_);
+  node->get_parameter(plugin_name_ + ".allow_y", allow_y_);
   node->get_parameter(
     plugin_name_ + ".max_robot_pose_search_dist",
     max_robot_pose_search_dist_);
@@ -267,7 +267,11 @@ void RegulatedPurePursuitController::changeParamCallback(const zbot_interfaces::
   } else if (msg->param_name == "max_angular_vel")
   {
     max_angular_vel_ = msg->param_double_value;
-  } 
+  } else if (msg->param_name == "allow_y")
+  {
+    allow_y_ = msg->param_bool_value;
+  }
+  
   
 }
 
@@ -417,7 +421,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   
   // Setting the velocity direction
   double sign = 1.0;
-  if (allow_reversing_) {
+  if (allow_reversing_ && !move_reversing_) {
     sign = carrot_pose.pose.position.x >= 0.0 ? 1.0 : -1.0;
   }
 
@@ -438,7 +442,7 @@ geometry_msgs::msg::TwistStamped RegulatedPurePursuitController::computeVelocity
   
     
   
-  if (diff_model_){
+  if (!allow_y_){
     applyConstraints(
       curvature, angle_to_heading, speed,
       costAtPose(pose.pose.position.x, pose.pose.position.y), transformed_plan,
