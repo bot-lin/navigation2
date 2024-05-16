@@ -45,6 +45,9 @@ void PreciseNavAction::on_tick()
   if (!getInput("is_reverse", goal_.is_reverse)) {
     goal_.is_reverse = false;
   }
+  if (!getInput("allow_reverse", goal_.allow_reverse)) {
+    goal_.allow_reverse = true;
+  }
   if (!getInput("reverse_yaw", goal_.reverse_yaw)) {
     goal_.reverse_yaw = false;
   }
@@ -89,12 +92,13 @@ void PreciseNavAction::on_wait_for_result(
   std::shared_ptr<const nav2_msgs::action::PreciseNav::Feedback>/*feedback*/)
 {
   geometry_msgs::msg::PoseStamped new_goal;
-  bool is_reverse, reverse_yaw, is_heading_only;
+  bool is_reverse, reverse_yaw, is_heading_only, allow_reverse;
   float distance_goal_tolerance;
   float yaw_goal_tolerance;
   std::string target_tf_frame;
   getInput("goal", new_goal);
   getInput("is_reverse", is_reverse);
+  getInput("allow_reverse", allow_reverse);
   getInput("reverse_yaw", reverse_yaw);
   getInput("distance_goal_tolerance", distance_goal_tolerance);
   getInput("yaw_goal_tolerance", yaw_goal_tolerance);
@@ -108,6 +112,7 @@ void PreciseNavAction::on_wait_for_result(
   {
     goal_.pose = new_goal;
     goal_.is_reverse = is_reverse;
+    goal_.allow_reverse = allow_reverse;
     goal_.distance_goal_tolerance = distance_goal_tolerance;
     goal_.yaw_goal_tolerance = yaw_goal_tolerance;
     goal_.reverse_yaw = reverse_yaw;

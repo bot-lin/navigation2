@@ -110,6 +110,7 @@ protected:
     double scale_factor_ = 2.0;
     bool reached_distance_goal_ = false;
     bool is_reverse_ = false;
+    bool allow_reverse_ = true;
     bool is_heading_only_ = false;
     bool pid_reset_ = false;
     double steepness_ = 4.0;

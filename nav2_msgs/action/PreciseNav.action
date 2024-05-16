@@ -1,6 +1,7 @@
 #goal definition
 geometry_msgs/PoseStamped pose
 bool is_reverse
+bool allow_reverse
 float32 distance_goal_tolerance
 float32 yaw_goal_tolerance
 float64 position_p

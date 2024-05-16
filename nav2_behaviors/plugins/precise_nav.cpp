@@ -95,6 +95,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     
 
     is_reverse_ = command->is_reverse;
+    allow_reverse_ = command->allow_reverse;
     
     yaw_goal_tolerance_ = command->yaw_goal_tolerance;
     distance_goal_tolerance_ = command->distance_goal_tolerance;
@@ -107,6 +108,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
     distance_max_ = command->distance_max;
     RCLCPP_INFO(this->logger_, "From precise nav");
     RCLCPP_INFO(this->logger_, "Is reverse %d", is_reverse_);
+    RCLCPP_INFO(this->logger_, "Allow reverse %d", allow_reverse_);
     RCLCPP_INFO(this->logger_, "distance_goal_tolerance %f", distance_goal_tolerance_);
     RCLCPP_INFO(this->logger_, "yaw_goal_tolerance %f", yaw_goal_tolerance_);
     RCLCPP_INFO(this->logger_, "is heading only  %d", is_heading_only_);
@@ -168,6 +170,7 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     target_tf_frame_ = command->target_tf_frame;
     
     is_reverse_ = command->is_reverse;
+    allow_reverse_ = command->allow_reverse;
     angularController_.reset_pid();
     angularController_.setParams(command->orientation_p, command->orientation_i, command->orientation_d, 0.0);
     smoothController_.setParams(command->smoothing_factor);
@@ -253,7 +256,7 @@ Status PreciseNav::onCycleUpdate()
             double pid_w = angularController_.compute(0.0, -heading_error);
             double smoothed_w = smoothController_.smooth(pid_w);
             cmd_vel->angular.z = std::clamp(smoothed_w, -max_angular_, max_angular_);
-            if (is_reverse_) cmd_vel->linear.x = -cmd_vel->linear.x;
+            if (is_reverse_ || allow_reverse_) cmd_vel->linear.x = -cmd_vel->linear.x;
             // if (std::fabs(heading_error) > heading_tolerance_){
             //     if (is_reverse_) cmd_vel->linear.x = -0.01;
             //     else cmd_vel->linear.x = 0.01;
@@ -314,7 +317,7 @@ double PreciseNav::getHeadingErrorToGoal(geometry_msgs::msg::PoseStamped current
     double roll, pitch, current_robot_heading;
     m.getRPY(roll, pitch, current_robot_heading);
     double delta_x, delta_y;
-    if (is_reverse_){
+    if (is_reverse_ || allow_reverse_){
         delta_x = current_pose.pose.position.x - target_x_ ;
         delta_y = current_pose.pose.position.y - target_y_;
     }else{
