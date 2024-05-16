@@ -138,6 +138,14 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
                     pose_tmp.pose.orientation.y, 
                     pose_tmp.pose.orientation.z,
                     pose_tmp.pose.orientation.w);
+    tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, this->robot_base_frame_, this->transform_tolerance_);
+    if (!tf_response)
+    {
+        RCLCPP_ERROR(this->logger_, "Failed to transform goal pose in %s frame from %s", this->robot_base_frame_.c_str(), command->pose.header.frame_id.c_str());
+        return Status::FAILED;
+    }
+    target_x_in_robot_frame_ = pose_tmp.pose.position.x;
+    RCLCPP_INFO(this->logger_, "target x in robot frame: %f", target_x_in_robot_frame_);
     tf2::Matrix3x3 m(q);
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
@@ -204,6 +212,14 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
     target_yaw_ = yaw;
+    tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, this->robot_base_frame_, this->transform_tolerance_);
+    if (!tf_response)
+    {
+        RCLCPP_ERROR(this->logger_, "Failed to transform goal pose in %s frame from %s", this->robot_base_frame_.c_str(), command->pose.header.frame_id.c_str());
+        return Status::FAILED;
+    }
+    target_x_in_robot_frame_ = pose_tmp.pose.position.x;
+    RCLCPP_INFO(this->logger_, "target x in robot frame: %f", target_x_in_robot_frame_);
     reached_distance_goal_ = false;
     command_time_allowance_ = command->time_allowance;
     end_time_ = steady_clock_.now() + command_time_allowance_;
@@ -256,7 +272,8 @@ Status PreciseNav::onCycleUpdate()
             double pid_w = angularController_.compute(0.0, -heading_error);
             double smoothed_w = smoothController_.smooth(pid_w);
             cmd_vel->angular.z = std::clamp(smoothed_w, -max_angular_, max_angular_);
-            if (is_reverse_ || allow_reverse_) cmd_vel->linear.x = -cmd_vel->linear.x;
+            if (allow_reverse_ && !is_reverse_ && target_x_in_robot_frame_ < 0.0) cmd_vel->linear.x = -cmd_vel->linear.x;
+            if (is_reverse_) cmd_vel->linear.x = -cmd_vel->linear.x;
             // if (std::fabs(heading_error) > heading_tolerance_){
             //     if (is_reverse_) cmd_vel->linear.x = -0.01;
             //     else cmd_vel->linear.x = 0.01;
@@ -317,7 +334,10 @@ double PreciseNav::getHeadingErrorToGoal(geometry_msgs::msg::PoseStamped current
     double roll, pitch, current_robot_heading;
     m.getRPY(roll, pitch, current_robot_heading);
     double delta_x, delta_y;
-    if (is_reverse_ || allow_reverse_){
+
+
+    
+    if ((is_reverse_) || (allow_reverse_ && !is_reverse_ && target_x_in_robot_frame_ < 0.0)){
         delta_x = current_pose.pose.position.x - target_x_ ;
         delta_y = current_pose.pose.position.y - target_y_;
     }else{

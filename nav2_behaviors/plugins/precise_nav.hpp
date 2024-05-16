@@ -98,6 +98,7 @@ protected:
     double target_x_;
     double target_y_;
     double target_yaw_;
+    double target_x_in_robot_frame_;
     double distance_goal_tolerance_ = 0.03;
     double heading_tolerance_ = 0.1;
     double yaw_goal_tolerance_ = 0.1;
