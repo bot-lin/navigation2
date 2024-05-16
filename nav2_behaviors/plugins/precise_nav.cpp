@@ -138,7 +138,7 @@ Status PreciseNav::onRun(const std::shared_ptr<const PreciseNavAction::Goal> com
                     pose_tmp.pose.orientation.y, 
                     pose_tmp.pose.orientation.z,
                     pose_tmp.pose.orientation.w);
-    tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, this->robot_base_frame_, this->transform_tolerance_);
+    bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, this->robot_base_frame_, this->transform_tolerance_);
     if (!tf_response)
     {
         RCLCPP_ERROR(this->logger_, "Failed to transform goal pose in %s frame from %s", this->robot_base_frame_.c_str(), command->pose.header.frame_id.c_str());
@@ -212,7 +212,7 @@ Status PreciseNav::change_goal(const std::shared_ptr<const PreciseNavAction::Goa
     double roll, pitch, yaw;
     m.getRPY(roll, pitch, yaw);
     target_yaw_ = yaw;
-    tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, this->robot_base_frame_, this->transform_tolerance_);
+    bool tf_response = nav2_util::transformPoseInTargetFrame(pose_tmp, pose_tmp,  *this->tf_, this->robot_base_frame_, this->transform_tolerance_);
     if (!tf_response)
     {
         RCLCPP_ERROR(this->logger_, "Failed to transform goal pose in %s frame from %s", this->robot_base_frame_.c_str(), command->pose.header.frame_id.c_str());
