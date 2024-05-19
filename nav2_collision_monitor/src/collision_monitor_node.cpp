@@ -387,6 +387,13 @@ void CollisionMonitor::process(const Velocity & cmd_vel_in)
   // Polygon causing robot action (if any)
   std::shared_ptr<Polygon> action_polygon;
   if (monitor_on_){
+    //remove points that are in ingore zone
+    for (std::shared_ptr<Polygon> polygon : polygons_) {
+      if (polygon->getActionType() == IGNORE) {
+        polygon->updatePolygon();
+        polygon->removePointsInside(collision_points);
+      }
+    }
     for (std::shared_ptr<Polygon> polygon : polygons_) {
       if (robot_action.action_type == STOP) {
         // If robot already should stop, do nothing

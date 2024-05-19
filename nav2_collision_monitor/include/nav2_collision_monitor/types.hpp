@@ -69,6 +69,7 @@ enum ActionType
   SLOWDOWN = 2,  // Slowdown in percentage from current operating speed
   APPROACH = 3,  // Keep constant time interval before collision
   LIMIT = 4  // Limit absolute velocity from current operating speed
+  IGNORE = 5  // Ignore collision
 };
 
 /// @brief Action for robot

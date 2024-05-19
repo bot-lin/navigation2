@@ -235,6 +235,15 @@ int Polygon::getPointsInside(const std::vector<Point> & points) const
   return num;
 }
 
+void Polygon::removePointsInside(std::vector<Point> & points) const
+{
+  points.erase(
+    std::remove_if(
+      points.begin(), points.end(),
+      [this](const Point & point) {return isPointInside(point);}),
+    points.end());
+}
+
 double Polygon::getCollisionTime(
   const std::vector<Point> & collision_points,
   const Velocity & velocity) const

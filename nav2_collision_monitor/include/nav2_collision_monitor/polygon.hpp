@@ -140,6 +140,8 @@ public:
    * returns zero value.
    */
   virtual int getPointsInside(const std::vector<Point> & points) const;
+  virtual void removePointsInside(std::vector<Point> & points) const;
+
 
   /**
    * @brief Obtains estimated (simulated) time before a collision.
