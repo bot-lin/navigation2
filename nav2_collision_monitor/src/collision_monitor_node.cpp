@@ -450,7 +450,7 @@ bool CollisionMonitor::processStopSlowdownLimit(
       robot_action.action_type = STOP;
       robot_action.req_vel.x = 0.0;
       robot_action.req_vel.y = 0.0;
-      robot_action.req_vel.tw = 0.0;
+      robot_action.req_vel.tw = velocity.tw;
       return true;
     } else if (polygon->getActionType() == SLOWDOWN) {
       const Velocity safe_vel = velocity * polygon->getSlowdownRatio();
