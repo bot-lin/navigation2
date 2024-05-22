@@ -210,6 +210,8 @@ bool FindDockingPoint::find_docking_spot()
         pose_laser.pose.orientation.z = q.z; 
         pose_laser.pose.orientation.w = q.w; 
         nav2_util::transformPoseInTargetFrame(pose_laser, pose_map_,  *this->tf_, "map");
+        //log pose to laser frame
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to laser x: %f, y:%f, z: %f", pose_laser.pose.position.x, pose_laser.pose.position.y, pose_laser.pose.position.z);
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to map x: %f, y:%f, z: %f", pose_map_.pose.position.x, pose_map_.pose.position.y, pose_map_.pose.position.z);
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "orientation to map x: %f, y:%f, z: %f, w: %f", pose_map_.pose.orientation.x, pose_map_.pose.orientation.y, pose_map_.pose.orientation.z,pose_map_.pose.orientation.w);
         RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "pose to map frame id is %s", pose_map_.header.frame_id.c_str());
