@@ -46,7 +46,7 @@ void PreciseNavAction::on_tick()
     goal_.is_reverse = false;
   }
   if (!getInput("allow_reverse", goal_.allow_reverse)) {
-    goal_.allow_reverse = true;
+    goal_.allow_reverse = true; 
   }
   if (!getInput("reverse_yaw", goal_.reverse_yaw)) {
     goal_.reverse_yaw = false;

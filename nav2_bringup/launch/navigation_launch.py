@@ -250,11 +250,6 @@ def generate_launch_description():
                              'autostart': autostart,
                              'node_names': lifecycle_nodes}]),
             ComposableNode(
-                    package='tf_to_pose_cpp',
-                    plugin='PosePublisher',
-                    name='posepublisher',
-                    extra_arguments=[{'use_intra_process_comms': True}]),
-            ComposableNode(
                 package='nav2_collision_monitor',
                 plugin='nav2_collision_monitor::CollisionMonitor',
                 name='collision_monitor',
