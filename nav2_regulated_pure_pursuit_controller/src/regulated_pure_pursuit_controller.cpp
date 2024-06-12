@@ -1045,6 +1045,18 @@ RegulatedPurePursuitController::dynamicParametersCallback(
           continue;
         }
         move_reversing_ = parameter.as_bool();
+      } else if (name == plugin_name_ + ".allow_reversing") {
+        if (move_reversing_ && parameter.as_bool()) {
+          RCLCPP_WARN(
+            logger_, "Both use_rotate_to_heading and allow_reversing "
+            "parameter cannot be set to true. Rejecting parameter update.");
+          continue;
+        }
+        allow_reversing_ = parameter.as_bool();
+      } else if (name == plugin_name_ + ".allow_y") {
+        allow_y_ = parameter.as_bool();
+      } else if (name == plugin_name_ + ".allow_y") {
+        allow_y_ = parameter.as_bool();
       }
     }
   }
