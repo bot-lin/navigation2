@@ -190,6 +190,68 @@ std::vector<MapNode> a_star(std::vector<std::vector<int>>& grid, MapNode start, 
     return path;
 }
 
+std::vector<MapNode> bfs_v2(std::vector<std::vector<int>>& grid, MapNode start, MapNode end) {
+    int rows = grid.size();
+    int cols = grid[0].size();
+    std::cout << "bfs row:" << rows << std::endl;
+    std::cout << "bfs col:" << cols << std::endl;
+
+    int minX = std::min(start.x, end.x);
+    int maxX = std::max(start.x, end.x);
+    int minY = std::min(start.y, end.y);
+    int maxY = std::max(start.y, end.y);
+
+    std::queue<MapNode> q;
+    std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
+    std::vector<std::vector<MapNode>> parent(rows, std::vector<MapNode>(cols, MapNode(-1, -1)));
+
+    q.push(start);
+    visited[start.x][start.y] = true;
+
+    std::vector<int> dx = {1, -1, 0, 0};
+    std::vector<int> dy = {0, 0, 1, -1};
+
+    auto isValid = [&](int x, int y) {
+        return x >= minX && x <= maxX && y >= minY && y <= maxY && x >= 0 && x < rows && y >= 0 && y < cols && !visited[x][y];
+    };
+
+    while (!q.empty()) {
+        MapNode current = q.front();
+        q.pop();
+
+        if (current == end) {
+            break;
+        }
+
+        for (int i = 0; i < 4; ++i) {
+            int newX = current.x + dx[i];
+            int newY = current.y + dy[i];
+
+            if (isValid(newX, newY) && grid[newX][newY] == 1) {
+                q.push(MapNode(newX, newY));
+                visited[newX][newY] = true;
+                parent[newX][newY] = current;
+            }
+        }
+    }
+
+    std::vector<MapNode> path;
+    if (!visited[end.x][end.y]) {
+        return path;  // Empty path if end point not visited
+    }
+
+    // Reconstruct the path from the parent matrix
+    MapNode current = end;
+    while (!(current == start)) {
+        path.push_back(current);
+        current = parent[current.x][current.y];
+    }
+    path.push_back(start);
+
+    std::reverse(path.begin(), path.end());
+    return path;
+}
+
 std::vector<MapNode> bfs(std::vector<std::vector<int>>& grid, MapNode start, MapNode end) {
     int rows = grid.size();
     int cols = grid[0].size();
@@ -420,7 +482,7 @@ nav_msgs::msg::Path DefinedWaypoints::createPlan(
   RCLCPP_INFO(node_->get_logger(), "start x: %d, y: %d", start_x_index, start_y_index);
   RCLCPP_INFO(node_->get_logger(), "end x: %d, y: %d", end_x_index, end_y_index);
   double search_radius = 10 / resolution_;
-  std::vector<MapNode> shortest_path = a_star(grid_map, start_node, end_node);
+  std::vector<MapNode> shortest_path = bfs_v2(grid_map, start_node, end_node);
   for (const auto& point : shortest_path) {
         std::cout << "(" << point.x << ", " << point.y << ") "; //point.x is actually the y, and point.y is the x
     }
