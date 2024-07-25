@@ -30,6 +30,7 @@ Status BackUp::change_goal(const std::shared_ptr<const BackUpAction::Goal> comma
   command_x_ = -std::fabs(command->target.x);
   command_speed_ = -std::fabs(command->speed);
   command_time_allowance_ = command->time_allowance;
+  check_collision_ = command->check_collision;
 
   acc_ = command->acc;
   dec_ = command->dec;
@@ -73,6 +74,7 @@ Status BackUp::onRun(const std::shared_ptr<const BackUpAction::Goal> command)
   command_x_ = std::fabs(command->target.x);
   command_speed_ = std::fabs(command->speed);
   command_time_allowance_ = command->time_allowance;
+  check_collision_ = command->check_collision;
 
   acc_ = command->acc;
   dec_ = command->dec;
